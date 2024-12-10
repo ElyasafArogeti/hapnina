@@ -34,7 +34,7 @@ const PersonalArea = () => {
       setUserPhoto(user.photoURL || "");
       setLoginPersonalArea(false); 
     } catch (error) {
-      console.error("Google Sign-In Error:", error);
+      console.error("Google Sign-In Error  :", error);
     }
   };
 

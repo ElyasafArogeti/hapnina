@@ -1,0 +1,251 @@
+/* CSS for OnlineOrdersSystem component */
+.online-orders-system {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+  }
+  
+  .orders-list {
+    display: flex;
+    flex-wrap: wrap;
+  
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .order-card {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .delete-order-button {
+    position: absolute; 
+    top: 8px; 
+    right: 8px;
+    font-size: 25px;
+    color: #0056b3;
+    cursor: pointer;
+    background: none; 
+    border: none; 
+    outline: none; 
+}
+.delete-order-button:hover {
+  color: #941a26ab;
+}
+  .order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .order-user-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .order-user-phone,
+  .order-guest-count,
+  .order-event-date,
+  .order-total-price {
+    font-size: 1em;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  .order-title {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+  }
+  .approve-button,
+  .show-order-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+  }
+  
+  .approve-button:hover {
+    background-color: #218838;
+  }
+  
+  .show-order-button {
+    background-color: #007bff;
+  }
+  
+  .show-order-button:hover {
+    background-color: #0056b3;
+  }
+  .online-order-actions-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+
+  .no-orders {
+    font-size: 1.2em;
+    color: #777;
+  }
+  .order-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .order-item {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .order-item-name {
+    font-size: 1em;
+    color: #333;
+  }
+  
+
+
+  /* עיצוב הכללי של חלון קופץ */
+/* עיצוב חלון קופץ לעריכת פרטים */
+.edit-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* רקע חצי שקוף כהה */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* מוודא שהחלון מעל כל התוכן */
+}
+
+/* עיצוב התוכן של המודל (החלון הקופץ) */
+.edit-window .edit-window-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 350px;
+    max-width: 90%;
+    text-align: center;
+    position: relative;
+}
+
+/* כותרת המודל */
+.edit-window .edit-window-content h3 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+/* עיצוב כפתורים */
+.edit-window button {
+    width: 120px;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* שינוי צבע הכפתור כשעובר עליו עם העכבר */
+.edit-window button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* הרמה קלה של הכפתור */
+}
+
+/* עיצוב כפתור "לא" (ביטול) */
+.edit-window button.cancel-button {
+    background-color: #9a2732db; /* צבע אדום לכפתור ביטול */
+}
+
+.edit-window button.cancel-button:hover {
+    background-color: #c82333; /* שינוי צבע כשעובר עליו עם העכבר */
+    transform: translateY(-2px); /* הרמה קלה של הכפתור */
+}
+
+/* עיצוב כפתור "כן" (אישור) */
+.edit-window button.confirm-button {
+    background-color: #4c87af; /* צבע כחול לכפתור אישור */
+}
+
+.edit-window button.confirm-button:hover {
+    background-color: #19487af3; /* שינוי צבע כאשר עובר עליו */
+}
+
+/* עיצוב כפתור סגירה */
+.edit-window .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #999;
+}
+
+/* שינוי צבע כפתור הסגירה כשעובר עליו עם העכבר */
+.edit-window .close-modal:hover {
+    color: #333;
+}
+
+/* עיצוב המסר בתוך חלון הקופץ */
+.edit-window p {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* עיצוב הרקע החצי שקוף שמכסה את שאר המסך */
+.edit-window::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* צבע כהה שקוף */
+    z-index: -1; /* שיגיע מאחורי החלון */
+}
+
+/* עיצוב טופס העריכה (אם יש צורך בטופס או שדות) */
+.edit-window input,
+.edit-window select,
+.edit-window textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* עיצוב שדה טקסט (Textarea) */
+.edit-window textarea {
+    height: 150px; /* גובה מותאם לשדה טקסט */
+}
+
+/* עיצוב כפתור לשליחה */
+.edit-window .submit-button {
+    background-color: #28a745; /* צבע ירוק לכפתור שליחה */
+    font-weight: bold;
+}

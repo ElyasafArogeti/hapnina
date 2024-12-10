@@ -1,0 +1,186 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* עיצוב ניווט */
+.navbarAll {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  max-width: 1200px;
+  margin:auto;
+  background-color: #fafaf8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 1px 0; 
+  z-index: 1000;
+
+}
+.navbarAll ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.navbarAll li {
+  font-size: 16px;
+  object-fit: cover;
+}
+.navbarAll  a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px 5px; 
+  border-radius: 5px;
+  position: relative;
+  transition: color 0.3s; 
+  
+}
+.ul_navbarAll-2 {
+ margin: 10px;
+   padding: 20px;
+ 
+}
+
+.submenu {
+  position: absolute;
+  top: 90%; 
+  left: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.submenu-item {
+  padding: 8px 10px;
+  text-decoration: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.submenu-item:hover {
+  background-color: #f0f0f0;
+}
+.submenu-item svg {
+  margin-right: 8px; /* המרחק בין האייקון לטקסט */
+}
+
+
+/* עיצוב כרטיסים */
+.inventory-card {
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  width:200px;
+  max-width: 200px;
+  margin: 10px auto;
+  display: flex;
+  height: 110px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: 400ms background-color;
+}
+.inventory-card:hover {
+  background-color: #dddbdb;
+}
+
+
+/* עיצוב ניווט */
+.icon_navbarAll {
+  background-color: #860505d7;
+  border-radius: 100%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  color: white;
+  margin: 0 5px;
+  float: left;
+}
+.ul_navbarAll{
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.h2_navbarAll {
+  font-size: 1.2em;
+  color: #333;
+  margin: 5px 0;
+}
+.logo_navbarAll{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: #ff7200;
+  font-size: 35px;
+  font-family: Arial;
+  padding-left: 20px;
+  float: left;
+  padding-top: 10px;
+  margin-top: 5px;
+}
+
+
+
+
+/* ברירת המחדל של אייקון שלושת הפסים */
+.hamburger-menu {
+  display: none;
+  cursor: pointer;
+  font-size: 100px;
+}
+@media (max-width: 1200px) {
+  .hamburger-menu{
+    display: none;
+  }
+}
+/* עיצוב התפריט במסכים קטנים */
+@media (max-width: 1000px) {
+  .ul_navbarAll {
+    display: none; 
+    position: absolute;
+    top: 70px;
+    left: 70px;
+    background-color: rgb(225, 225, 225);
+    width: 30%;
+    padding: 10px;
+    flex-direction: column;
+    z-index: 100;
+    list-style-type: none;
+    
+  }
+
+  /* כאשר התפריט פתוח */
+  .ul_navbarAll.show {
+    display: flex; 
+    background-color: rgb(225, 225, 225);
+  }
+.ul_navbarAll.show a:hover {
+background-color: #c85f0a8f;
+}
+  /* אייקון של שלושה פסים */
+  .hamburger-menu {
+   font-size: 35px;
+   display: block;
+   text-align: center;
+  padding-top: 10px;
+  }
+
+  /* עיצוב הקישורים רק עם טקסט */
+  .ul_navbarAll li {
+    display: block; /* כל פריט תפריט יהפוך לשורה */
+    padding: 10px;
+    text-align: right;
+  }
+
+  .ul_navbarAll li h2 {
+    font-size: 16px; /* להקטין את הגודל של השמות */
+    margin: 0;
+  }
+}

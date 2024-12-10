@@ -1,0 +1,160 @@
+.category-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* עיצוב קטגוריות */
+.category-box {
+    padding: 20px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px;
+    width: 250px;
+    height: 200px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    object-fit: cover;
+    display: flex;
+    justify-content: center;
+}
+.first-courses-box {
+    background-image: url("https://www.yad-mordechai.co.il/Uploads//Recipes/From%20Old%20Web/tariaki_rimon.jpg");
+    background-size: cover;
+}
+.main-courses-box {
+    background-image: url("https://ynet-pic1.yit.co.il/cdn-cgi/image/f=auto,w=740,q=75/picserver5/crop_images/2024/05/13/BJ11iMHy70/BJ11iMHy70_0_0_1000_667_0_x-large.jpg");
+    background-size: cover;
+}
+.salads-box {
+    background-image: url("https://static.wixstatic.com/media/91dd81_1af0fe2fc4a84c87875602be8280eba8~mv2.jpg/v1/fill/w_558,h_288,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/91dd81_1af0fe2fc4a84c87875602be8280eba8~mv2.jpg");
+    background-size: cover;
+}
+.side-dishes-box {
+    background-image: url("https://www.delis.co.il/contentManagment/uploadedFiles/DSC_2983a_975.jpg");
+    background-size: cover;  
+}
+.category-box:hover {
+    background-color: #63000067;
+    opacity: 0.5;
+}
+.styled-table-container { /*כל הטבלה*/
+max-width: 1000px;
+margin: 0 auto;
+}
+
+.butt-return{
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    border: none;
+    padding: 5px 0px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* עיצוב טבלה */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: right;
+    color: #333;
+}
+.styled-table th,.styled-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+.styled-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+.styled-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+/* עיצוב לכפתורים */
+.buttonAll, .butt-return-category {
+    background-color: #4c87af;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.buttonAll:hover, .butt-return-category:hover {
+    background-color: #e57373;
+}
+
+
+
+/* עיצוב חלון עריכה */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 350px;
+    max-width: 90%;
+    text-align: center;
+}
+.modal-content h3 {
+    margin-bottom: 20px;
+}
+.modal-content label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.modal-content input {
+    text-align: center;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+.modal button {
+    background-color: #4c87af;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;    
+}
+.modal button:hover {
+    background-color: #19487af3;
+}
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+}

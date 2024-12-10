@@ -1,0 +1,360 @@
+/* מיכל התפריט */
+.menu-container {
+ max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+
+}
+.menu-table-order-online {
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  max-width: 1200px;
+}
+.menu-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.menu-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+}
+
+.menu-subtitle {
+  font-size: 20px;
+  color: #777;
+}
+
+.menu-contact {
+  font-size: 16px;
+  color: #555;
+}
+
+.menu-section-from {
+  width: 1000px;
+  margin: auto;
+  padding: 20px;
+  background-color: #ffffff68; 
+  border-radius: 8px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.menu-section-title {
+  max-width: 1200px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #00bfae;
+  padding-bottom: 10px;
+}
+
+.menu-list {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* כל ריבוע לפחות 200px */
+  gap: 20px;
+  margin-top: 20px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.menu-item-img:hover {
+  transform: scale(1.05);
+}
+
+.menu-item-img img {
+  max-width: 100%;
+  max-height: 100%;
+  height: 180px; 
+  border-radius: 10px; 
+   object-fit: cover;
+  transition: transform 4s ease-in-out;
+}
+
+.menu-item-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
+  font-weight: bolder;
+  text-align: center;
+}
+
+.menu-checkbox {
+  margin-left: 10px;
+  width: 20px;
+  height: 20px;
+  accent-color: #000000;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.menu-checkbox:checked {
+  background-color: #00bfae;
+}
+
+.menu-item-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-button {
+  background-color: #00bfae;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #008c7d;
+}
+
+/* עיצוב הכללי של המודל */
+.modal-online {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+/* תוכן המודל */
+.modal-content-user-order-online {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 100%;
+  max-width:400px;
+  height: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* כפתור סגירה */
+.close-button-user-order-online {
+  background-color: transparent;
+  background-color: rgb(33, 84, 179);
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.close-button-user-order-online:hover {
+  background-color: rgba(33, 70, 139, 0.682);
+}
+
+/* כותרת הטופס */
+.form-title {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* קבוצת שדות */
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group-quantity {
+  width: 100%;
+}
+/* כותרת שדה */
+.form-label {
+  font-size: 17px;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* שדות קלט */
+.form-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  text-align: right;
+}
+.date-input {
+  /* עיצוב מיוחד לתיבת התאריך */
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
+.form-input:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 179, 40, 0.2);
+}
+
+/* כפתור לשליחה */
+.submit-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.success-message {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4CAF50; 
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+.modal-online-success {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+.modal-content-user-order-online-success {
+  background-color: #fff;
+  padding: 50px;
+  border-radius: 8px;
+  width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-details {
+border-radius: 10px;
+border: 1px solid #8684846d;
+box-shadow: 0 30px 20px rgba(0, 0, 0, 0.1);
+padding: 20px;
+margin-bottom: 20px;
+background-color: #f7f7f7;
+text-align: center;
+}
+
+.download-button-receipt {
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  width:50%;
+  box-sizing: border-box;
+}
+.download-button-receipt:hover {  
+  background-color: #45a049;
+}
+
+.close-button-user-order-online-success {
+  background-color: transparent;
+  background-color: rgb(33, 84, 179);
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.close-button-user-order-online-success:hover {
+  background-color: rgba(33, 70, 139, 0.682);
+}
+
+/* Media Query עבור מסכים קטנים (מובייל) */
+@media (max-width: 767px) {
+
+  /* התאמת הגריד של רשימת המנות */
+  .menu-list {
+    grid-template-columns: 1fr; /* כל פריט יתפוס את כל הרוחב ויוצג אחד מתחת לשני */
+  }
+
+  /* התאמת התמונה */
+  .menu-item-img img {
+    width: 100%; /* התמונה תתפוס את כל הרוחב של המסך */
+    height: 250px; /* הגדרת גובה קבוע לתמונה כדי שתהיה יפה ומרווחת */
+    object-fit: cover; /* זה שומר על יחס הגובה/רוחב של התמונה */
+    border-radius: 10px; /* פינות מעוגלות לתמונה */
+  }
+
+  /* התאמת טקסט המלל */
+  .menu-item-label {
+    font-size: 18px; /* גודל טקסט גדול יותר כך שהוא יהיה בולט */
+    font-weight: bold; /* בולד כדי שיבלוט יותר */
+    text-align: center; /* ממרכזים את הטקסט */
+    padding: 10px; /* ריווח פנימי */
+  }
+
+  .menu-item-name {
+    font-size: 18px; /* גודל טקסט גדול יותר לשם המנה */
+    text-align: center; /* מרכז את שם המנה */
+    padding: 10px; /* ריווח פנימי */
+  }
+
+  /* התאמת כפתור ההוספה */
+  .add-button {
+    width: 100%; /* הכפתור יתפוס את כל הרוחב */
+    padding: 12px 0; /* הגדלת הריווח בכפתור */
+    font-size: 16px; /* גודל טקסט יותר גדול בכפתור */
+    margin-top: 15px; 
+    border-radius: 8px; 
+  }
+}
+/* תמונה בתוך הדיאלוג שתהיה מותאמת לחלון */
+.image-dialog-img {
+  width: 100%;  /* תמונה תתפוס את כל רוחב הדיאלוג */
+  height: auto; /* גובה התמונה יתאים אוטומטית לפי רוחב התמונה, שומר על פרופורציות */
+  display: block;
+  margin: 0 auto;  /* מרכז את התמונה בדיאלוג */
+}

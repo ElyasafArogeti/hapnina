@@ -1,0 +1,246 @@
+.event-calendar-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fafaf8;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.fc-daygrid-day {
+  padding: 12px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.fc-daygrid-day:hover {
+  background-color: #e1efff;
+  transform: scale(1.02);
+}
+
+.fc-day-sun, .fc-day-sat {
+  background-color: #f9f9f9;
+}
+
+.fc-day-today {
+  background-color: #d2e9ffa4 ;
+}
+
+.fc-event {
+  color: #090808 ;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.fc-toolbar-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.fc-button {
+
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  margin: 0 4px;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.fc-button:hover {
+  background-color: #008CBA;
+}
+
+.fc-event-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fc-event-time {
+  font-size: 12px;
+  color: #760f0f77;
+}
+
+.fc-event.busy-event .fc-event-title {
+  font-size: 15px;
+}
+
+.fc-daygrid-day-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: #5b5b5b;
+}
+
+.fc-daygrid-day-number.busy-day {
+  color: #e64a19;
+}
+
+.fc-daygrid-day-number.fc-day-today {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.fc-daygrid-day.fc-day-today .fc-event {
+  background-color: #1e3984d6 !important; 
+}
+
+.fc-daygrid-day.fc-day-today.busy-day {
+  background-color: rgba(230, 74, 19, 0.1); /* צללית רכה ליום תפוס */
+}
+
+.fc-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.fc-daygrid-day .hebrew-date {
+  font-size: 0.8em;
+  color: #888;
+  text-align: center;
+  margin-top: 5px;
+}
+
+
+@media (max-width: 768px) {
+  .fc-toolbar-title {
+    font-size: 22px;
+  }
+
+  .fc-button {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fc-button {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .fc-toolbar-title {
+    font-size: 20px;
+  }
+}
+.fc-daygrid-day-top {
+  color: #333;
+  font-size: 20px;
+   font-weight: bold;
+  position: relative; /* כדי שנוכל למקם את האלמנט העברי בתוך התיבה */
+}
+
+.fc-h-event {
+  background-color: #0e0c03d6 !important;
+}
+
+.hebrew-date {
+  position: absolute;   
+  top: 5px;             
+  right: 10px;           
+}
+
+.hebrew-date-header {
+  font-size: 2em;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
+  background-color: #f4f4f4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  border-radius: 8px;
+}
+.hebrew-date-month {
+  background-color: #f4f4f4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.8em;
+  color: #333;
+  text-align: center;
+}
+
+.event-note-container {
+  width: 100%;
+  margin-top: 4px;
+  height: auto;
+  align-items: flex-start; /* לא למרכז את התוכן אלא לשמאל */
+}
+
+.event-note {
+  background-color: #e1e1e1;  
+  border-radius: 8px;         
+  padding: 5px;             
+  color: #333;               
+  font-size: 12px;           
+  font-style: italic;        
+  margin-top: 4px;           
+  max-width: 100%;         
+  word-wrap: break-word;     /* שובר מילים במידת הצורך */
+  overflow-wrap: break-word; /* שובר מילים במקרה של מילים ארוכות */
+  white-space: normal;       /* מתיר שורות חדשות */
+}
+
+.event-label {
+color: #e4c631;
+font-weight: bold;
+}
+
+
+.note-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* רקע כהה עם שקיפות */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999; /* לוודא שהמודל יופיע מעל לכל אלמנט אחר */
+}
+.note-textarea {
+  width: 100%;
+  height: 200px;
+  max-width: 400px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.8em;
+  color: #333;
+  text-align: right;
+
+}
+.note-modal textarea {
+  width: 100%;
+  height: 200px;
+}
+
+.save-button{
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin: 30px;
+}
+.save-button:hover {
+  background-color: #0056b3;
+}

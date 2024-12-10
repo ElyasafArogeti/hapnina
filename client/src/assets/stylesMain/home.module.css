@@ -1,0 +1,40 @@
+.mainHome {
+    background-color: #fafafa;
+  }
+  
+  .content {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .ctaButton a {
+    text-decoration: none;
+    color: #fff;
+    padding: 0.5rem 1.5rem;
+    background-color: #ffd700;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .ctaButton a:hover {
+    background-color: #ffa500;
+  }
+  .section {
+    width: 100%;
+    height: 100vh; 
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .section-one {
+    background-image: url('https://www.tarin.co.il/wp-content/uploads/2023/03/59big_800x504.jpg');
+  }
+  
+  .section-two {
+    background-image: url('https://laraevents.co.il/wp-content/uploads/2022/07/%D7%90%D7%99%D7%9A-%D7%9C%D7%91%D7%97%D7%95%D7%A8-%D7%90%D7%95%D7%9C%D7%9D-%D7%90%D7%99%D7%A8%D7%95%D7%A2%D7%99%D7%9D-1.jpg');
+  }
+  
+  .section-three {
+    background-image: url('https://byh-il.b-cdn.net/wp-content/uploads/2023/01/%D7%90%D7%95%D7%9C%D7%9D-%D7%91%D7%A8%D7%A7%D7%AA-%E2%80%93-%D7%90%D7%95%D7%9C%D7%9D-%D7%94%D7%90%D7%99%D7%A8%D7%95%D7%A2%D7%99%D7%9D-%D7%94%D7%9E%D7%A8%D7%9B%D7%96%D7%99-768x467.jpg');
+  }
+  

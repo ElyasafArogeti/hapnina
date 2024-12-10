@@ -1,0 +1,108 @@
+/* NavbarHome.module.css */
+.navbarHome {
+    width: 100%;
+    max-width: 1200px;
+    height: 75px;
+    margin: auto;
+    padding: 0 20px;
+  }
+  
+  .iconHome {
+    width: 100px;
+    float: left;
+    height: 70px;
+  }
+  
+  .logoHome {
+    color: #ff7200;
+    font-size: 35px;
+    font-family: Arial, sans-serif;
+    padding-left: 20px;
+    float: left;
+    padding-top: 10px;
+    margin-top: 5px;
+  }
+  
+  .menu {
+    width: 400px;
+    float: left;
+    height: 70px;
+  }
+  
+  .ulHome {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ulHome li {
+    list-style: none;
+    margin-left: 62px;
+    margin-top: 27px;
+    font-size: 14px;
+  }
+  
+  .navButton {
+    text-decoration: none;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    transition: 0.4s ease-in-out;
+  }
+  
+  .navButton:hover {
+    color: #ff7200;
+  }
+  
+  .navIcon {
+    text-decoration: none;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+    transition: 0.4s ease-in-out;
+  }
+  
+  .navIcon:hover {
+    color: #ff7200;
+  }
+  
+  .btn {
+    width: 100px;
+    height: 40px;
+    background: #ff7200;
+    border: 2px solid #ff7200;
+    margin-top: 35px;
+    color: #fff;
+    font-size: 15px;
+    border-radius: 10px;
+    transition: 0.2s ease;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .btn:hover {
+    color: #000;
+    background: #ff7700ce;
+  }
+  
+  .btn:focus {
+    outline: none;
+  }
+  
+  .iconWaze {
+    font-size: 30px;
+  }
+  
+  @media (max-width: 768px) {
+    .navbarHome,
+    .menu {
+      padding: 0 10px; 
+    }
+  
+    .ulHome li {
+      margin-left: 20px; 
+    }
+  }
+  

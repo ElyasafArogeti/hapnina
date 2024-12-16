@@ -47,11 +47,12 @@ const [ordersForSearch, setOrdersForSearch] = useState([]);  // מציג את כ
 const [snackbarMessage, setSnackbarMessage] = useState('');
 const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
+const token = localStorage.getItem('authToken');
 //-------------------------------
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/OrderManagement');
+        const response = await axios.get('http://localhost:3001/OrderManagement', { headers: { Authorization: `Bearer ${token}` } });
         const sortedOrders = response.data.reverse(); // הופכים את המערך כך שההזמנה האחרונה בראש
         setOrders(sortedOrders);
         setOrdersForSearch(sortedOrders);  // שמירה על הגיבוי של ההזמנות
@@ -66,7 +67,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/InventoryAll');
+        const response = await axios.get('http://localhost:3001/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
         setInventoryAll(response.data);
       } catch (error) {
         console.error(error);
@@ -103,7 +104,7 @@ const handleQuantityChange = (category , id, quantity) => {
   const OpenEditingOrder = async (order) => {// הזמנה של המשתמש הנבחר
     setFormData({ guest_count: order.guest_count });
     try {
-      const response = await axios.get(`http://localhost:3001/OrderManagement/users/${order.user_id}`);
+      const response = await axios.get(`http://localhost:3001/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
       const orderData = response.data;
       if (!orderData) {
         alert("הזמנה לא נמצאה");
@@ -212,6 +213,11 @@ const handleQuantityChange = (category , id, quantity) => {
       {
         guest_count: guestCount,
         order_menu: selectedItems
+      },{
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
       }
     );
     if (response.status === 200) {
@@ -236,7 +242,12 @@ const handleQuantityChange = (category , id, quantity) => {
   const handleDeleteOrder = async () => {
     try {
       if (orderToDelete) {
-        const response = await axios.delete(`http://localhost:3001/OrderManagement/DeleteOrder/${orderToDelete.user_id}`);
+        const response = await axios.delete(`http://localhost:3001/OrderManagement/DeleteOrder/${orderToDelete.user_id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
         if (response.status === 200) {
           // עדכון רשימת ההזמנות לאחר המחיקה
           setSnackbarMessage('ההזמנה נמחקה בהצלחה');
@@ -322,9 +333,9 @@ const handleSearch = (e) => {
           </tr>
         </thead>
         <tbody>
-           {orders.map((order) => (
+           {orders.map((order,index) => (
              <tr key={order.user_id} className={styles.tr}>
-               <td className={styles.td}>{order.user_id}</td>
+               <td className={styles.td}>{orders.length - index}</td>
                <td className={styles.td}>{order.owner_name}</td>
                <td className={styles.td}>{new Date(order.event_date).toLocaleDateString('he-IL')}</td>
                <td className={styles.td}>{order.guest_count}</td>

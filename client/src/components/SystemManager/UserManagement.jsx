@@ -16,11 +16,12 @@ const UserManagement = () => {
     guest_count: 0,
   });
 
+  const token = localStorage.getItem('authToken');
   // Fetch users from server
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/UserManagement');
+        const response = await axios.get('http://localhost:3001/UserManagement',{ headers: {  Authorization: `Bearer ${token}` }});
         const sortedOrders = response.data.reverse();
         setUsers(sortedOrders);
         setUsersForSearch(sortedOrders);
@@ -41,7 +42,7 @@ const UserManagement = () => {
   const handleSave = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3001/UserManagement/${editingUser.id}`, formData );  
+        `http://localhost:3001/UserManagement/${editingUser.id}`, formData,{ headers: {  Authorization: `Bearer ${token}` }} );  
       if (response.data.success) {
         setUsers(
           users.map((user) =>
@@ -112,7 +113,7 @@ const UserManagement = () => {
 
       {/* מצב עריכה  */}
       {editingUser && (
-        <div className={styles.editForm} dir='rtl'>
+        <div className={styles.editForm}  dir='rtl'>
           <div className={styles.editCentner}>      
           <div className={styles.formGroup}>
         <div onClick={handleCloseButton} className={styles.close}>&times;</div>
@@ -162,9 +163,9 @@ const UserManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users.map((user , index) => (
             <tr key={user.id} className={styles.tr}>
-              <td className={styles.td}>{user.id}</td>
+              <td className={styles.td}>{users.length - index}</td>
               <td className={styles.td}>{user.name}</td>
               <td className={styles.td}>{user.phone}</td>
               <td className={styles.td}>{formatDate(user.event_date)}</td>

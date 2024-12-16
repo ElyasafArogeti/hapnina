@@ -9,11 +9,17 @@ const ContactManager = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
+  const token = localStorage.getItem('authToken');
+
   useEffect(() => {
     // קבלת ההודעות מהשרת
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/getMessages');
+        const response = await axios.get('http://localhost:3001/getMessages', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
         setMessages(response.data); 
         console.log(response.data);
         
@@ -28,7 +34,11 @@ const ContactManager = () => {
   const handleDelete = async (id) => {
     try {
       // קריאה למחיקת ההודעה
-      const response = await axios.delete(`http://localhost:3001/deleteMessage/${id}`);
+      const response = await axios.delete(`http://localhost:3001/deleteMessage/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
       if (response.status === 200) {
         // עדכון הסטייט והצגת הודעת הצלחה
         setMessages(messages.filter(message => message.id !== id));

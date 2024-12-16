@@ -43,6 +43,10 @@ const SystemManagerHome = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
+          const token = localStorage.getItem('authToken');
+          const headers = {
+            Authorization: `Bearer ${token}`, // הוספת הטוקן כ-Bearer
+          };
           const [
             userCountRes,
             monthlyOrdersRes,
@@ -50,11 +54,11 @@ const SystemManagerHome = () => {
             pendingEventsRes,
             yearlyOrdersRes,
           ] = await Promise.all([
-            axios.get('http://localhost:3001/user-count'),
-            axios.get('http://localhost:3001/monthly-orders'),
-            axios.get('http://localhost:3001/weekly-events'),
-            axios.get('http://localhost:3001/events-pending'),
-            axios.get('http://localhost:3001/monthly-orders-summary'),
+            axios.get('http://localhost:3001/user-count', { headers }),
+            axios.get('http://localhost:3001/monthly-orders', { headers }),
+            axios.get('http://localhost:3001/weekly-events', { headers }),
+            axios.get('http://localhost:3001/events-pending', { headers }),
+            axios.get('http://localhost:3001/monthly-orders-summary', { headers }),
           ]);
           setUserCount(userCountRes.data.user_count);
           setMonthlyOrders(

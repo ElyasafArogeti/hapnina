@@ -40,12 +40,19 @@ const KitchenOrder = () => {
     price: '',
     weight: '',
   });
- 
+  const token = localStorage.getItem('authToken');
+
  // קריאה לשרת לקבלת התפריט הכללי
   useEffect(() => {
     const fetchAllDishes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/inventoryAll');
+        const response = await fetch('http://localhost:3001/inventoryAll', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await response.json();
         setAllDishes(data);
       } catch (error) {
@@ -72,6 +79,10 @@ const KitchenOrder = () => {
         category: newDish.category,
         selectedDish: newDish.selectedDish,  // מנה שנבחרה
         user_id: orderSummary[0].user_id,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (response.status === 200) {
         alert('המנה נוספה בהצלחה!');
@@ -101,7 +112,10 @@ const KitchenOrder = () => {
         data: {
           dish_name: dishToDelete, 
           user_id: orderSummary[0].user_id
-        }
+        } ,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (response.status === 200) {
         alert('המנה נמחקה בהצלחה!');
@@ -131,6 +145,10 @@ const KitchenOrder = () => {
          price: price,
          weight: weight,
          user_id: orderSummary[0].user_id
+       }, {
+         headers: {
+           Authorization: `Bearer ${token}`,
+       }
        });
    
        if (response.status === 200) {

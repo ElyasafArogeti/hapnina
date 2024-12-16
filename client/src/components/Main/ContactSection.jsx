@@ -42,7 +42,7 @@ const ContactSection = () => {
           צרו איתנו קשר
         </Typography>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          יש לכם אירוע בקרוב?
+          ? יש לכם אירוע בקרוב
         </Typography>
         <Typography variant="h5" gutterBottom>
           השאירו פרטים

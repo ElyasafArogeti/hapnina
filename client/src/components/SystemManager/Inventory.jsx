@@ -3,9 +3,10 @@ import NavbarAll from './NavbarAll';
 import '../../assets/stylesManager/Inventory.css';
 
 import { BiShekel } from "react-icons/bi";
+import { Box, Typography, Button, Modal, TextField, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { IoArrowBackSharp } from "react-icons/io5";
 import { MdAssignmentAdd } from "react-icons/md";
-
+import Grid from '@mui/material/Grid2';
 const Inventory = () => {
     const [inventoryAll, setInventoryAll] = useState({
         first_courses: [],
@@ -22,7 +23,12 @@ const Inventory = () => {
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-                const response = await fetch('http://localhost:3001/inventoryAll');
+              const token = localStorage.getItem("authToken");
+                const response = await fetch('http://localhost:3001/inventoryAll', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const data = await response.json();
                 setInventoryAll(data);                           
             } catch (error) {
@@ -35,10 +41,12 @@ const Inventory = () => {
        // הוספת מנה חדשה
        const addDish = async () => {
         try {
+          const token = localStorage.getItem("authToken");
             const response = await fetch('http://localhost:3001/addNewDish', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ ...newDish, category: selectedCategory }),
             });
@@ -56,10 +64,12 @@ const Inventory = () => {
     // עדכון מנה קיימת
     const updateDish = async (id, updatedDish) => {
         try {
+          const token = localStorage.getItem("authToken");
             await fetch(`http://localhost:3001/updateDish/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ ...updatedDish, category: selectedCategory }),
             });
@@ -77,10 +87,12 @@ const Inventory = () => {
     const deleteDish = async (id, category) => {
         if (window.confirm("האם אתה בטוח שברצונך למחוק את המנה?")) {
             try {
+            const token = localStorage.getItem("authToken");
             await fetch(`http://localhost:3001/deleteDish/${id}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
               },
               body: JSON.stringify({ category: selectedCategory }),
             });
@@ -121,10 +133,12 @@ const hideDish = async (id, category) => {
         ),
       });
     try {
+      const token = localStorage.getItem("authToken");
       const response = await fetch(`http://localhost:3001/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           category: category,
@@ -157,10 +171,12 @@ const hideDish = async (id, category) => {
         ),
       });
     try {
+      const token = localStorage.getItem("authToken");
       const response = await fetch(`http://localhost:3001/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           category: category,
@@ -185,9 +201,6 @@ const hideDish = async (id, category) => {
   };
   
   
-  
-
-  
 // -----------------------------------------
     const whatCategory = { // הוסף תרגומים נוספים לפי הצורך 
         salads: 'ניהול סלטים',
@@ -195,112 +208,235 @@ const hideDish = async (id, category) => {
         main_courses: 'ניהול מנות עיקריות',
         side_dishes: 'ניהול תוספות'
      }
+
+
     return (
-        <div>
-            <NavbarAll />
-           
-            <div> 
-                {selectedCategory === null ? ( 
-              <div className="category-container">
-                 <div className="category-box  side-dishes-box"   onClick={() => setSelectedCategory("side_dishes")}>תוספות</div>
-                  <div className="category-box  main-courses-box"  onClick={() => setSelectedCategory("main_courses")}>מנות עיקריות</div>
-                 <div className="category-box  first-courses-box" onClick={() => setSelectedCategory("first_courses")}>מנות ראשונות</div>
-                 <div className="category-box  salads-box"        onClick={() => setSelectedCategory("salads")}>סלטים</div>
-              </div>
+      <div>
+      <NavbarAll />
+      <Box sx={{ padding: 2 }} >
+          {selectedCategory === null ? (
+              <Grid container spacing={2} maxWidth='1200px' margin='0 auto'>
+                  <Grid size={{ xs: 12, sm: 3 }}>
+                      <Box
+                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
+                          onClick={() => setSelectedCategory("side_dishes")}
+                      >
+                          <Typography variant="h6">תוספות</Typography>
+                      </Box>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 3}}>
+                      <Box
+                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
+                          onClick={() => setSelectedCategory("main_courses")}
+                      >
+                          <Typography variant="h6">מנות עיקריות</Typography>
+                      </Box>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 3 }}>
+                      <Box
+                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
+                          onClick={() => setSelectedCategory("first_courses")}
+                      >
+                          <Typography variant="h6">מנות ראשונות</Typography>
+                      </Box>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 3 }}>
+                      <Box
+                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
+                          onClick={() => setSelectedCategory("salads")}
+                      >
+                          <Typography variant="h6">סלטים</Typography>
+                      </Box>
+                  </Grid>
+              </Grid>
+          ) : (
+
+           <Box dir='rtl' sx={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <Typography variant="h4" gutterBottom>
+                {whatCategory[selectedCategory]}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                <Button
+                    variant="outlined"
+                    onClick={() => setSelectedCategory(null)}>   
+                        חזרה
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setNewDishModal(true)}
+                    startIcon={<MdAssignmentAdd />}
+                >
+                    הוסף פריט
+                </Button>
+            </Box>
+            <Table dir="rtl" sx={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
+                <TableHead>
+                    <TableRow dir="rtl">
+                        <TableCell sx={{ textAlign: 'right' }}>שם הפריט</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>מחיר</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>משקל</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>פעולות</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody dir="rtl">
+                    {inventoryAll[selectedCategory].map((item) => (
+                        <TableRow key={item.id} sx={{  backgroundColor: item.is_hidden ? 'transparent' : '#63000067' ,'@media (max-width: 600px)':{maxWidth: '95%'}  }}>      
+                            <TableCell sx={{ textAlign: 'right' }}>{item.dish_name}</TableCell>
+                            <TableCell sx={{ textAlign: 'right' ,'@media (max-width: 600px)':{maxWidth: 'auto'} }} ><BiShekel /> {item.price}</TableCell>
+                            <TableCell sx={{ textAlign: 'right' }}>{item.weight}</TableCell>
+                            <TableCell sx={{ textAlign: 'right' }}>
+
+                        <Box sx={{  flexDirection: 'row', justifyContent: 'space-between', display: 'flex' ,  '@media (max-width: 600px)': { flexDirection: 'column', alignItems: 'flex-start' } }}>
+
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => openEditModal(item, selectedCategory)}
+                                      
+                                    >
+                                        ערוך
+                                    </Button>
+                                    <Button
+                                        variant="contained" color="error"
+                                        onClick={() => deleteDish(item.id, selectedCategory)}
+                                      
+                                    >
+                                        מחק
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color={item.is_hidden ? 'default' : 'primary'}
+                                        onClick={() => item.is_hidden ? hideDish(item.id, selectedCategory) : unhideDish(item.id, selectedCategory)}
+                                      
+                                    >
+                                        {item.is_hidden ? 'הסתר' : 'החזר'}
+                                    </Button>
+                                </Box>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </Box>
         
-                ) : (
-                    <div dir='rtl' className='styled-table-container'>
-                        <br />
-                       <h1>  {selectedCategory ? 
-                            (whatCategory[selectedCategory] 
-                              ? whatCategory[selectedCategory]   : "" ) : ''}
-                        </h1>
-                            <div className='butt-return' >
-                            <button className='butt-return-category'  onClick={() => setSelectedCategory(null)}> <IoArrowBackSharp /></button>
-                            <button className='butt-return-category'  onClick={() => setNewDishModal(true)}>הוסף פריט <MdAssignmentAdd/></button>
-                     </div>
-                        <table className='styled-table'>
-                            <thead>
-                                <tr>
-                                    <th>שם פריט</th>
-                                    <th>מחיר - לקילו / יחידה</th>
-                                    <th>משקל - לגרם / יחידה</th>
-                                    <th>עדכון</th>
-                                    <th>מחיקה</th>
-                                    <th>הסתר </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {inventoryAll[selectedCategory].map((item) => (
-                                 <tr key={item.id} style={{ backgroundColor: item.is_hidden ?  'white': '#63000067' }}>
-                                   <td>{item.dish_name}</td>
-                                   <td>{<BiShekel />} {item.price}</td>
-                                   <td>{item.weight}</td>
-                                   <td>
-                                     <button className="buttonAll" onClick={() => openEditModal(item, selectedCategory)}>ערוך</button>
-                                   </td>
-                                   <td>
-                                     <button className="buttonAll" onClick={() => deleteDish(item.id, selectedCategory)}>מחק</button>
-                                   </td>
-                                   <td>
-                                     {item.is_hidden ? (
-                                         <button className="buttonAll" onClick={() => hideDish(item.id, selectedCategory)}>הסתר</button>
-                                     ) : (
-                                        <button className="buttonAll" onClick={() => unhideDish(item.id, selectedCategory)}>החזר</button>
-                                     )}
-                                   </td>
-                                 </tr>
-                               ))}
-                              </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
+          )}
+      </Box>
 
-            {/* חלון העריכה */}
-            {editModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h3>עריכת מנה</h3>
-                        <label>:שם הפריט</label>
-                        <input  type="text" name="dish_name" value={editModal.dish_name}
-                           onChange={handleEditChange}       
-                        />
-                        <label>:מחיר</label>
-                        <input type="number" name="price" value={editModal.price || ""}
-                            onChange={handleEditChange}
-                        />
-                        <label>:משקל</label>
-                        <input type="number" name="weight" value={editModal.weight || ""}        
-                            onChange={handleEditChange}
-                        />
-                       <button onClick={() =>{
-                         if (window.confirm("האם אתה בטוח שברצונך לשנות את פרטי המנה?")) {
-                            updateDish(editModal.id, editModal);
-                          }
-                         }}> שמור </button>
-                       <button onClick={() => setEditModal(null)}>ביטול</button>
-                    </div>
-                </div>
-            )}
+      {/* עריכת מנה*/}
+      <Modal open={editModal !== null} onClose={() => setEditModal(null)}>
+          <Box sx={{ backgroundColor: 'white', padding: 3, borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                  עריכת מנה
+              </Typography>
+              <TextField
+                  label="שם הפריט"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  name="dish_name"
+                  value={editModal?.dish_name || ""}
+                  onChange={handleEditChange}
+              />
+              <TextField
+                  label="מחיר"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  type="number"
+                  name="price"
+                  value={editModal?.price || ""}
+                  onChange={handleEditChange}
+              />
+              <TextField
+                  label="משקל"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  type="number"
+                  name="weight"
+                  value={editModal?.weight || ""}
+                  onChange={handleEditChange}
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+                  <Button
+                      variant="contained"
+                      onClick={() => updateDish(editModal.id, editModal)}
+                  >
+                      עדכן
+                  </Button>
+                  <Button
+                      variant="outlined"
+                      onClick={() => setEditModal(null)}
+                  >
+                      סגור
+                  </Button>
+              </Box>
+          </Box>
+      </Modal>
 
-             {/* חלון הוספת מנה חדשה */}
-             {newDishModal && (
-                <div className="modal" >
-                    <div className="modal-content">
-                        <h3>הוספת מנה/סלט</h3>
-                        <label>:שם הפריט</label>
-                        <input  type="text" name="dish_name" value={newDish.dish_name} onChange={handleNewDishChange} />
-                        <label>:מחיר</label>
-                        <input type="number" name="price" value={newDish.price} onChange={handleNewDishChange} />
-                        <label>:משקל</label>
-                        <input type="number" name="weight" value={newDish.weight} onChange={handleNewDishChange} />
-                        <button onClick={addDish}>שמור</button>
-                        <button onClick={() => setNewDishModal(false)}>ביטול</button>
-                    </div>
-                </div>
-            )}
-        </div>
+      {/* הוספת מנה */}
+      <Modal open={newDishModal} onClose={() => setNewDishModal(false)}>
+    <Box sx={{
+        backgroundColor: 'white',
+        padding: 3,
+        borderRadius: 2,
+        position: 'absolute',  // חשוב כדי למקם את המודול
+        top: '50%',  // ממקם את המודול במרכז האנכי
+        left: '50%',  // ממקם את המודול במרכז האופקי
+        transform: 'translate(-50%, -50%)',  // דוחף את המודול חזרה כדי שיהיה בדיוק במרכז
+        maxWidth: '600px',  // גודל מקסימלי כדי שהמודול לא יתפוס יותר מדי מקום
+        width: '100%',  // המודול יתפוס עד 100% רוחב, אך לא יעלה על 600px
+    }}>
+        <Typography variant="h6" gutterBottom>
+            הוסף פריט חדש
+        </Typography>
+        <TextField
+            label="שם המנה"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="dish_name"
+            value={newDish.dish_name}
+            onChange={handleNewDishChange}
+        />
+        <TextField
+            label="מחיר"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="number"
+            name="price"
+            value={newDish.price}
+            onChange={handleNewDishChange}
+        />
+        <TextField
+            label="משקל"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="number"
+            name="weight"
+            value={newDish.weight}
+            onChange={handleNewDishChange}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+            <Button
+                variant="contained"
+                onClick={addDish}
+            >
+                הוסף
+            </Button>
+            <Button
+                variant="outlined"
+                onClick={() => setNewDishModal(false)}
+            >
+                סגור
+            </Button>
+        </Box>
+    </Box>
+</Modal>
+
+  </div>
     );
 };
 

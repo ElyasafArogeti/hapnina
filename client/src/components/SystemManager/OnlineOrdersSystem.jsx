@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavbarAll from "./NavbarAll";
 import '../../assets/stylesManager/OnlineOrdersSystem.css';
 import { useNavigate } from 'react-router-dom';
+import { Password } from "@mui/icons-material";
 
 const OnlineOrdersSystem = () => {
   const navigate = useNavigate();
@@ -14,7 +15,13 @@ const OnlineOrdersSystem = () => {
   useEffect(() => {
       const fetchOrdersOnline = async () => {
     try {
-      const response = await fetch('http://localhost:3001/online_orders');
+      const token = localStorage.getItem("authToken");
+      const response = await fetch('http://localhost:3001/online_orders', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
+          }
+      });
       const data = await response.json();
       setOrdersOnline(data.reverse());
     } catch (error) {
@@ -28,6 +35,8 @@ const OnlineOrdersSystem = () => {
   // סגירת ההזמנה
   const handleAddCustomerOrder = async (orderId) => {
     try {
+      const token = localStorage.getItem("authToken");
+
       const orderToClose = ordersOnline.find(order => order.id === orderId);      
       if (!orderToClose) {
         console.error("ההזמנה לא נמצאה");
@@ -36,16 +45,20 @@ const OnlineOrdersSystem = () => {
       const orderData = {
         orderId: orderToClose.id,
         userName: orderToClose.user_name,
-        userPhone: orderToClose.user_phone,
+        userPhone: orderToClose.userPhone,
         guestCount: orderToClose.guest_count,
         eventDate: orderToClose.event_date,
         orderMenu: orderToClose.order_menu,
         totalPrice: orderToClose.total_price,
+        email: orderToClose.email,
+        password: orderToClose.password
       };
       const response = await fetch('http://localhost:3001/online_orders/add_customer_order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+
         },
         body: JSON.stringify(orderData),
       });
@@ -53,6 +66,9 @@ const OnlineOrdersSystem = () => {
         // שליחה נוספת לשרת למחיקת ההזמנה מטבלת אונליין
         const deleteResponse = await fetch(`http://localhost:3001/online_orders/${orderId}`, {
           method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
         });
         if (deleteResponse.ok) {
           alert("הזמנה אושרה ונכנסה למערכת!");
@@ -77,8 +93,12 @@ const OnlineOrdersSystem = () => {
       return; // אם המשתמש בחר 'ביטול', הפעולה לא תתבצע
     }
     try {
+      const token = localStorage.getItem("authToken");
       const response = await fetch(`http://localhost:3001/online_orders/${orderId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
       });
       if (response.ok) {
         setOrdersOnline((prevOrders) => prevOrders.filter(order => order.id !== orderId));
@@ -112,11 +132,10 @@ const OnlineOrdersSystem = () => {
             <div key={order.id} className="order-card">
                <span className="delete-order-button" onClick={() => handleDeleteOrder(order.id)}>&times;</span>
               <h2 className="order-user-name">{order.user_name}</h2>
-              <p className="order-user-phone">מספר טלפון: {order.user_phone}</p>
+              <p className="order-user-phone">מספר טלפון: {order.userPhone}</p>
               <p className="order-guest-count">מספר אורחים: {order.guest_count}</p>
               <p className="order-event-date">תאריך האירוע: {new Date(order.event_date).toLocaleDateString()}</p>      
               <p className="order-title">שלח בתאריך: {new Date(order.shipping_date).toLocaleDateString()}</p>
-              <p className="order-title">בשעה: {new Date(order.shipping_date).toLocaleTimeString()}</p>
               <div className="online-order-actions-container">
                 <button  className="approve-button" onClick={() => setEditWindow(order.id)} >
                   אשר הזמנה

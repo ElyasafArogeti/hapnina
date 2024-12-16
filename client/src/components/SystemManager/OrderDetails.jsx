@@ -10,7 +10,7 @@ const OrderDetails = () => {
   }
 
   // לפרק את פרטי ההזמנה
-  const { user_name, user_phone, event_date, guest_count, shipping_date, order_menu } = orderDetails;
+  const { user_name, userPhone, event_date, guest_count, shipping_date, order_menu } = orderDetails;
 
   const parsedOrderMenu = order_menu && JSON.parse(order_menu); // משתנה התפריט
 
@@ -19,7 +19,7 @@ const OrderDetails = () => {
       <div className="order-details-header">
         <h1>פרטי הזמנה</h1>
         <p>שם המזמין: {user_name}</p>
-        <p>מספר טלפון: {user_phone}</p>
+        <p>מספר טלפון: {userPhone}</p>
         <p>תאריך האירוע: {new Date(event_date).toLocaleDateString()}</p>
         <p>מספר אורחים: {guest_count}</p>
         <p>תאריך שליחה: {new Date(shipping_date).toLocaleDateString()}</p>

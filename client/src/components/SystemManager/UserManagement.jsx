@@ -4,7 +4,7 @@ import styles from '../../assets/stylesManager/UserManagement.module.css';
 import NavbarAll from './NavbarAll';
 
 import { FaSearch } from 'react-icons/fa'; 
-
+import  {People} from '@mui/icons-material';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [usersForSearch, setUsersForSearch] = useState([]);
@@ -107,7 +107,7 @@ const UserManagement = () => {
 
   return (
     <div><NavbarAll/><br />
-      <h1>ניהול נתוני לקוחות </h1>
+      <h1>ניהול נתוני לקוחות    <People/></h1>
     <br />
 
       {/* מצב עריכה  */}

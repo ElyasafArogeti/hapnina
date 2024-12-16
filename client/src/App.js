@@ -1,13 +1,12 @@
-import { Route ,Routes } from 'react-router-dom';
-
+import { Route, Routes } from 'react-router-dom';
 import Home from './components/Main/Home';
 import About from './components/Main/about';
-import PersonalArea from './components/Main/Personal-area';
+import PersonalAreaLogin from './components/Main/PersonalAreaLogin';
+import PersonalArea from './components/Main/PersonalArea';
 import LoginManager from './components/Main/LoginManager';
 import OrdersOnline from './components/Main/ordersOnline';
 import Gallery from './components/Main/Gallery';
 import Contact from './components/Main/contact';
-
 import SystemManagerHome from './components/SystemManager/SystemManagerHome';
 import NewOrders from './components/SystemManager/NewOrders';
 import EventCalendar from './components/SystemManager/EventCalendar';
@@ -19,32 +18,38 @@ import UserManagement from './components/SystemManager/UserManagement';
 import OrderManagement from './components/SystemManager/OrderManagement';
 import OrderManagementDetails from './components/SystemManager/OrderManagementDetails';
 import ContactManager from './components/SystemManager/ContactManager';
+
+
+import ProtectedRoute from './components/ProtectedRoute'; 
+
 function App() {
   return (
     <div>
-      <header >
+      <header>
         <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/loginManager' element={<LoginManager/>}/>
-          <Route path='/personal-area' element={<PersonalArea/>}/>
-          <Route path='/SystemManagerHome' element={<SystemManagerHome/>}/>
-          <Route path='/NewOrders' element={<NewOrders/>}/>
-          <Route path='/About' element={<About/>}/>
-          <Route path='/Contact' element={<Contact/>}/>
-          <Route path='/Gallery' element={<Gallery/>}/>
+          <Route path='/' element={<Home />} />
+          <Route path='/loginManager' element={<LoginManager />} />
+          <Route path='/PersonalAreaLogin' element={<PersonalAreaLogin />} />
+          <Route path='/PersonalArea' element={<PersonalArea />} />
+          <Route path='/Gallery' element={<Gallery />} />
+          <Route path='/About' element={<About />} />
+          <Route path='/Contact' element={<Contact />} />
+         
+          <Route path='/OrderDetails' element={<OrderDetails />} />
+          <Route path='/OrdersOnline' element={<OrdersOnline />} />
 
-          <Route path='/EventCalendar' element={<EventCalendar/>}/>
-          <Route path='/Inventory' element={<Inventory/>}/>
-          <Route path='/KitchenOrder' element={<KitchenOrder/>}/>
-          <Route path='/OrdersOnline' element={<OrdersOnline/>}/>
-          <Route path='/OnlineOrdersSystem' element={<OnlineOrdersSystem/>}/>
-          <Route path='/OrderDetails' element={<OrderDetails/>}/>
-          <Route path='/UserManagement' element={<UserManagement/>}/>
-          <Route path='/OrderManagement' element={<OrderManagement/>}/>
-          <Route path='/OrderManagementDetails' element={<OrderManagementDetails/>}/>
-          <Route path='/ContactManager' element={<ContactManager/>}/>
-      
-
+          
+          {/* דפים שמוגנים בעזרת אימות */} 
+          <Route path='/OnlineOrdersSystem' element={<ProtectedRoute><OnlineOrdersSystem /></ProtectedRoute>} />
+          <Route path='/SystemManagerHome'element={<ProtectedRoute><SystemManagerHome /></ProtectedRoute>} />         
+          <Route path='/NewOrders' element={<ProtectedRoute> <NewOrders /></ProtectedRoute> } />        
+          <Route path='/EventCalendar' element={<ProtectedRoute><EventCalendar /></ProtectedRoute>} />       
+          <Route path='/Inventory' element={ <ProtectedRoute><Inventory /></ProtectedRoute>} />
+          <Route path='/KitchenOrder' element={ <ProtectedRoute><KitchenOrder /></ProtectedRoute>} />    
+          <Route path='/UserManagement' element={  <ProtectedRoute><UserManagement /></ProtectedRoute>} />     
+          <Route path='/OrderManagement' element={ <ProtectedRoute><OrderManagement /></ProtectedRoute>} />         
+          <Route path='/OrderManagementDetails' element={<ProtectedRoute><OrderManagementDetails /></ProtectedRoute>} />    
+          <Route path='/ContactManager' element={<ProtectedRoute><ContactManager /></ProtectedRoute>} />
         </Routes>
       </header>
     </div>

@@ -11,6 +11,27 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
+require('dotenv').config(); // בתחילת הקובץ
+const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
+
+// רשימת המנהלים
+const managers = [
+  {
+    email: "ely6600200@gmail.com",
+    userName: "אלי ארוגטי",
+    password: bcrypt.hashSync("1234", 10), // סיסמה מוצפנת
+  },
+];
+
+
+const isManager = (userName) => {
+  return managers.some((manager) => manager.userName === userName);
+};
+
+
 const startServer = async () => {
   //----------------חיבור למוסד נתונים -------------------------------
   const connection = await mysql.createConnection({
@@ -35,31 +56,135 @@ const formatDateForMySQL = (isoDate) => {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
-  //--------------בקשת כל הקטגוריות ------------------------------------------
-  app.get("/inventoryAll", async (req, res) => {
-    try {
-      const [firstCourses] = await connection.query("SELECT * FROM first_courses");
-      const [mainCourses] = await connection.query( "SELECT * FROM main_courses");
-      const [salads] = await connection.query("SELECT * FROM salads");
-      const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
-      res.send({
-        first_courses: firstCourses,
-        main_courses: mainCourses,
-        salads: salads,
-        side_dishes: sideDishes,
-      });
-    } catch (err) {
-      console.error("Failed to fetch data from database:", err);
-      res.status(500).send("Error fetching data");
-    }
+//-----------------------------------------------------------------------------
+const authenticateToken = (req, res, next) => {  // יצירת טוקן 
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];  
+  if (!token) {
+    console.log("  בטוקן שגיאה");
+    return res.status(401).json({ message: "הגישה נדחתה, לא סופק אסימון." });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // לשימוש בהמשך
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: "Invalid token." });
+  }
+};
+//---------------------------------------------------------------------------
+// נתיב אימות טוקן
+app.post("/api/verifyToken", authenticateToken , (req, res) => { // אם הטוקן תקין, יש לשלוח את המידע על המשתמש
+  res.status(200).json({
+    message: "Token is valid",
+    user: req.user,   // שולחים את המידע שהופק מהטוקן
   });
+});
+  //---------- נתיב התחברות-----------------------------------------------------------------
+app.post("/api/login", async (req, res) => {
+  const { userName, password } = req.body;
+  if (!userName || !password) {
+    return res.status(400).json({ error: "אנא ספק את שם המשתמש והסיסמה בצורה תקינה." });
+  }
+  // בדיקה אם המשתמש הוא מנהל
+  if (isManager(userName)) {
+    const manager = managers.find((m) => m.userName === userName);
+    // בדיקת סיסמה
+    const passwordMatch = bcrypt.compareSync(password, manager.password);
+    if (!passwordMatch) {
+      console.log("Incorrect manager password.");
+      return res.status(401).json({ error: "שם משתמש או סיסמה שגויים." });
+    }
+    const token = jwt.sign({ userName, role: "manager" }, JWT_SECRET, { expiresIn: "1h" });
+    return res.status(200).json({
+      message: `שלום ${userName}, המנהל הינך עובר למערכת הניהול שלך`,
+      token,
+      role: "manager",
+    });
+  }
+  try {  // חיפוש משתמש רגיל בבסיס נתונים
+    const [rows] = await connection.query("SELECT * FROM users WHERE name = ?", [userName]);
+    const user = rows[0]; 
+    if (!user) {
+      console.log("User not found.");
+      return res.status(401).json({ error: "שם משתמש או סיסמה שגויים." });
+    }
+    // בדיקת סיסמה
+    const passwordMatch = bcrypt.compareSync(password, user.password); 
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "שם משתמש או סיסמה שגויים." });
+    }
+    const token = jwt.sign({ userName, role: "user" }, JWT_SECRET, { expiresIn: "1h" });  
+   return res.status(200).json({
+      message: `שלום ${userName}, ברוך הבא לאזור האישי שלך`,
+      token,
+      role: "user",
+    });
+  } catch (err) {
+    console.error("Error during user authentication:", err);
+    res.status(500).json({ error: "שגיאה בשרת. אנא נסה שוב מאוחר יותר." });
+  }
+});
+
+
+
+//------------נתיב לשליפת הזמנות לפי משתמש --------------------------------------------------------------------
+app.get("/api/OrderPersonalArea", async (req, res) => {
+
+  const token = req.headers.authorization?.split(" ")[1]; // שליפה של ה-token מה-header
+  if (!token) {
+    return res.status(403).json({ error: "אין טוקן, גישה לא מורשית." });
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET); // בדיקה אם ה-token חוקי
+    const { userName } = decoded; // שליפה של שם המשתמש מה-token
+
+    const [userRows] = await connection.query("SELECT * FROM users WHERE name = ?", [userName]);
+    const user = userRows[0];
+    if (!user) {
+      return res.status(404).json({ error: "לא נמצא משתמש עם שם זה." });
+    }
+    // חיפוש הזמנות עבור המשתמש
+    const [orders] = await connection.query("SELECT * FROM orders WHERE user_id = ?", [user.id]);
+    res.status(200).json({ orders, userName });
+  } catch (err) {
+    console.error("Error verifying token:", err);
+    res.status(401).json({ error: "ה-token לא תקין או פג תוקף." });
+  }
+});
+
+
+  //--------------בקשת כל הקטגוריות ------------------------------------------
+app.get("/inventoryAll" , async (req, res) => {
+  try {
+    const [firstCourses] = await connection.query("SELECT * FROM first_courses");
+    const [mainCourses] = await connection.query("SELECT * FROM main_courses");
+    const [salads] = await connection.query("SELECT * FROM salads");
+    const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
+    res.send({
+      first_courses: firstCourses,
+      main_courses: mainCourses,
+      salads: salads,
+      side_dishes: sideDishes,
+    });
+  } catch (err) {
+    console.error("Failed to fetch data from database:", err);
+    res.status(500).send("Error fetching data");
+  }
+});
+
+
+
 
             /*inventory   דף ניהול תפריט מורחב*/
 
   //------- הוספת מנה חדשה----------------------------------------------
-  app.post("/addNewDish", async (req, res) => {
+  app.post("/addNewDish", authenticateToken , async (req, res) => {
     const { dish_name, price, weight, category } = req.body;
     try {
+      if (req.user.role !== "manager") {
+        return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+      } 
       const [result] = await connection.query(
         `INSERT INTO ${category} (dish_name, price, weight) VALUES (?, ?, ?)`,
         [dish_name, price, weight]
@@ -71,10 +196,13 @@ const formatDateForMySQL = (isoDate) => {
     }
   });
   //----- עדכון מנה--------------------------------------------------------
-  app.put("/updateDish/:id", async (req, res) => {
+  app.put("/updateDish/:id", authenticateToken ,async (req, res) => {
     const { id } = req.params;
     const { dish_name, price, weight, category } = req.body;
     try {
+      if (req.user.role !== "manager") {
+        return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+      } 
       await connection.query(
         `UPDATE ${category} SET dish_name = ?, price = ?, weight = ? WHERE id = ?`,
         [dish_name, price, weight, id]
@@ -86,10 +214,13 @@ const formatDateForMySQL = (isoDate) => {
     }
   });
   //----- מחיקת מנה--------------------------------------------------------
-  app.delete("/deleteDish/:id", async (req, res) => {
+  app.delete("/deleteDish/:id",authenticateToken , async (req, res) => {
     const { id } = req.params;
     const { category } = req.body;
     try {
+      if (req.user.role !== "manager") {
+        return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+      } 
       await connection.query(`DELETE FROM ${category} WHERE id = ?`, [id]);
       res.send("Dish deleted successfully");
     } catch (err) {
@@ -98,11 +229,13 @@ const formatDateForMySQL = (isoDate) => {
     }
   });
   // ----------הסתר מנה ----------------------------------------------
-// טיפול בהסתרה והחזרת מנה למסד הנתונים
-app.put('/hideDish/:id', async (req, res) => {
+app.put('/hideDish/:id',authenticateToken , async (req, res) => {// טיפול בהסתרה והחזרת מנה למסד הנתונים
   const { id } = req.params;
   const { hidden , category } = req.body;
   try {
+    if (req.user.role !== "manager") {
+      return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+    } 
     // עדכון המנה במסד הנתונים
     const [result] = await connection.query(`UPDATE ${category} SET is_hidden = ? WHERE id = ?`,
       [hidden, id]
@@ -124,10 +257,13 @@ app.put('/hideDish/:id', async (req, res) => {
 
 
 
+
+
               /* newOrder   דף הצעת מחיר מנהלים     */
 
+
   //-------------סגירת הזמנה----------------------------------------------------------
-  app.post("/orders", async (req, res) => {
+  app.post("/orders",authenticateToken , async (req, res) => {
     const { user_id, order_menu, guest_count, event_date, totalPrice } = req.body;
     try {
       const orderMenuString = JSON.stringify(order_menu);
@@ -142,16 +278,18 @@ app.put('/hideDish/:id', async (req, res) => {
     }
   });
   //-----------------סגירת משתמש------------------------------------------
-  app.post("/users", async (req, res) => {
-    const { user_id, eventOwner, guestCount, eventDate } = req.body;
-    try {                          // בדוק אם המשתמש כבר קיים
+  app.post("/users" ,authenticateToken , async (req, res) => {
+    const { user_id, eventOwner, guestCount, eventDate,password ,email} = req.body;
+    try { 
+      const role = "user";
+      const hashedPassword = bcrypt.hashSync(password, 10);                 
       const [existingUser] = await connection.query( "SELECT * FROM users WHERE phone = ?",  [user_id]);  
       let newUserId;
       if (existingUser.length > 0) {        // אם המשתמש קיים השתמש במזהה שלו ולא להוסיף אותו לטבלה 
         newUserId = existingUser[0].id;
       } else {                           // הוסף משתמש חדש אם הוא לא קיים
-        const [result] = await connection.query("INSERT INTO users ( name, guest_count, event_date ,phone) VALUES (?, ?, ?, ?)",
-          [eventOwner, guestCount, eventDate, user_id]
+        const [result] = await connection.query("INSERT INTO users ( name, guest_count, event_date ,phone ,email,role, password) VALUES (?,?, ?, ?,?,?,?)",
+          [eventOwner, guestCount, eventDate, user_id , email ,role, hashedPassword]
         );
         newUserId = result.insertId; // השגת ה-id החדש
       }
@@ -164,9 +302,13 @@ app.put('/hideDish/:id', async (req, res) => {
 
 
 
+
+
+
             /* Calender    דף לוח שנה אירועים     */
+
   //-----------------הבאת ההזמנות -------------------------------------
-  app.get("/orders_calendar", async (req, res) => {
+  app.get("/orders_calendar", authenticateToken , async (req, res) => {
     try {
       const [orders] = await connection.query("SELECT * FROM orders");
       const formattedOrders = orders.map(order => {
@@ -185,9 +327,12 @@ app.put('/hideDish/:id', async (req, res) => {
     }
   });  
  //-------------------------הצגת הזמנה לפי משתמש---------------------------------------
-app.get("/user_calendar/:id", async (req, res) => {
+app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
   const { id } = req.params;
-  try {
+  try {  
+    if (req.user.role !== "manager") {   
+      return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+    } 
     const [orders_user] = await connection.query("SELECT * FROM orders WHERE user_id = ?", [id]);
     const [user_name] = await connection.query("SELECT name FROM users WHERE id = ?", [id]);
     const [phone] = await connection.query("SELECT phone FROM users WHERE id = ?", [id]);
@@ -208,24 +353,41 @@ app.get("/user_calendar/:id", async (req, res) => {
   }
  });
  //------------------הוספת העררה-------------------------------------------------
-app.post('/save-note/:orderId/:notes', async (req, res) => {
+ app.post('/save-note/:orderId/:notes', authenticateToken , async (req, res) => { 
   const orderId = req.params.orderId;
-  const  note = req.params.notes;  // ההערה ששלח הלקוח
+  const note = req.params.notes;  // ההערה ששלח הלקוח
+  console.log("note", typeof note);
+  
   try {
-    const [rows] = await connection.query('SELECT * FROM orders WHERE user_id = ?', [orderId]);
+    if (req.user.role !== "manager") {
+      return res.status(403).json({ message: "Access denied. Insufficient permissions." });
+    } 
+
+    const [rows] = await connection.query('SELECT * FROM orders WHERE user_id = ?', [orderId]); 
     if (rows.length === 0) {
       // אם לא נמצאה הזמנה
       return res.status(404).json({ error: 'לא נמצא אירוע בתאריך זה' });
     }
-    // עדכון ההערה בטבלה
+    if (note === "null" || note.trim() === "") {
+      
+      await connection.query('UPDATE orders SET notes = null WHERE user_id = ?', [ orderId]);
+      return res.status(200).json({ message: 'ההערה נמחקה בהצלחה' });
+    }else{  // אם יש הערה, נעדכן אותה בטבלה
+    console.log("else");
     await connection.query('UPDATE orders SET notes = ? WHERE user_id = ?', [note, orderId]);
-
     res.status(200).json({ message: 'ההערה נשמרה בהצלחה' });
+    }
+  
+        
+  
+
   } catch (error) {
     console.error('שגיאה בשרת:', error);
     res.status(500).json({ error: 'שגיאה בעת שמירת ההערה' });
   }
 });
+
+
 //---------------------------------------------------------------------
 
 
@@ -285,16 +447,19 @@ app.post('/save-note/:orderId/:notes', async (req, res) => {
 
        /*OrdersOnline   דף הזמנות אונליין  צד לקוח  */
     
-//  ---------הוספת הזמנה למאגר----------------------------
+
+//  ---------הזמנות אונליין הוספת הזמנה למאגר----------------------------
 app.post('/addOrdersOnline', async (req, res) => {
   try {
-      const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, shippingDate } = req.body;
+      const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, shippingDate , email , Password} = req.body;
+      // הצפנת הסיסמה לפני ששולחים אותה למסד הנתונים
+      const saltRounds = 10; // מספר סיבובי ההצפנה, יותר סיבובים מבטיחים הצפנה חזקה יותר
+      const hashedPassword = await bcrypt.hash(Password, saltRounds);
+
       const [result] = await connection.query(`
-          INSERT INTO online_orders (user_name, user_phone, guest_count, event_date, order_menu, total_price, shipping_date)
-          VALUES (?, ?, ?, ?, ?, ? , ?)
-      `, [userName, userPhone, guestCount, eventDate,JSON.stringify(orderMenu), totalPrice, shippingDate]);
-      console.log(result);
-      
+          INSERT INTO online_orders (user_name, userPhone, guest_count, event_date, order_menu, total_price, shipping_date, email , password)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [userName, userPhone, guestCount, eventDate, JSON.stringify(orderMenu), totalPrice, shippingDate, email, hashedPassword]);
       res.status(201).json({ message: 'נשלח בהצלחה' });
   } catch (err) {
       console.error('שגיאה בשליחה הזמנות אונליין', err);
@@ -302,40 +467,42 @@ app.post('/addOrdersOnline', async (req, res) => {
   }
 });
 
+         
 
-              
+
+
       /*OnlineOrdersSystem   דף הזמנות קבלת אונליין צד מנהל   */
 
 //----------- לקבלת הזמנות אונליין למנהל------------------------------------------
-app.get("/online_orders", async (req, res) => {
+app.get("/online_orders",authenticateToken , async (req, res) => {
   try {
     const [orders] = await connection.query("SELECT * FROM online_orders");
     res.json(orders);
-    
   } catch (err) {
     console.error("נכשל בשליפת נתונים מהמסד:", err);
     res.status(500).send("שגיאה בשליפת נתונים");
   }
 })
  //---------------------סגירת הזמהת לקוח למערכת--------------------------------------------------          
-app.post('/online_orders/add_customer_order', async (req, res) => {
-  const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice } = req.body;
-  try {
-    // המרת התאריך לפורמט תואם MySQL
+app.post('/online_orders/add_customer_order', authenticateToken , async (req, res) => {
+  const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice , email , password} = req.body;
+
+  try {   // המרת התאריך לפורמט תואם MySQL
     const formattedEventDate = formatDateForMySQL(eventDate);
+    // בודקים אם יש משתמש קיים לפי מספר הטלפון
     const [existingUser] = await connection.query(`SELECT * FROM users WHERE phone = ?`, [userPhone]);
     let userId;
-    if (existingUser.length === 0) { // שהמשתמש לא קיים 
+    if (existingUser.length === 0) { // אין משתמש כזה
       const [newUser] = await connection.query(
-        `INSERT INTO users (name, guest_count, event_date, phone) VALUES (?, ?, ?, ?)`,
-        [userName, guestCount, formattedEventDate, userPhone]
+        `INSERT INTO users (name, guest_count, event_date, phone, email, password) VALUES (?, ?, ?, ?, ?, ?)`,
+        [userName, guestCount, formattedEventDate, userPhone, email, password] // שמירה עם הסיסמה המוצפנת
       );
       userId = newUser.insertId;
     } else {
-      userId = existingUser[0].id; //אם המשתמש קיים זה המזהה שלו 
+      userId = existingUser[0].id; // אם המשתמש קיים, ניקח את המזהה שלו
     }
-    // הוספת ההזמנה 
-     await connection.query(
+    // הוספת ההזמנה לאחר יצירת או עדכון המשתמש
+    await connection.query(
       `INSERT INTO orders (user_id, order_menu, guest_count, event_date, totalPrice) VALUES (?, ?, ?, ?, ?)`,
       [userId, orderMenu, guestCount, formattedEventDate, totalPrice]
     );
@@ -346,7 +513,7 @@ app.post('/online_orders/add_customer_order', async (req, res) => {
   }
 });
 //-----------------מחיקת הזמנה מטבלת אונליין--------------------------------------------
-app.delete('/online_orders/:id', async (req, res) => {
+app.delete('/online_orders/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     const [result] = await connection.query(`DELETE FROM online_orders WHERE id = ?`, [id]);

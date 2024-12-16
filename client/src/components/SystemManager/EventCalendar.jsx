@@ -3,6 +3,9 @@ import '../../assets/stylesManager/Calendar.css';
 import NavbarAll from './NavbarAll';
 import { useNavigate } from 'react-router-dom';
 
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -23,7 +26,7 @@ function EventCalendar() {
   const [currentDate, setCurrentDate] = useState(null);  // משתנה לתאריך שנבחר
   const [showNoteModal, setShowNoteModal] = useState(false); // משתנה למעקב אחרי אם המודל מוצג
 
-
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     fetchOrders();
@@ -38,15 +41,28 @@ function EventCalendar() {
   }, []);
 
   
-  const fetchOrders = async () => {  // פונקציה להורדת כל ההזמנות
+  const fetchOrders = async () => { // פונקציה להורדת כל ההזמנות
+    setLoading(true); 
     try {
-      const response = await fetch('http://localhost:3001/orders_calendar');
+      const token = localStorage.getItem("authToken");
+      const response = await fetch('http://localhost:3001/orders_calendar', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
+        }
+      });
+     
       if (!response.ok) {
         throw new Error('שגיאה ברשת');
       }
       const ordersData = await response.json();
       const userPromises = ordersData.map(async (order) => { // להביא שם בעל האירוע 
-        const userResponse = await fetch(`http://localhost:3001/user_calendar/${order.user_id}`);
+        const userResponse = await fetch(`http://localhost:3001/user_calendar/${order.user_id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
+          }
+        });
         if (!userResponse.ok) {
           throw new Error('שגיאה בעת הבאת פרטי המשתמש');
         }
@@ -78,13 +94,23 @@ function EventCalendar() {
     
     } catch (error) {
       console.error('שגיאה בעת הבאת ההזמנות:', error);
+    }finally {
+      setLoading(false); // סיום טעינה
     }
   };
+
   // פונקציה להורדת פרטי משתמש
   const fetchUser = async (userId) => {
     try {
+      const token = localStorage.getItem("authToken");
       const user = userId
-      const response = await fetch(`http://localhost:3001/user_calendar/${user}`);
+      const response = await fetch(`http://localhost:3001/user_calendar/${user}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
+        }
+      });
+
       if (!response.ok) {
         throw new Error('שגיאה ברשת');
       }
@@ -128,6 +154,7 @@ function EventCalendar() {
   
   const saveNote = async () => {
     try {
+      const token = localStorage.getItem("authToken");
       // קביעת התאריך הנוכחי במבנה מתאים
       const currentDateFormatted = currentDate.toLocaleDateString('en-CA'); // התאריך בפורמט YYYY-MM-DD
       const updatedOrder = orders.find(order => order.start === currentDateFormatted);
@@ -137,33 +164,43 @@ function EventCalendar() {
         alert('לא נמצא אירוע בתאריך זה');
         return;
       }
-      updatedOrder.notes =  note;  // הוספת ההערה החדשה להערה הקודמת
+  
+      // אם ההערה ריקה, נשלח null כדי למחוק את ההערה
+      const noteToSend = note.trim() === "" ? null : note; // אם ההערה ריקה, נשלח null
+  
+      // עדכון ההערה
       setNote(note); // עדכון הסטייט של ההערה החדשה
-
-      const response = await fetch(`http://localhost:3001/save-note/${updatedOrder.id}/${updatedOrder.notes}`, {
+  
+      // שמירת ההערה (או מחיקת ההערה אם היא ריקה)
+      const response = await fetch(`http://localhost:3001/save-note/${updatedOrder.id}/${noteToSend}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },  
+          'Authorization': `Bearer ${token}`,
+        },
       });
+  
       if (!response.ok) {
-        throw new Error('שגיאה בשמירת ההערה');
+        throw new Error('שגיאה ברשת');
       }
-        // עדכון הסטייט של ההזמנות, מבלי לטעון מחדש את כל המידע
-    setOrders((prevOrders) => {
-      return prevOrders.map(order => {
-        if (order.id === updatedOrder.id) {
-          // עדכון ההזמנה עם ההערה החדשה
-          return { ...order, notes: note };
-        }
-        return order;
+  
+      // עדכון רשימת ההזמנות אם הבקשה הצליחה
+      setOrders((prevOrders) => {
+        return prevOrders.map(order => {
+          if (order.id === updatedOrder.id) {
+            // עדכון ההזמנה עם ההערה החדשה או עם null אם ההערה נמחקה
+            return { ...order, notes: noteToSend };
+          }
+          return order;
+        });
       });
-    });
+  
       setShowNoteModal(false); // סגירת המודל אחרי שמירת ההערה
     } catch (error) {
       console.error('שגיאה בעת שמירת ההערה:', error);
     }
   };
+  
 
 
 
@@ -227,7 +264,12 @@ const handleDateChange = (info) => {
     <div> 
       <NavbarAll />
       <br />
-      <div className="event-calendar-container">
+      <div className="event-calendar-container"> 
+        {loading && (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      )}
       <div className="hebrew-date-header">
         {currentTime} {/* תציג את השעה הנוכחית */}
        </div>

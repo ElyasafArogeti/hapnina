@@ -6,6 +6,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../../assets/imgs/הלוגו.png";
 import { Link as RouterLink } from 'react-router-dom';
 const NavbarHome = () => {
+
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = (open) => () => {
@@ -20,7 +21,6 @@ const NavbarHome = () => {
       position: "absolute",
       top: 0,
       left: 0,
-
       width: "100%",
       zIndex: 1000,
       height: "90px",
@@ -82,7 +82,7 @@ const NavbarHome = () => {
             <IconButton href="https://wa.me/+972546600200" target="_blank" sx={{color: "#FFF",transition: "color 0.3s",  "&:hover": {color: "#FFD700" }}}>
               <BsWhatsapp />
             </IconButton>
-            <IconButton href="/personal-area" sx={{color: "#FFF",transition: "color 0.3s", "&:hover": {color: "#FFD700" }}}>
+            <IconButton href="/PersonalAreaLogin" sx={{color: "#FFF",transition: "color 0.3s", "&:hover": {color: "#FFD700" }}}>
               <BsPersonCircle />
             </IconButton>
       </Box>

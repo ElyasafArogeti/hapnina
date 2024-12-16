@@ -17,9 +17,11 @@ const NewOrders = () => {
     const [eventDate, setEventDate] = useState("");// תאריך האירוע
     const [phoneNumber, setPhoneNumber] = useState("");//מספר בעל האירוע
     const [location, setIocation] = useState("");//מיקום האירוע
+    const [password, setPassword] = useState(""); // מייל לקוח
+    const [userEmail, setUerEmail] = useState(""); // מייל לקוח
 
     const [orderSummary, setOrderSummary] = useState(null);//מערך המכיל סיכום ההזמנה 
-     const [totalPrice, setTotalPrice] = useState(0);//מחיר כולל 
+    const [totalPrice, setTotalPrice] = useState(0);//מחיר כולל 
         
     const [selectedSalads, setSelectedSalads] = useState([]);//סלטים נבחרים
     const [selectedFirstDishes, setSelectedFirstDishes] = useState([]);//מנות ראשונות נבחרות
@@ -33,7 +35,12 @@ const NewOrders = () => {
     useEffect(() => {   
         const fetchInventoryAll = async () => {
             try {
-                const response = await fetch('http://localhost:3001/inventoryAll');
+                const token = localStorage.getItem("authToken");
+                const response = await fetch('http://localhost:3001/inventoryAll', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 const data = await response.json();
                 setInventoryAll(data);
             } catch (error) {
@@ -146,7 +153,9 @@ const NewOrders = () => {
            user_id: phoneNumber,
            eventOwner: eventOwner,
            guestCount: guestCount,
-           eventDate: eventDate
+           eventDate: eventDate,
+           password: password,
+           email: userEmail
        };
        const orderSummary = {      
            order_menu: closingOrderSummary,   // פריטי הזמנה שנסגרה
@@ -155,10 +164,12 @@ const NewOrders = () => {
            totalPrice: totalPrice            // מחיר כולל
        };       
        try {
+        const token = localStorage.getItem("authToken");
            const userResponse = await fetch('http://localhost:3001/users', {
                method: 'POST',
                headers: {
-                   'Content-Type': 'application/json'
+                   'Content-Type': 'application/json' ,
+                   'Authorization': `Bearer ${token}`
                },
                body: JSON.stringify(users)
            });   
@@ -168,13 +179,14 @@ const NewOrders = () => {
            const userData = await userResponse.json();      // השגת נתוני המשתמש שנוסף
            const userId = userData.id;              // קבלת ה-id של המשתמש החדש
            const updatedOrderSummary = {
-               user_id: userId ,             // השתמש ב-id שנוצר, לא בטלפון
-               ...orderSummary              // שאר פרטי ההזמנה
+               user_id: userId ,               // השתמש ב-id שנוצר, לא בטלפון
+               ...orderSummary               // שאר פרטי ההזמנה
            };
            const orderResponse = await fetch('http://localhost:3001/orders', {
                method: 'POST',
                headers: {
-                   'Content-Type': 'application/json'
+                   'Content-Type': 'application/json', 
+                   'Authorization': `Bearer ${token}`
                },
                body: JSON.stringify(updatedOrderSummary)
            });   
@@ -208,10 +220,12 @@ const NewOrders = () => {
                     <input type="text" className="input-field-NewOrder"  placeholder="שם בעל האירוע" onChange={(e) => setEventOwner(e.target.value)} />
                     <input type="date" className="input-field-NewOrder"   onChange={(e) => setEventDate(e.target.value)} placeholder='תאריך האירוע'/>
                     <input type="number" className="input-field-NewOrder"  placeholder="מספר טלפון" onChange={(e) => setPhoneNumber(e.target.value)} />
+                    <input type="email" className="input-field-NewOrder"  placeholder="כתובת מייל" onChange={(e) => setUerEmail(e.target.value)} />
                 </div>
                 <div dir="rtl" className="input-container">
                     <input type="number" className="input-field-NewOrder"  placeholder="מספר מוזמנים" onChange={(e) => setGuestCount(e.target.value)} />
                     <input list="locushn" type="text" className="input-field-NewOrder" placeholder="מקום האירוע"  onChange={(e) => setIocation(e.target.value)}/>
+                    <input list="locushn" type="password" className="input-field-NewOrder" placeholder=" סיסמא לאזור אישי"  onChange={(e) => setPassword(e.target.value)}/>
                     <datalist id="locushn">
                         <option value="הפנינה">ביתר עלית</option>
                     </datalist>

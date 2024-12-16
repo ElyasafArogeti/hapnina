@@ -118,11 +118,12 @@ const isLoading = Object.values(loadingData).includes(true);
   
   return (
     <>
+
      <NavbarAll />
    <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 4 }}>
    <Grid2 container spacing={3}>
 
- {/* כרטיס כמות משתמש */}
+    {/* כרטיס כמות משתמש */}
    <Grid2 size={3} md={6} lg={4}>
           <Card sx={{ height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
           <CardContent sx={{ textAlign: 'center' }}>
@@ -156,7 +157,7 @@ const isLoading = Object.values(loadingData).includes(true);
   </Card>
 </Grid2>
 
- {/* אירועים לשבוע הקרוב */}
+    {/* אירועים לשבוע הקרוב */}
           <Grid2 size={6} md={12}>
             <Card>
               <CardContent>
@@ -200,7 +201,7 @@ const isLoading = Object.values(loadingData).includes(true);
           </Grid2>
 
  
-  {/* גרף כמות הזמנות חודשיות */}
+    {/* גרף כמות הזמנות חודשיות */}
           <Grid2 size={12} md={12}>
             <Card>
               <CardContent>
@@ -222,7 +223,7 @@ const isLoading = Object.values(loadingData).includes(true);
             </Card>
           </Grid2>
 
-{/* גרף אחוזי עלייה */}
+    {/* גרף אחוזי עלייה */}
       <Grid2 size={12}  md={6} lg={4}>
             <Card sx={{ height: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
               <CardContent sx={{ textAlign: 'center' }}>
@@ -261,9 +262,7 @@ const isLoading = Object.values(loadingData).includes(true);
               </Box>
             </Card>
         </Grid2>
-
-
-          
+ 
         </Grid2>
       </Box>
     </>

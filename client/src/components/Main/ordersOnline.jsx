@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import '../../assets/stylesMain/OrdersOnline.css';
 import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
-import html2pdf from 'html2pdf.js';
-import Grid from '@mui/material/Grid2';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import {  TextField, Button, Typography } from '@mui/material';
-import {  Box } from '@mui/material';
+
+// import html2pdf from 'html2pdf.js';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import  Grid  from '@mui/material/Grid2';
+
+import {  Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography, InputAdornment, IconButton } from '@mui/material';
+import NavbarHome from './NavbarHome';
 const OrdersOnline = () => {
     const Navigate = useNavigate();
 
@@ -29,6 +31,10 @@ const OrdersOnline = () => {
     const [eventDate, setEventDate] = useState(""); // תאריך האירוע
     const [phoneNumber, setPhoneNumber] = useState(""); //מספר האירוע
     const [shippingDate, setShippingDate] = useState(""); //תאריך שליחה
+    const [email, setEmail] = useState(""); // מייל לקוח
+    const [userPassword, setUserPassword] = useState(""); // מייל לקוח
+
+    const [showPassword, setShowPassword] = useState(false);  // משתנה כדי לדעת אם להראות או להסתיר את הסיסמה
 
     const [selectedSalads, setSelectedSalads] = useState([]); //סלטים נבחרים
     const [selectedFirstDishes, setSelectedFirstDishes] = useState([]); //מנות ראשונות נבחרות
@@ -52,8 +58,7 @@ const OrdersOnline = () => {
 
 
     const [openImageDialog, setOpenImageDialog] = useState(false);
-  const [openImageModal, setOpenImageModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
   //--------------------------------------------------------------------------
     useEffect(() => {
         const fetchInventoryAll = async () => {
@@ -72,11 +77,13 @@ const OrdersOnline = () => {
     useEffect(() => {
       if (customerOrderSummary && orderSummary) {
         setIsModalOpen(true); // פותחים את המודל כאשר יש מידע להזמנה
+        console.log(isModalOpen);
       }
     }, [customerOrderSummary, orderSummary]);
   //--------------------------------------------------------------------------
     // חישוב המנה 
     const handleSubmit = async () => {
+  
       const totalFirstDish = Object.values(firstDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
       const totalMainDish  = Object.values(mainDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
     setErrorFirstDish(totalFirstDish);
@@ -182,10 +189,11 @@ const OrdersOnline = () => {
                       eventDate: eventDate,
                       orderMenu: customerOrderSummary,
                       totalPrice: totalPrice,
-                      shippingDate: shippingDate
+                      shippingDate: shippingDate,
+                      email: email,
+                      Password : userPassword
                   }),
               });
-  
               const data = await response.json();
               if (data.message === 'נשלח בהצלחה') {
                   setSendingToManger("true");
@@ -194,20 +202,22 @@ const OrdersOnline = () => {
               console.error('שגיאה בשמירת ההזמנה:', error);
               alert("אירעה שגיאה בשמירת ההזמנה.");
           }
-  } 
-      //--------------------------------------------------------------------------  
-      
+      } 
+//--------------------------------------------------------------------------    
       const [errors, setErrors] = useState({
         phoneNumber: '',
-        guestCount: ''
+        guestCount: '',
+        email:'',
+        Password: ''
     });
   //--------------------------------------------------------------------------
   const openQuantityModal = () => { // כמות המנות שבוחר הלקוח
-       // בדיקת הלקוח בהכנסת פרטים
-    let hasError = false;
+    let hasError = false; // בדיקת הלקוח בהכנסת פרטים
     const newErrors = {
         phoneNumber: '',
-        guestCount: ''
+        guestCount: '',
+        email: '',
+       Password: ''
     };
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {  // בדיקת מספר פלאפון (10 ספרות)
@@ -216,6 +226,12 @@ const OrdersOnline = () => {
     }
     if (guestCount <= 0 || guestCount > 1000) { // בדיקת כמות מוזמנים (לא יותר מ-1000)
         newErrors.guestCount = "כמות המוזמנים לא יכולה להיות פחותה מ-1 או יותר מ-1000.";
+        hasError = true;
+    }
+       // בדיקה עבור המייל
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (email && !emailRegex.test(email)) {  
+        newErrors.email = "כתובת מייל אינה חוקית.";
         hasError = true;
     }
     setErrors(newErrors);
@@ -281,22 +297,30 @@ const OrdersOnline = () => {
 //     html2pdf().from(element).set(options).save();
 //     document.body.removeChild(element);
 // };
+//--------------------------------------------------
 const handleImageClick = (imageSrc) => {
   setSelectedImage(imageSrc);
   setOpenImageDialog(true);
 };
-
+//-------------------------------------------------
 const closeDialog = () => {
   setOpenImageDialog(false);
   setSelectedImage(null);
 };
-
-
-
-
+//----------------------------------------------
+useEffect(() => { // אם המידע קיים, נגלול את הדף לראש
+  if (customerOrderSummary && orderSummary) {
+    window.scrollTo(0, 0); // גלילה לראש העמוד
+  }
+}, [customerOrderSummary, orderSummary]); // פונקציה זו תתבצע בכל פעם שהמידע משתנה
+//----------------------------------------------------
+const handleClickShowPassword = () => { // מתחלף בין הצגת הסיסמה להסתרת הסיסמה
+  setShowPassword((prev) => !prev); 
+};
 
 return (
   <div>
+    <NavbarHome/>
  {onlineOrderMain && (
     <div className="online-order-container">
       <div className="order-header">
@@ -316,7 +340,7 @@ return (
               <td className="menu-section-from">
                 <h2 className="menu-section-title">סלטים [8 לבחירה]</h2>
                 <ul className="menu-list">
-                  {inventoryAll.salads.filter(side => side.is_hidden).map((salad) => (
+                  { inventoryAll.salads.filter(side => side.is_hidden).map((salad) => (
                     <div key={salad.id} className="menu-item-img">
                       <img
                         src={imgArraySalad[salad.id - 1]}
@@ -353,7 +377,7 @@ return (
               <td className="menu-section-from">
                 <h2 className="menu-section-title">מנה ראשונה [3 לבחירה]</h2>
                 <ul className="menu-list">
-                  {inventoryAll.first_courses.filter(side => side.is_hidden).map((firstDish) => (
+                  { inventoryAll.first_courses.filter(side => side.is_hidden).map((firstDish) => (
                     <li key={firstDish.id} className="menu-item">
                       <label className="menu-item-label">
                         <input
@@ -384,7 +408,7 @@ return (
               <td className="menu-section-from">
                 <h2 className="menu-section-title">מנה עיקרית [3 לבחירה]</h2>
                 <ul className="menu-list">
-                  {inventoryAll.main_courses.filter(side => side.is_hidden).map((mainDish) => (
+                  { inventoryAll.main_courses.filter(side => side.is_hidden).map((mainDish) => (
                     <li key={mainDish.id} className="menu-item">
                       <label className="menu-item-label">
                         <input
@@ -473,57 +497,131 @@ return (
     
     {/* -------------------חלון השארת פרטים--------------------------------------------------------- */}
     {loginUser && (
-  <div  className="modal-online">
-    <div className="modal-content-user-order-online">
-    <button className="close-button-user-order-online" onClick={() => closeEditModal()}>X</button>
-      <h1 className="form-title">השאר פרטים כדי שנמשיך</h1>
+      <Modal open={true} onClose={closeEditModal}>
+        <Box dir="rtl"  component="form"  sx={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
+          bgcolor: 'background.paper', borderRadius: 2, padding: 3, width: '80%', maxWidth: 500, boxShadow: 24,
+        }}>
+          <Typography variant="h5" component="h1" align="center" gutterBottom>
+            השאר פרטים כדי שנמשיך
+          </Typography>
 
-      <div className="form-group">
-        <label className="form-label">תאריך האירוע שלכם</label>
-        <input className="form-input date-input" type="date"placeholder="תאריך האירוע שלכם" value={eventDate} required onChange={(e) => setEventDate(e.target.value)}  />
-        {errors.eventDate && <div className="error-message">{errors.eventDate}</div>}
-      </div>
+          <Grid container spacing={3} padding={2}>
+            <Grid size={{ xs: 12, sm: 6 }} >
+              <TextField
+                label="תאריך האירוע שלכם"
+                type="date"
+                fullWidth
+                value={eventDate}
+                onChange={(e) => setEventDate(e.target.value)}
+                error={Boolean(errors.eventDate)}
+                helperText={errors.eventDate}
+                required
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
 
-      <div className="form-group">
-        <label  className="form-label">שם מלא</label>
-        <input className="form-input" type="text"  placeholder="שם מלא" value={eventOwner} required onChange={(e) => setEventOwner(e.target.value)}/>
-      </div>
+            <Grid size={{ xs: 12, sm: 6 }} >
+              <TextField
+                label="שם מלא"
+                type="text"
+                fullWidth
+                value={eventOwner}
+                onChange={(e) => setEventOwner(e.target.value)}
+                required
+              />
+            </Grid>
 
-      <div className="form-group">
-        <label className="form-label">מספר פלאפון</label>
-        <input className="form-input" type="tel"placeholder="מספר פלאפון" value={phoneNumber}  required onChange={(e) => setPhoneNumber(e.target.value)} />
-        {errors.phoneNumber && <div className="error-message">{errors.phoneNumber}</div>}
-      </div>
+            <Grid size={{ xs: 12, sm: 6 }} >
+              <TextField
+                label="מספר פלאפון"
+                type="tel"
+                fullWidth
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                error={Boolean(errors.phoneNumber)}
+                helperText={errors.phoneNumber}
+                required
+              />
+            </Grid>
 
-      <div className="form-group">
-        <label  className="form-label">כמות המוזמנים</label>
-        <input type="number" placeholder="כמות המוזמנים" value={guestCount} required  onChange={(e) => setGuestCount(e.target.value)} className="form-input" />
-       {errors.guestCount && <div className="error-message">{errors.guestCount}</div>}  
-      </div>
+            <Grid size={{ xs: 12, sm: 6 }} >
+              <TextField
+                label="כתובת מייל"
+                type="email"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
+                required
+              />
+            </Grid>
 
-      <button onClick={openQuantityModal} className="submit-button">המשך בהזמנה</button>
-    </div>
-  </div>
-  )}
+            <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+                label=" סיסמא לאזור אישי                   " 
+                type={showPassword ? 'text' : 'password'}   fullWidth
+                value={userPassword}
+                onChange={(e) => setUserPassword(e.target.value)}
+                error={Boolean(errors.Password)}  // הצגת שגיאה אם קיימת
+                helperText={errors.Password}
+                required
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position=" end">
+                            <IconButton
+                                onClick={handleClickShowPassword} >
+                                {showPassword ? <VisibilityOff /> : <Visibility />}  {/* אם הסיסמה מוצגת, מציגים אייקון של עין סגורה, אחרת עין פתוחה */}
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+             />
+             </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }} >
+              <TextField
+                label="כמות המוזמנים"
+                type="number"
+                fullWidth
+                value={guestCount}
+                onChange={(e) => setGuestCount(e.target.value)}
+                error={Boolean(errors.guestCount)}
+                helperText={errors.guestCount}
+                required
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12, sm:12 }} display="flex" justifyContent="center">
+              <Button variant="contained" onClick={openQuantityModal} color="primary">
+                המשך בהזמנה
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+    )};
+
   {/* ---------------- חלון כמות מנות -------------------------------------------------------------------- */}
-  <Dialog open={isQuantityModalOpen} onClose={() => {}}>
+  <Dialog textAlign="center" open={isQuantityModalOpen}>
       <DialogTitle>
-        <Typography variant="h6">! עזור לנו לדעת מה רצונך</Typography>
+        <Typography variant="h6" style={{fontFamily:"-moz-initial"}}>! עזור לנו לדעת מה רצונך</Typography>
       </DialogTitle>
       <DialogContent>
-        <Typography variant="body1">הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת</Typography>
-        <Typography variant="body1">פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה</Typography>
+        <Typography variant="body1" style={{fontFamily:"-moz-initial"}}>הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת</Typography>
+        <Typography variant="body1" style={{fontFamily:"-moz-initial"}}>פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה</Typography>
 
         <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6">מנות ראשונות</Typography>
+          <Typography variant="h6" style={{fontWeight: 'bold'}}>מנות ראשונות</Typography>
           {selectedFirstDishes.map((id) => {
             const dish = inventoryAll.first_courses.find(d => d.id === id);
             return (
-              <Grid container spacing={2} key={id} alignItems="center">
-                <Grid item xs={12} sm={6}>
-                  <Typography>{dish.dish_name}</Typography>
+              <Grid container spacing={1} key={id} alignItems="center">
+                <Grid  size={{ xs: 12, sm: 6 }}>
+                  <Typography style={{fontFamily:"-moz-initial"}}> {dish.dish_name}</Typography>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }} marginTop={1} >
                   <TextField
                     fullWidth
                     type="number"
@@ -534,7 +632,7 @@ return (
                     variant="outlined"
                     size="small"
                   />
-                </Grid>
+                </Grid>        
               </Grid>
             );
           })}
@@ -542,17 +640,16 @@ return (
             <Typography color="error" variant="body2">הזנת: <strong>{errorFirstDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
           )}
         </div>
-
         <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6">מנות עיקריות</Typography>
+          <Typography variant="h6" style={{fontWeight: 'bold'}}>מנות עיקריות</Typography>
           {selectedMainDishes.map((id) => {
             const dish = inventoryAll.main_courses.find(d => d.id === id);
             return (
-              <Grid container spacing={2} key={id} alignItems="center">
-                <Grid item xs={12} sm={6}>
-                  <Typography>{dish.dish_name}</Typography>
+              <Grid container spacing={1} key={id} alignItems="center">  
+              <Grid size={{ xs: 12, sm: 6 }}>
+                  <Typography style={{fontFamily:"-moz-initial"}}>{dish.dish_name}</Typography>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }} marginTop={1}>
                   <TextField
                     fullWidth
                     type="number"
@@ -564,6 +661,7 @@ return (
                     size="small"
                   />
                 </Grid>
+              
               </Grid>
             );
           })}
@@ -571,23 +669,21 @@ return (
             <Typography color="error" variant="body2">הזנת: <strong>{errorMainDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
           )}
         </div>
-
         {errorMessage && (
-          <Typography color="error" variant="body2" style={{ marginTop: '20px' }}>
+          <Typography color="error" variant="body2" style={{ marginTop: '5px' }}>
             {errorMessage}
           </Typography>
         )}
       </DialogContent>
-
-      <DialogActions>
+      <DialogActions >
         <Button onClick={handleSubmit} color="primary" variant="contained">
           המשך להצעת מחיר
         </Button>
       </DialogActions>
     </Dialog>
     
-      {/* //-----------------------------סיכום הצעת מחיר------------------------------------------------ */}
 
+{/* //-----------------------------סיכום הצעת מחיר------------------------------------------------ */}
  {customerOrderSummary && orderSummary && (
   <div className="kitchen-order-container"> <br />
   <div className='kitchen-order-header'>
@@ -627,35 +723,29 @@ return (
     <button className="order-summary-button" onClick={addOrdersOnline}>שליחת ההזמנה</button>
     <br /><br />
   </div>
-
 )}
+
+
+
 
     {/* -------------------הודעת ברכות להרשמה----------------------------------------------------- */}
     {sendingToManger && (
       <div className='modal-online-success'>
     <div className="modal-content-user-order-online-success">
-      <button  className="close-button-user-order-online-success" onClick={() => { Navigate('/'); }} > סגור</button>       
+      <button  className="close-button-user-order-online-success" onClick={() => { Navigate('/')}} >סגור</button>       
         <Confetti width={window.innerWidth} height={window.innerHeight} />
         <div>
           <br />
           <h1>ברכת מזל טוב   - {eventOwner}</h1>
         <h1 className="success-message">הזמנתך נשלחה  בהצלחה </h1>
         <h3> ניצור איתך קשר בהקדם להמשך התהליך</h3>
+        <h3>לאחר אישור ההזמנה תקבלו תגובה במייל ותוכלו לראות את ההזמנות שלכם </h3>
         <h3> שלום ותודה קיינטרינג הפנינה </h3>
         <br />
-        {/* <div className='receipt-details'> 
-          <p>פירוט ההזמנה שלכם</p>
-          <h3>שם בעל האירוע: {eventOwner}</h3>
-          <h3>נקבע אירוע בתאריך: {new Date(eventDate).toLocaleDateString('he-IL')}</h3>
-          <h4>באולמי הפנינה - רחוב מפעל השס 1 ביתר עלית</h4>
-          <h4>כמות המוזמנים: {guestCount}</h4>
-          <hr />
-          <button className='download-button-receipt' onClick={handleDownloadReceipt}>הורד קבלה</button>
-        </div> */}
-     </div>
+      </div>
+   </div>
   </div>
- </div>
-)}
+  )}
    </div>
    
  )}

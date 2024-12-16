@@ -2,7 +2,9 @@ import React from 'react';
 import { Box, Typography, Container, IconButton } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { FaWaze } from "react-icons/fa";
-import {BsTelephoneOutbound, BsPersonCircle} from "react-icons/bs";
+import { Link  } from 'react-router-dom';
+import {BsTelephoneOutbound} from "react-icons/bs";
+import logo from "../../assets/imgs/הלוגו.png";
 const Footer = () => {
   return (
     <Box
@@ -14,19 +16,30 @@ const Footer = () => {
         marginTop: '2rem', // רווח מלמעלה
       }}
     >
-      <Container maxWidth="lg">
-        {/* לוגו */}
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 'bold',
-            color: '#FFD700', // זהב
-            marginBottom: '2rem',
-          }}
-        >
-          קינטרינג הפנינה 
-        </Typography>
 
+      <Container maxWidth="lg">
+       
+      <Box display="flex" alignItems="center" justifyContent={"center"} marginTop={"auto"}>   
+        <Link component={Link} to="/" sx={{ textDecoration: 'none' }}>
+          <Box 
+            component="img" 
+            src={logo} 
+            alt="אולם האירועים הפנינה"
+            sx={{
+              width: { xs: '140px', sm: '200px', md: '200px' }, 
+              height: { xs: '100px', sm: '200px', md: '150px' },
+              position: 'relative',
+              maxHeight: '150px', 
+              borderRadius: '8px', 
+              marginTop: 'auto',
+              cursor: 'pointer',
+              objectFit: 'cover',
+              boxShadow: '0 5px 20px rgba(0, 0, 0, 3)',
+            }} 
+          />
+        </Link> 
+      </Box>
+        <br/><br/>
         <Typography variant="body1" sx={{ fontSize: '1rem', marginBottom: '1rem' }}>
           אלום אירועים הפנינה רחוב מפעל השס 1 ביתר עלית 
         </Typography>

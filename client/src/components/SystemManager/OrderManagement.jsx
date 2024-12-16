@@ -15,7 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Snackbar, Alert } from '@mui/material';
-
+import  {ShoppingCart} from '@mui/icons-material';
 const OrderManagement = () => {
   const navigate = useNavigate();
 
@@ -297,7 +297,7 @@ const handleSearch = (e) => {
   return (
     <div>
       <NavbarAll /><br />
-      <h1>ניהול הזמנות</h1>
+      <h1>ניהול הזמנות    <ShoppingCart/> </h1>
       <br />
 
       {/* תיבת חיפוש */}

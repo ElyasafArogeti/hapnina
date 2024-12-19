@@ -71,7 +71,6 @@ const OnlineOrdersSystem = () => {
           }
         });
         if (deleteResponse.ok) {
-          alert("הזמנה אושרה ונכנסה למערכת!");
           setOrdersOnline((prevOrders) => prevOrders.filter(order => order.id !== orderId));
           setEditWindow(null); // סגור את חלון האישור
         } else {

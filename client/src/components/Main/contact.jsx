@@ -29,7 +29,7 @@ const Contact = () => {
       const response = await axios.post('http://localhost:3001/contact', formData);
       if (response.status === 200) {
         setFormData({ fullName: '', phone: '', message: '' });
-        setSnackbarMessage('ההודעה נשלחה בהצלחה!');
+        setSnackbarMessage('!ההודעה נשלחה בהצלחה');
         setSnackbarSeverity('success');
       }
     } catch (error) {
@@ -216,12 +216,12 @@ const Contact = () => {
         </Grid>
 
 
-       {/* הודעה שליחה */}
+     {/* הודעה שליחה */}
         <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // מיקום אמצעי למעלה
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}  // מיקום אמצעי למעלה
       >
         <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}

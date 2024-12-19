@@ -23,7 +23,6 @@ const OrderDetails = () => {
         <p>תאריך האירוע: {new Date(event_date).toLocaleDateString()}</p>
         <p>מספר אורחים: {guest_count}</p>
         <p>תאריך שליחה: {new Date(shipping_date).toLocaleDateString()}</p>
-        <p>בשעה: {new Date(shipping_date).toLocaleTimeString()}</p>
       </div>
       <hr />
           

@@ -20,9 +20,7 @@ const ContactManager = () => {
             Authorization: `Bearer ${token}`,
           }
         });
-        setMessages(response.data); 
-        console.log(response.data);
-        
+        setMessages(response.data);  
       } catch (error) {
         console.error('שגיאה בהבאת ההודעות:', error);
       }
@@ -67,21 +65,21 @@ const ContactManager = () => {
       <TableContainer component={Paper} dir='rtl'>
         <Table sx={{ minWidth: 650 }} aria-label="messages table" >
           <TableHead>
-            <TableRow>
-              <TableCell>שם מלא</TableCell>
-              <TableCell>אימייל</TableCell>
-              <TableCell>הודעה</TableCell>
-              <TableCell>תאריך ושעה</TableCell>
-              <TableCell>פעולה</TableCell>
+            <TableRow >
+              <TableCell sx={{ textAlign: 'right' }}>שם מלא</TableCell>
+              <TableCell sx={{ textAlign: 'right' }}>פלאפון</TableCell>
+              <TableCell sx={{ textAlign: 'center' }}>הודעה</TableCell>
+              <TableCell sx={{ textAlign: 'right' }}>תאריך ושעה</TableCell>
+              <TableCell sx={{ textAlign: 'right' }}>פעולה</TableCell>
             </TableRow>
           </TableHead>
           <TableBody >
             {messages.map((message) => (
               <TableRow key={message.id}>
-                <TableCell>{message.full_name}</TableCell>
-                <TableCell>{message.email}</TableCell>
-                <TableCell>{message.message}</TableCell>
-                <TableCell>{new Date(message.created_at).toLocaleString()}</TableCell>
+                <TableCell sx={{ textAlign: 'right' }}>{message.full_name}</TableCell>
+                <TableCell sx={{ textAlign: 'right' }}>{message.phone}</TableCell>
+                <TableCell sx={{ textAlign: 'right' }}>{message.message}</TableCell>
+                <TableCell sx={{ textAlign: 'right' }}>{new Date(message.created_at).toLocaleString()}</TableCell>
                 <TableCell>
                   <IconButton 
                     color="error" 

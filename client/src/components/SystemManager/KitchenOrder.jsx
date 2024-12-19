@@ -14,9 +14,12 @@ import { TbArrowBadgeDown } from "react-icons/tb";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { MdPeopleAlt } from "react-icons/md";
 
+import { Snackbar, Alert } from '@mui/material';
+
+import { CircularProgress } from '@mui/material';
 const KitchenOrder = () => {
   const location = useLocation();
-  const { orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber } = location.state || {};
+  const { orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber ,email} = location.state || {};
   const name = "ארוגטי";
    const EventDate = new Date(eventDate).toLocaleDateString('he-IL');
  const [parsedOrderMenu,setParsedOrderMenu]= useState( orderSummary[0] && JSON.parse(orderSummary[0].order_menu));// משתנה התפריט
@@ -25,6 +28,8 @@ const KitchenOrder = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // מודול עריכת מנה 
    const [dishToDelete, setDishToDelete] = useState(null);// מודול מחיקת מנה
   const [editAddDish,setEditAddDish] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const [newDish, setNewDish] = useState({ // מנה החדשה
     dish_name: "",
@@ -42,6 +47,9 @@ const KitchenOrder = () => {
   });
   const token = localStorage.getItem('authToken');
 
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [severity, setSeverity] = useState('success'); // ערך ברירת מחד
  // קריאה לשרת לקבלת התפריט הכללי
   useEffect(() => {
     const fetchAllDishes = async () => {
@@ -251,20 +259,361 @@ const handleShowDeleteConfirmation = (id) => {
     html2pdf().from(content).set(options).save();
   };
 
+
+
+
 // שליחה במייל
   const handleShareEmail = () => {
-    handleCreatePDF(); // יצירת PDF לפני שליחה
+    handleCreatePDF(true); // יצירת לפני שליחה
     const subject = `הזמנה עבור ${name}`;
     const body = `תאריך האירוע: ${EventDate}\nמספר אורחים: ${guestCount}\nפרטי ההזמנה (הקובץ מצורף);`;
     window.location.href = `mailto:elyasaf852@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
+
+
+
+
+  const generateCustomerOrderHTML = () => {
+    const orderDetails = `
+<html>
+  <head>
+    <style>
+     body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  display: flex;
+  justify-content: center; /* למרכז את כל התוכן בעמוד */
+  align-items: center; /* למרכז את התוכן מבחינת גובה */
+  height: 100vh; /* חשוב כדי שימשוך את כל הגובה */
+}
+
+      .container {
+        max-width: 100%;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        position: relative;
+      }
+
+      .header {
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px 8px 0 0;
+        position: relative;
+      }
+
+      .header img {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        height: 60px; /* גודל הלוגו */
+        cursor: pointer;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 32px;
+      }
+
+
+      .order-info {
+        display: flex;
+        flex-wrap: wrap; /* תומך בשורות נפרדות */
+        justify-content: center; /* למרכז את כל התוכן */
+        font-size: 18px;
+        line-height: 1.6;
+      }
+      
+      .order-info .row {
+        width: 48%; /* שורות עם רווח קטן ביניהם */
+        text-align: center;
+        margin: 10px 0;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px;
+        text-align: right;
+        border: 1px solid #ddd;
+      }
+
+      .table th {
+        background-color: #f2f2f2;
+        text-align: center;
+        font-size: 20px;
+        color: #333;
+        border-bottom: 2px solid #4CAF50;
+      }
+
+      .table td {
+        font-size: 16px;
+      }
+
+      .section-title {
+        font-size: 24px;
+        text-align: center;
+        margin-top: 40px;
+        color: #333;
+      }
+
+      .footer {
+        margin-top: 40px;
+        font-size: 14px;
+        text-align: center;
+        color: #888;
+      }
+
+      .footer a {
+        
+        text-decoration: none;
+        color: #4CAF50; 
+        
+      }
+         .footer a:hover {
+            text-decoration: underline;
+            }
+
+      .footer .phone {
+        margin-top: 10px;
+        font-size: 16px;
+      }
+
+      .button-link {
+        display: inline-block;
+         background-color: black;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+        font-size: 16px;
+        border: 1px solid #4CAF50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>הזמנתך מקייטרינג הפנינה</h1>
+      </div>
+</div>
+  
+    <div class="order-info">
+   <div class="row">
+        <p><strong>סה"כ מחיר:</strong> ₪ ${totalPrice || 'לא זמין'}</p>
+      </div>
+  <div class="row">
+        <p><strong>מספר אורחים:</strong> ${guestCount}</p>
+      </div>
+      <div class="row">
+        <p><strong>תאריך האירוע:</strong> ${EventDate}</p>
+      </div>
+      <div class="row">
+        <p><strong>שם בעל האירוע:</strong> ${eventOwner || 'לא זמין'}</p>
+      </div>
+    </div>
+
+      <div class="section-title">
+        <h3>סיכום פרטי ההזמנה שלך</h3>
+      </div>
+
+      ${Object.keys(parsedOrderMenu).map((category) => {
+        return `
+        <h4 style="font-size: 22px; text-align: center;">${category === 'salads' ? 'סלטים' :
+          category === 'first_courses' ? 'מנות ראשונות' :
+          category === 'main_courses' ? 'מנות עיקריות' : 'תוספות'}</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>שם המנה</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${parsedOrderMenu[category].map((item) => {
+              return `
+                <tr>
+                  <td>${item.dish_name}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+        `;
+      }).join('')}
+
+      <div class="footer">
+        <p>!!! תודה שבחרתם בקייטרינג הפנינה</p>
+      <p>
+  <a href="mailto:ely6600200@gmail.com">ely6600200@gmail.com</a> לשאלות או בירורים, אנא פנה אלינו במייל
+</p>
+
+        <p class="phone">לפרטים נוספים, חייגו: <strong>054-6600-200</strong></p>
+        <a href="http://localhost:3000/PersonalAreaLogin" class="button-link">
+          לכניסה לאזור האישי שלכם לחצו כאן
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
+
+    `;
+
+    return orderDetails;
+  };
+
+  //------שליחת מייל למטבח עם הקובץ ---------------------------------
+  const handleSendOrderToKitchenEmail = async () => {
+    setLoading(true)
+    const options = {
+      margin: 10,
+      filename: `${name}_Order_Kitchen.pdf`,
+      html2canvas: { scale: 4 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+  
+    // Define the base content structure
+    let content = `
+      <h2 style="text-align: center; font-weight: bold;">ארוגטי <br/> הזמנה למטבח</h2>
+      <div style="font-size: 20px; text-align: center; font-weight: bold;">תאריך האירוע: ${EventDate}</div>
+    `;
+  
+    // Render Menu content dynamically
+    const renderMenu = (category) => {
+      let categoryContent = `
+        <h4 style="text-align: center;">${category === 'salads' ? 'סלטים' :
+          category === 'first_courses' ? 'מנות ראשונות' :
+          category === 'main_courses' ? 'מנות עיקריות' : 'תוספות'}</h4>
+        <table dir="rtl" style="width: 100%; border: 1px solid black; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">שם המנה</th>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">משקל כולל</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+  
+      parsedOrderMenu[category].forEach(item => {
+        categoryContent += `
+          <tr>
+            <td style="border: 1px solid black; padding: 8px; text-align: center;">${item.dish_name}</td>
+            <td style="border: 1px solid black; padding: 8px; text-align: center;">
+              ${item.totalWeight > 1000 ? `${(item.totalWeight / 1000).toFixed(2)} קילו` : `${parseInt(item.totalWeight)} יחידות`}
+            </td>
+          </tr>
+        `;
+      });
+      categoryContent += '</tbody></table><br />';
+      return categoryContent;
+    };
+  
+   
+    if (parsedOrderMenu) {
+      Object.keys(parsedOrderMenu).forEach(category => {
+        content += renderMenu(category);
+      });
+    }
+  
+
+    const pdfBlob = await new Promise((resolve, reject) => {
+      html2pdf()
+        .from(content)
+        .set(options)
+        .toPdf()
+        .get('pdf')
+        .then((pdf) => {
+          const blob = pdf.output('blob');
+          resolve(blob);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+    const formData = new FormData();
+    formData.append('file', pdfBlob, `${name}_Order_Kitchen.pdf`);
+    formData.append('recipient', 'elyasaf852@gmail.com'); 
+  
+    try {
+      // Send the PDF to the server
+      const response = await axios.post('http://localhost:3001/sendOrderToKitchen', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response.status === 200) {
+         setLoading(false)
+        setSnackbarMessage('ההזמנה נשלחה בהצלחה למטבח !!');
+        setSeverity('success');
+       
+      } else {
+        setSnackbarMessage('שגיאה בשליחת ההזמנה למטבח');
+        setSeverity('error');
+      }
+      setOpenSnackbar(true);
+    } catch (error) {
+      console.error('Error sending order to kitchen email:', error);
+      setSnackbarMessage('שגיאה בשליחת ההזמנה למטבח');
+      setSeverity('error');
+      setOpenSnackbar(true);
+    }
+  };
+  
+  
+  
+// ------------שליחת מייל ללקוח -----------------------------------------------------------
+  const handleSendOrderToCustomerEmail = async () => {
+    const orderHTML = generateCustomerOrderHTML();  // יצירת ה-HTML של ההזמנה
+    setLoading(true)
+    try {
+      const response = await axios.post('http://localhost:3001/sendOrderToCustomer', {
+        customerEmail: email,
+        orderHTML: orderHTML,
+      });
+        console.log(response.data);
+        
+      if (response.status === 200) {
+         setLoading(false)
+        setSnackbarMessage('ההזמנה נשלחה בהצלחה למייל של הלקוח  !!');
+        setSeverity('success'); 
+      } else {
+        setSnackbarMessage('שגיאה בשליחת ההזמנה למייל של הלקוח');
+        setSeverity('error');
+      }
+      setOpenSnackbar(true);
+    } catch (error) {
+      console.error('Error sending order to customer email:', error);
+      setSnackbarMessage('שגיאה בשליחת ההזמנה למייל של הלקוח');
+      setSeverity('error');
+      setOpenSnackbar(true);
+    }
+  };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+
+
+
+
 // -----------------------------------------------------------------------
 // שליחה בווטסאפ
   const handleShareWhatsApp = () => {
     setModalOpenOfWhatsApp(true);
   };
  const phoneNumbers = [
-    '  972546600200 אבא', // דוגמה, הכנס מספרים אמיתיים
+    '9720546600200 אבא', // דוגמה, הכנס מספרים אמיתיים
     '972553069666 מטבח', 
     '972523456789 נריה',
   ];
@@ -274,11 +623,28 @@ const handleShowDeleteConfirmation = (id) => {
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setModalOpenOfWhatsApp(false);  // סגור את המודאל אחרי שליחה
   };
+  
   //-------------------------------------------------------------------------
   const handleCreatePrint = () => {
     window.print();
   }
- 
+
+  const loadingStyle = {
+    position: 'fixed', 
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    fontSize: '18px',  
+    zIndex: 9999, 
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', 
+    width: '100vw',
+    height: '100vh', 
+  };
+
 
   return (
     <div className="kitchen-order-container" dir="rtl"> 
@@ -396,12 +762,24 @@ const handleShowDeleteConfirmation = (id) => {
         <label className='kitchen-order-label-button'><TbArrowBadgeDown/> מטבח <TbArrowBadgeDown/></label>
         <br />
         <div className="kitchen-order-actions">
-        <button className="kitchen-order-action-button" onClick={() => handleShareEmail()} title='שליחה למטבח'><BiLogoGmail /> שלח במייל</button>
+        <button className="kitchen-order-action-button" onClick={() => handleSendOrderToKitchenEmail()} title='שליחה למטבח'><BiLogoGmail />  מייל למטבח</button>
         <button className="kitchen-order-action-button" onClick={() => handleShareWhatsApp()}title='שליחה בוואצאפ למטבח'><BsWhatsapp /> שלח וואצאפ</button>
         <button className="kitchen-order-action-button" onClick={() => handleCreatePDF(true)} title='הורד סיכום למטבח'><BsFiletypePdf /> הורד סיכום מטבח</button>
         </div>
+        <br/>
+         <label className='kitchen-order-label-button'><TbArrowBadgeDown/> ללקוח <TbArrowBadgeDown/></label>
+           <br />
+        <div className="kitchen-order-actions">
+         <button className="kitchen-order-action-button" onClick={() => handleSendOrderToCustomerEmail()} title='שליחה לבעל ההזמנה '><BiLogoGmail />   שליחת הזמנה ללקוח</button>
+        </div>
 
- 
+
+        {loading && (
+        <div style={loadingStyle}>
+          <CircularProgress />
+          <p>טוען...</p>
+        </div>
+      )}
 
 
  {/* מודל עריכה */}
@@ -464,6 +842,20 @@ const handleShowDeleteConfirmation = (id) => {
     </div>
   </div>
   )}
+
+
+   <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+
+
 </div>
   );
 };

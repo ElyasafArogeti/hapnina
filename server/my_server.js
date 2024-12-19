@@ -14,6 +14,8 @@ app.use(cors());
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config(); // בתחילת הקובץ
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
 
@@ -337,12 +339,14 @@ app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
     const [user_name] = await connection.query("SELECT name FROM users WHERE id = ?", [id]);
     const [phone] = await connection.query("SELECT phone FROM users WHERE id = ?", [id]);
     const [totalPrice] = await connection.query("SELECT totalPrice FROM orders WHERE user_id = ?", [id]);
+    const [email] = await connection.query("SELECT email FROM users WHERE id = ?", [id]);
     if (orders_user.length > 0 && user_name.length > 0) {
       res.json({
         orders_user: orders_user,  // כל ההזמנות של המשתמש
         user_name: user_name[0].name,  // שם המשתמש
         phone_number: phone[0].phone,
-        totalPrice: totalPrice[0].totalPrice
+        totalPrice: totalPrice[0].totalPrice,
+        email: email[0].email
       });
     } else {
       res.status(404).json({ message: "לא נמצאו הזמנות או משתמש עם מזהה זה" });
@@ -607,6 +611,10 @@ app.put('/KitchenOrder/updateDish',authenticateToken, async (req, res) => {
 
 
 
+
+
+
+
             /*UserManagement  ניהול משתמשים  */
 //------------------------------------------------------------------------------
 app.get('/UserManagement', authenticateToken, async  (req, res) => {
@@ -654,7 +662,24 @@ app.put('/UserManagement/:id', authenticateToken, async (req, res) => {
     res.status(500).send("שגיאה בעדכון נתונים");
   }
 });
-
+//---------------מחיקת משתמש--------------------------------------------------
+app.delete('/UserManagement/DeleteUser/:userId', authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    // חיפוש המשתמש בטבלת המשתמשים
+    const [userResult] = await connection.query('SELECT * FROM users WHERE id = ?', [userId]);
+    if (userResult.length === 0) {
+      return res.status(404).json({ message: "המשתמש לא נמצא" });
+    }
+    // מחיקת המשתמש מתוך טבלת המשתמשים
+    await connection.query('DELETE FROM users WHERE id = ?', [userId]);
+    // החזרת תשובה חיובית אם המשתמש נמחק בהצלחה
+    res.status(200).json({ message: 'המשתמש נמחק בהצלחה' });
+  } catch (err) {
+    console.error("שגיאה במחיקת המשתמש:", err);
+    res.status(500).send("שגיאה בשרת בעת מחיקת המשתמש");
+  }
+});
 
 
 
@@ -728,8 +753,6 @@ app.delete('/OrderManagement/DeleteOrder/:userId', authenticateToken,async (req,
     }
     // מחיקת ההזמנה מתוך טבלת ההזמנות
     await connection.query('DELETE FROM orders WHERE user_id = ? ', [userId]);
-    // מחיקת המשתמש מתוך טבלת המשתמשים
-    await connection.query('DELETE FROM users WHERE id = ?', [userId]);
     res.status(200).json({ message: 'ההזמנה והמשתמש נמחקו בהצלחה' });
   } catch (err) {
     console.error("שגיאה במחיקת ההזמנה או המשתמש:", err);
@@ -854,9 +877,10 @@ app.get('/events-pending',authenticateToken, async (req, res) => {
 
 
 
+
        /*Contact , יצירת קשר עם המנהל  */
 //---------------------------------------------------------------------------
-app.post('/contact',authenticateToken, async (req, res) => {
+app.post('/contact', async (req, res) => {
   const { fullName, phone, message } = req.body;
 
   if (!fullName || !phone || !message) {  // בדיקת אם כל השדות מלאים
@@ -891,7 +915,177 @@ app.delete('/deleteMessage/:id',authenticateToken, async (req, res) => {
     res.status(500).send(err);
   }
 });
-//---------------------------------------------------------------------------
+
+
+
+
+
+
+//------------שיחזור סיסמא ללקוח בכניסה---------------------------------------------------------------
+// שלב 1: שליחת קוד אימות למייל
+app.post("/api/forgotPassword", async (req, res) => {
+  const { email } = req.body;
+  try { // חיפוש משתמש לפי המייל
+    const [user] = await connection.execute("SELECT * FROM users WHERE email = ?", [email]);
+     if (user.length === 0) {      // אם לא נמצא משתמש
+      return res.status(404).json({ success: false, message: "משתמש לא נמצא." });
+    }
+    // יצירת קוד אימות אקראי
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+    // עדכון קוד האימות במסד הנתונים
+    await connection.execute("UPDATE users SET password = ? WHERE email = ?", [verificationCode, email]);
+    // שליחת המייל עם הקוד
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "hpnina6600200@gmail.com",  // כתובת המייל שלך
+        pass: "ycxt oeyj ojha xvyt",   
+      },
+    });
+    const mailOptions = {
+      from: "hpnina6600200@gmail.com",  // כתובת המייל ששולחת
+      to: email,       // המייל של המשתמש
+      subject: "קוד לשחזור סיסמה",
+      text: `הקוד לשחזור הסיסמה שלך הוא: ${verificationCode}`,
+    };
+    // שליחת המייל
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: "בעיה בשליחת המייל." });
+      }
+        res.json({ success: true, message: "קוד לשחזור נשלח בהצלחה." });
+    });
+  } catch (err) {
+    console.error(err);  // הדפסת שגיאה לקונסול אם יש בעיות
+    return res.status(500).json({ success: false, message: "שגיאה בתהליך." });
+  }});
+//--------------------------------------------------------------------------------
+// שלב 2: אימות קוד לשחזור סיסמה
+app.post("/api/verifyCode", async (req, res) => {
+  const { email, verificationCode } = req.body;
+  try {
+    const [verifyCodeUser] = await connection.query("SELECT password FROM users WHERE email = ?", [email]);
+    // אם לא נמצא משתמש עם המייל, יש להחזיר שגיאה
+    if (verifyCodeUser.length === 0) {
+      return res.status(400).json({ success: false, message: "קוד אימות לא תקין" });
+    }
+    // בדיקת קוד האימות
+    if (verifyCodeUser[0].password === verificationCode) {
+      return res.status(200).json({ success: true, message: "קוד אימות תקין" });
+    } else {
+      return res.status(400).json({ success: false, message: "קוד אימות לא תקין" });
+    }
+  } catch (err) {
+    console.error("Error during code verification:", err);
+    return res.status(500).json({ success: false, message: "שגיאה בתהליך האימות." });
+  }
+});
+
+//-------------שלב 3 סיסמה חדשה ללקוח --------------------------------------------------
+app.post("/api/changePassword", async (req, res) => {
+  const { email, newPassword } = req.body;
+  try {// חיפוש המשתמש לפי המייל
+    const [results] = await connection.query("SELECT * FROM users WHERE email = ?", [email]);
+    if (results.length === 0) { // אם לא נמצא משתמש עם המייל
+      return res.status(400).json({ success: false, message: "המשתמש לא נמצא." });
+    }
+    // הצפנת הסיסמה החדשה
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // עדכון הסיסמה החדשה
+    await connection.query("UPDATE users SET Password = ? WHERE email = ?", [hashedPassword, email]);
+    // שליחת תגובה עם הצלחה
+    res.json({ success: true, message: "הסיסמה שונתה בהצלחה." });
+  } catch (err) {
+    console.error(err);  
+    return res.status(500).json({ success: false, message: "שגיאה בעדכון הסיסמה." });
+  }
+});
+//-----------------------------------------------------------------------------
+
+
+
+
+
+        /* מיילים ללקוח והמטבח */
+//--------------מייל ללקוח -------------------------------------------------------------        
+const sendOrderEmailToCustomer = async (orderHTML, customerEmail) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',  // אם אתה משתמש ב-Gmail, או סוכן מייל אחר
+    auth: {
+      user: "hpnina6600200@gmail.com",  // כתובת המייל שלך
+      pass: "ycxt oeyj ojha xvyt",    // סיסמה או App Password
+    }
+  });
+  // הגדרת פרטי המייל
+  const mailOptions = {
+    user: "hpnina6600200@gmail.com",
+    to: customerEmail,
+    subject: 'סיכום הזמנתך מקייטרינג הפנינה',
+    html: orderHTML,
+    attachments: [
+      {
+        filename: 'logo.png',
+        path: 'http://localhost:3000/static/media/%D7%94%D7%9C%D7%95%D7%92%D7%95.04b11a043e65a6ae2935.png',  // או כתובת URL אם זה משרת ציבורי
+        cid: 'logo' 
+      },
+    ],
+  };
+  // שליחה של המייל
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Mail sent: ' + info.response);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};
+// פונקציה לשליחת הזמנה למייל של הלקוח
+app.post('/sendOrderToCustomer', (req, res) => {
+  const { customerEmail, orderHTML } = req.body; 
+  sendOrderEmailToCustomer(orderHTML, customerEmail)
+    .then(() => {
+      res.status(200).send('הזמנה נשלחה בהצלחה!');
+    })
+    .catch((error) => {
+      res.status(500).send('שגיאה בשליחת המייל.');
+    });
+});
+
+//-----------------מייל למטבח ----------------------------------------------
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });  // הגדרת מקלט הקבצים (בכדי לשמור את הקבצים שהלקוח שולח)
+const transporter = nodemailer.createTransport({
+  service: 'gmail', 
+  auth: {
+    user: "hpnina6600200@gmail.com",  
+    pass: "ycxt oeyj ojha xvyt",    
+  }
+});
+
+app.post('/sendOrderToKitchen', upload.single('file'), (req, res) => {
+  const file = req.file;
+  const recipient = req.body.recipient;
+
+ 
+  const mailOptions = {
+    from: 'hpnina6600200@gmail.com',
+    to: recipient,
+    subject: 'סיכום הזמנה למטבח',
+    text: 'הזמנה מצורפת כקובץ PDF.',
+    attachments: [
+      {
+        filename: file.originalname,
+        path: file.path,
+      },
+    ],
+  };
+  // שליחת המייל
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send('Error sending email');
+    }
+    res.status(200).send('Order sent to kitchen successfully');
+  });
+});
 
 
 
@@ -899,10 +1093,7 @@ app.delete('/deleteMessage/:id',authenticateToken, async (req, res) => {
 
 
 
-
-
-
-
+//--------------------------------------------------------------------
   app.listen(3001, () => {
     console.log("Server started on port 3001");
   });

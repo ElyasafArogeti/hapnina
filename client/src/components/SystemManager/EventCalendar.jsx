@@ -114,7 +114,8 @@ function EventCalendar() {
       if (!response.ok) {
         throw new Error('שגיאה ברשת');
       }
-      const data = await response.json();
+      const data = await response.json(); 
+      
       if (data.orders_user && data.orders_user.length > 0) {
         Navigate('/KitchenOrder', {
           state: {
@@ -123,7 +124,8 @@ function EventCalendar() {
             eventDate: data.orders_user[0].event_date,
             phoneNumber: data.phone_number,
             guestCount: data.orders_user[0].guest_count,
-            totalPrice: data.totalPrice
+            totalPrice: data.totalPrice,
+            email: data.email
           }
         });
       } else {

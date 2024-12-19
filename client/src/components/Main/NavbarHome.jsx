@@ -76,7 +76,7 @@ const NavbarHome = () => {
               target="_blank" sx={{color: "#FFF",transition: "color 0.3s", "&:hover": {color: "#FFD700" }}} 
             > <FaWaze /> 
             </IconButton>
-            <IconButton href="tel:+972548520195" sx={{color: "#FFF",transition: "color 0.3s", "&:hover": {color: "#FFD700" }}}>
+            <IconButton href="tel:+972546600200" sx={{color: "#FFF",transition: "color 0.3s", "&:hover": {color: "#FFD700" }}}>
               <BsTelephoneOutbound />
             </IconButton>
             <IconButton href="https://wa.me/+972546600200" target="_blank" sx={{color: "#FFF",transition: "color 0.3s",  "&:hover": {color: "#FFD700" }}}>

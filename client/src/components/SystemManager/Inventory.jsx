@@ -7,6 +7,7 @@ import { Box, Typography, Button, Modal, TextField, Table, TableHead, TableRow, 
 import { IoArrowBackSharp } from "react-icons/io5";
 import { MdAssignmentAdd } from "react-icons/md";
 import Grid from '@mui/material/Grid2';
+import { fontSize } from '@mui/system';
 const Inventory = () => {
     const [inventoryAll, setInventoryAll] = useState({
         first_courses: [],
@@ -103,7 +104,7 @@ const Inventory = () => {
         } catch (error) {
             console.error('Failed to delete dish:', error);
         } 
-          }
+     }
     };
 
     // פתיחת חלון עריכה
@@ -215,40 +216,91 @@ const hideDish = async (id, category) => {
       <NavbarAll />
       <Box sx={{ padding: 2 }} >
           {selectedCategory === null ? (
-              <Grid container spacing={2} maxWidth='1200px' margin='0 auto'>
-                  <Grid size={{ xs: 12, sm: 3 }}>
-                      <Box
-                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
-                          onClick={() => setSelectedCategory("side_dishes")}
-                      >
-                          <Typography variant="h6">תוספות</Typography>
-                      </Box>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 3}}>
-                      <Box
-                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
-                          onClick={() => setSelectedCategory("main_courses")}
-                      >
-                          <Typography variant="h6">מנות עיקריות</Typography>
-                      </Box>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 3 }}>
-                      <Box
-                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
-                          onClick={() => setSelectedCategory("first_courses")}
-                      >
-                          <Typography variant="h6">מנות ראשונות</Typography>
-                      </Box>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 3 }}>
-                      <Box
-                          sx={{ textAlign: 'center', padding: 2, border: '1px solid #ccc', cursor: 'pointer' }}
-                          onClick={() => setSelectedCategory("salads")}
-                      >
-                          <Typography variant="h6">סלטים</Typography>
-                      </Box>
-                  </Grid>
-              </Grid>
+             <Grid container spacing={2} maxWidth="1200px" margin="0 auto">
+             <Grid size={{ xs: 12, sm: 3 }}>
+               <Box
+                 sx={{
+                   textAlign: 'center',
+                   padding: 2,
+                   border: '1px solid #ccc',
+                   cursor: 'pointer',
+                   objectFit:'cover',
+                   backgroundImage: 'url("https://www.yad-mordechai.co.il/Uploads//Recipes/From%20Old%20Web/tariaki_rimon.jpg")',
+                   backgroundSize: 'cover', 
+                   backgroundPosition: 'center', 
+                   height: 200,  height: 200,
+                   display: 'flex', 
+                   alignItems: 'center', 
+                   justifyContent: 'center',   borderRadius: '10px'
+                 }}
+                 onClick={() => setSelectedCategory('side_dishes')}
+                >
+                <Typography variant="h6"  sx={{fontSize: 35,  fontWeight: 'bold',  color: 'white',  }} >תוספות</Typography>  
+               </Box>          
+             </Grid>
+           
+             <Grid size={{ xs: 12, sm: 3 }}>
+               <Box
+                 sx={{
+                   textAlign: 'center',
+                   padding: 2, objectFit:'cover',
+                   border: '1px solid #ccc',
+                   cursor: 'pointer',
+                   backgroundImage: 'url("https://ynet-pic1.yit.co.il/cdn-cgi/image/f=auto,w=740,q=75/picserver5/crop_images/2024/05/13/BJ11iMHy70/BJ11iMHy70_0_0_1000_667_0_x-large.jpg")',
+                   backgroundSize: 'cover',
+                   backgroundPosition: 'center',
+                   height: 200, display: 'flex', 
+                   alignItems: 'center', 
+                   justifyContent: 'center',   borderRadius: '10px'
+                 }}
+                 onClick={() => setSelectedCategory('main_courses')}
+               >
+                 <Typography variant="h6" sx={{fontSize:35,fontWeight:'bold', color: 'white'}}>מנות עיקריות</Typography>
+               </Box>
+             </Grid>
+           
+             <Grid size={{ xs: 12, sm: 3 }}>
+               <Box
+                 sx={{
+                   textAlign: 'center',
+                   padding: 2, objectFit:'cover',
+                   border: '1px solid #ccc',
+                   cursor: 'pointer',
+                   backgroundImage: 'url("https://static.wixstatic.com/media/91dd81_1af0fe2fc4a84c87875602be8280eba8~mv2.jpg/v1/fill/w_558,h_288,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/91dd81_1af0fe2fc4a84c87875602be8280eba8~mv2.jpg")',
+                   backgroundSize: 'cover',
+                   backgroundPosition: 'center',
+                   height: 200, display: 'flex', 
+                   alignItems: 'center', 
+                   justifyContent: 'center',   borderRadius: '10px'
+                 }}
+                 onClick={() => setSelectedCategory('first_courses')}
+               >
+                 <Typography variant="h6" sx={{fontSize:35,fontWeight:'bold', color: 'white'}}>מנות ראשונות</Typography>
+               </Box>
+             </Grid>
+           
+             <Grid size={{ xs: 12, sm: 3 }}>
+               <Box
+                 sx={{
+                   textAlign: 'center',
+                   padding: 2, objectFit:'cover',
+                   border: '1px solid #ccc',
+                   cursor: 'pointer',
+                   backgroundImage: 'url("https://www.delis.co.il/contentManagment/uploadedFiles/DSC_2983a_975.jpg")',
+                   backgroundSize: 'cover',
+                   backgroundPosition: 'center',
+                   height: 200, display: 'flex', 
+                   alignItems: 'center', 
+                   justifyContent: 'center', 
+                   borderRadius: '10px'
+                 }}
+                 onClick={() => setSelectedCategory('salads')}
+               >
+                 <Typography variant="h6" sx={{fontSize:35,fontWeight:'bold', color: 'white'}}>סלטים</Typography>
+               </Box>
+             </Grid>
+           </Grid>
+           
           ) : (
 
            <Box dir='rtl' sx={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -288,18 +340,15 @@ const hideDish = async (id, category) => {
                             <TableCell sx={{ textAlign: 'right' }}>
 
                         <Box sx={{  flexDirection: 'row', justifyContent: 'space-between', display: 'flex' ,  '@media (max-width: 600px)': { flexDirection: 'column', alignItems: 'flex-start' } }}>
-
                                     <Button
                                         variant="contained"
-                                        onClick={() => openEditModal(item, selectedCategory)}
-                                      
+                                        onClick={() => openEditModal(item, selectedCategory)}                                    
                                     >
                                         ערוך
                                     </Button>
                                     <Button
                                         variant="contained" color="error"
-                                        onClick={() => deleteDish(item.id, selectedCategory)}
-                                      
+                                        onClick={() => deleteDish(item.id, selectedCategory)}                                     
                                     >
                                         מחק
                                     </Button>
@@ -324,11 +373,22 @@ const hideDish = async (id, category) => {
 
       {/* עריכת מנה*/}
       <Modal open={editModal !== null} onClose={() => setEditModal(null)}>
-          <Box sx={{ backgroundColor: 'white', padding: 3, borderRadius: 2 }}>
+          <Box sx={{
+                   backgroundColor: 'white',
+                   padding: 3,
+                   borderRadius: 2,
+                   position: 'absolute',  
+                   top: '50%',  
+                   left: '50%', 
+                   transform: 'translate(-50%, -50%)', 
+                   maxWidth: '300px',  
+                   width: '100%',  
+              }}>
               <Typography variant="h6" gutterBottom>
                   עריכת מנה
               </Typography>
-              <TextField
+              <TextField 
+                  dir='rtl'
                   label="שם הפריט"
                   variant="outlined"
                   fullWidth
@@ -337,23 +397,25 @@ const hideDish = async (id, category) => {
                   value={editModal?.dish_name || ""}
                   onChange={handleEditChange}
               />
-              <TextField
+              <TextField  dir='rtl'
                   label="מחיר"
                   variant="outlined"
                   fullWidth
                   margin="normal"
                   type="number"
                   name="price"
+                  textAlign='right'
                   value={editModal?.price || ""}
                   onChange={handleEditChange}
               />
-              <TextField
+              <TextField  dir='rtl'
                   label="משקל"
                   variant="outlined"
                   fullWidth
                   margin="normal"
                   type="number"
                   name="weight"
+                  textAlign='right'
                   value={editModal?.weight || ""}
                   onChange={handleEditChange}
               />
@@ -380,17 +442,17 @@ const hideDish = async (id, category) => {
         backgroundColor: 'white',
         padding: 3,
         borderRadius: 2,
-        position: 'absolute',  // חשוב כדי למקם את המודול
-        top: '50%',  // ממקם את המודול במרכז האנכי
-        left: '50%',  // ממקם את המודול במרכז האופקי
-        transform: 'translate(-50%, -50%)',  // דוחף את המודול חזרה כדי שיהיה בדיוק במרכז
-        maxWidth: '600px',  // גודל מקסימלי כדי שהמודול לא יתפוס יותר מדי מקום
-        width: '100%',  // המודול יתפוס עד 100% רוחב, אך לא יעלה על 600px
+        position: 'absolute',  
+        top: '50%',  
+        left: '50%', 
+        transform: 'translate(-50%, -50%)', 
+        maxWidth: '300px',  
+        width: '100%',  
     }}>
         <Typography variant="h6" gutterBottom>
             הוסף פריט חדש
         </Typography>
-        <TextField
+        <TextField  dir='rtl'
             label="שם המנה"
             variant="outlined"
             fullWidth
@@ -399,7 +461,7 @@ const hideDish = async (id, category) => {
             value={newDish.dish_name}
             onChange={handleNewDishChange}
         />
-        <TextField
+        <TextField  dir='rtl'
             label="מחיר"
             variant="outlined"
             fullWidth
@@ -409,7 +471,7 @@ const hideDish = async (id, category) => {
             value={newDish.price}
             onChange={handleNewDishChange}
         />
-        <TextField
+        <TextField  dir='rtl'
             label="משקל"
             variant="outlined"
             fullWidth

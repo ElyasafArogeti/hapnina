@@ -129,8 +129,8 @@ export default function CategorizedGallery() {
         }}
       >
         <Grid container spacing={2}>
-          {categories[selectedCategory].map((item) => (
-            <Grid size={{ xs: 12, sm: 4 }} md={4} key={item.img}>
+          {categories[selectedCategory].map((item ,index) => (
+            <Grid size={{ xs: 12, sm: 4 }} md={4} key={item.img + index}>
               <Box
                 component="img"
                 src={item.img}
@@ -138,7 +138,6 @@ export default function CategorizedGallery() {
                 width="90%"
                 height="auto"
                 objectFit="cover"
-    
                 loading="lazy"
                 onClick={() => handleClickOpen(item.img)}
                 sx={{

@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import styles from '../../assets/stylesManager/UserManagement.module.css';
 import NavbarAll from './NavbarAll';
-
+import DeleteIcon from '@mui/icons-material/Delete'; 
 import { FaSearch } from 'react-icons/fa'; 
 import  {People} from '@mui/icons-material';
 const UserManagement = () => {
@@ -68,6 +68,29 @@ const UserManagement = () => {
   };
 
 
+  // מחיקת לקוח 
+  const handleDeleteUser = async (user) => {
+    const confirmed = window.confirm(`האם אתה בטוח שברצונך למחוק את הלקוח ${user.name}?`);
+    if (confirmed) {
+      try {
+        const response = await axios.delete(`http://localhost:3001/UserManagement/DeleteUser/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        if (response.status === 200) {
+          // עדכון רשימת המשתמשים לאחר מחיקת הלקוח
+          setUsers(users.filter(u => u.id !== user.id));
+        } else {
+          alert('שגיאה במחיקת הלקוח');
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('שגיאה בשרת');
+      }
+    }
+  };
+
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -108,7 +131,7 @@ const UserManagement = () => {
 
   return (
     <div><NavbarAll/><br />
-      <h1>ניהול נתוני לקוחות    <People/></h1>
+      <h1>ניהול פרטי לקוחות    <People/></h1>
     <br />
 
       {/* מצב עריכה  */}
@@ -159,7 +182,8 @@ const UserManagement = () => {
             <th className={styles.th}>פלאפון</th>
             <th className={styles.th}>תאריך אירוע</th>
             <th className={styles.th}>מספר מוזמנים</th>
-            <th className={styles.th}>פעולות</th>
+            <th className={styles.th}>עריכת פרטים</th>
+            <th className={styles.th}>מחיקת הלקוח</th>
           </tr>
         </thead>
         <tbody>
@@ -186,6 +210,13 @@ const UserManagement = () => {
                  ערוך
                </button>
               </td>
+
+              <td className={styles.td}>
+               <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteUser(user)}>
+                 <DeleteIcon />
+               </div>
+               </td>
+
             </tr>
           ))}
           {users.length === 0 && <tr><td colSpan="6">לא נמצאו לקוחות</td></tr>}

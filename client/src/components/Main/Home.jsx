@@ -40,7 +40,7 @@ const Home = () => {
             fontSize: { xs: "1.5rem", md: "2.5rem" },
           }}
         >
-          אולמי הפנינה - אירוע יוקרה של פעם בחיים
+      
         </Typography>
       </Box>
 

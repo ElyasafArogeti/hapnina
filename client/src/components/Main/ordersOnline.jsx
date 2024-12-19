@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import '../../assets/stylesMain/OrdersOnline.css';
 import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
-
+import dayjs from 'dayjs';
 // import html2pdf from 'html2pdf.js';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import  Grid  from '@mui/material/Grid2';
-
-import {  Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography, InputAdornment, IconButton } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress'
+import {  Snackbar, Alert ,Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography, InputAdornment, IconButton } from '@mui/material';
 import NavbarHome from './NavbarHome';
+import { textAlign } from '@mui/system';
 const OrdersOnline = () => {
     const Navigate = useNavigate();
 
@@ -19,8 +20,6 @@ const OrdersOnline = () => {
         side_dishes: []
     });
     const [onlineOrderMain, setOnlineOrderMain] = useState(true);//התפריט הראשי
-
-    const [imgArraySalad, setImgArraySalad] = useState([]);//מערך התמונות
 
     const [loginUser, setLoginUser] = useState(null); // להירשם למערכת   
     const [sendingToManger , setSendingToManger] = useState(null);// הודעה אישור שליחה למנהל 
@@ -56,9 +55,18 @@ const OrdersOnline = () => {
     const [errorMessage , setErrorMessage] = useState(null); // הודעת שגיאה כללית 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [imgArraySalad, setImgArraySalad] = useState([]);//מערך התמונות
+    const [selectedImage, setSelectedImage] = useState(null); // בחירת ראיית תמונה
 
     const [openImageDialog, setOpenImageDialog] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [loading, setLoading] = useState(true); // מצב טעינה
+
+     // המגבלות עבור כל קטגוריה
+  const maxSalads = 8;
+  const maxFirstDishes = 3;
+  const maxMainDishes = 3;
+  const maxSides = 3;
+
   //--------------------------------------------------------------------------
     useEffect(() => {
         const fetchInventoryAll = async () => {
@@ -71,6 +79,7 @@ const OrdersOnline = () => {
             }
         };
         fetchInventoryAll();
+        setLoading(false);
         setImgArraySalad(["https://magashim.co.il/wp-content/uploads/2024/07/4-1.webp","https://images.kikar.co.il/cdn-cgi/image/format=jpeg,fit=contain,width=1200/2021/03/31/ebd5d7e0-01c5-11ef-8590-ed85b6ab3b94__h667_w1000.jpg","https://www.gorme.co.il/wp-content/uploads/2023/10/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9C%D7%9C%D7%90-%D7%A9%D7%9D-55.jpg"]);
     }, []);
   //--------------------------------------------------------------------------
@@ -81,9 +90,32 @@ const OrdersOnline = () => {
       }
     }, [customerOrderSummary, orderSummary]);
   //--------------------------------------------------------------------------
-    // חישוב המנה 
+  const validateSelections = () => { // בדיקת הבחירות של הלקוח
+    
+    if (selectedSalads.length > maxSalads) {
+      setErrorMessage(`לא ניתן לבחור יותר מ-${maxSalads} סלטים.`);
+      return false;
+    }
+    if (selectedFirstDishes.length > maxFirstDishes) {
+      setErrorMessage(`לא ניתן לבחור יותר מ-${maxFirstDishes} מנות ראשונות.`);
+      return false;
+    }
+    if (selectedMainDishes.length > maxMainDishes) {
+      setErrorMessage(`לא ניתן לבחור יותר מ-${maxMainDishes} מנות עיקריות.`);
+      return false;
+    }
+    if (selectedSides.length > maxSides ) {
+      setErrorMessage(`לא ניתן לבחור יותר מ-${maxSides} תוספות.`);
+      return false;
+    }
+    setErrorMessage(null); // אם אין שגיאה, ננקה את ההודעה
+    return true;
+  };
+
+  //--------------------------------------------------------------------------
+    // חישוב המנות כולם  
     const handleSubmit = async () => {
-  
+
       const totalFirstDish = Object.values(firstDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
       const totalMainDish  = Object.values(mainDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
     setErrorFirstDish(totalFirstDish);
@@ -147,7 +179,7 @@ const OrdersOnline = () => {
                   totalWeight: totalWeight
               };
           });
-  
+
           const selectedSidesData = selectedSides.map((id) => {
               const side = inventoryAll.side_dishes[id - 1];
               const totalPrice = (side.weight * side.price) / 1000 * guestCount;
@@ -158,14 +190,14 @@ const OrdersOnline = () => {
                   totalWeight: (side.weight * guestCount).toFixed(2)
               };
           });
-  
+
           const selectedItems = {
               salads: selectedSaladsData,
               first_courses: selectedFirstDishesData,
               main_courses: selectedMainDishesData,
               side_dishes: selectedSidesData
           };
-  
+ 
           setOrderSummary(selectedItems);
           setTotalPrice(total.toFixed(2));
           setCustomerOrderSummary(selectedItems);  
@@ -214,26 +246,58 @@ const OrdersOnline = () => {
   const openQuantityModal = () => { // כמות המנות שבוחר הלקוח
     let hasError = false; // בדיקת הלקוח בהכנסת פרטים
     const newErrors = {
+        eventOwner: '',
+        eventDate: '',
         phoneNumber: '',
         guestCount: '',
         email: '',
-       Password: ''
+        Password: ''
     };
+
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {  // בדיקת מספר פלאפון (10 ספרות)
-        newErrors.phoneNumber = "מספר הפלאפון חייב להיות בן 10 ספרות.";
+        newErrors.phoneNumber = "מספר הפלאפון חייב להיות בן 10 ספרות";
         hasError = true;
     }
-    if (guestCount <= 0 || guestCount > 1000) { // בדיקת כמות מוזמנים (לא יותר מ-1000)
-        newErrors.guestCount = "כמות המוזמנים לא יכולה להיות פחותה מ-1 או יותר מ-1000.";
+    if (guestCount < 30 || guestCount > 1000) { // בדיקת כמות מוזמנים (לא יותר מ-1000)
+      newErrors.guestCount = "כמות המוזמנים חייבת להיות לפחות 30 איש";
         hasError = true;
     }
        // בדיקה עבור המייל
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (email && !emailRegex.test(email)) {  
-        newErrors.email = "כתובת מייל אינה חוקית.";
+        newErrors.email = "כתובת מייל אינה חוקית";
         hasError = true;
     }
+
+  // בדיקת שם מלא (לא ריק)
+  if (!eventOwner.trim()) {
+    newErrors.eventOwner = "עריכת שם שדה חובה";
+    hasError = true;
+  }
+
+  // בדיקת סיסמא (לפחות 4 תווים)
+  if (userPassword.length < 4) {
+    newErrors.Password = "הסיסמה חייבת להיות לפחות 4 ספרות";
+    hasError = true;
+  }
+
+  // בדיקת תאריך האירוע (לא פחות מ-3 ימים מהיום)
+  const today = dayjs(); // התאריך הנוכחי
+  const selectedDate = dayjs(eventDate); // התאריך שנבחר
+  if (selectedDate.isBefore(today.add(3, 'day'), 'day')) {
+    newErrors.eventDate = "אין אפשרות להזמין תפריט בתוך שלושה ימי עסקים מהיום";
+    hasError = true;
+  }
+
+   // בדיקת תאריך האירוע - לא יכול להיות לפני היום הנוכחי
+   const today2 = dayjs(); // התאריך הנוכחי
+   const selectedDate2 = dayjs(eventDate); // התאריך שנבחר
+   if (!eventDate || selectedDate.isBefore(today, 'day')) {
+     newErrors.eventDate = "תאריך האירע צריך להיות לאחר היום הנוכחי";
+     hasError = true;
+   }
+
     setErrors(newErrors);
     setShippingDate(new Date().toISOString().slice(0, 19).replace('T', ' '));
     if (!hasError) {
@@ -244,6 +308,7 @@ const OrdersOnline = () => {
   //--------------------------------------------------------------------------
 //חלון הרשמה 
     const openEditModal = () => {  
+    if (!validateSelections()) return;
       setLoginUser("true"); 
   };
     //--------------------------------------------------------------------------
@@ -267,6 +332,8 @@ const OrdersOnline = () => {
         break;
     }
   };
+
+
   //--------------------------------------------------------------------------
 //   // קבלה ללקוח 
 //   const handleDownloadReceipt = () => {
@@ -321,7 +388,8 @@ const handleClickShowPassword = () => { // מתחלף בין הצגת הסיסמ
 return (
   <div>
     <NavbarHome/>
- {onlineOrderMain && (
+
+{onlineOrderMain && (
     <div className="online-order-container">
       <div className="order-header">
         <h2 className="order-header-title">בחירת תפריט </h2>
@@ -332,6 +400,17 @@ return (
           <h2 className="menu-subtitle">קייטרינג הפנינה - כשר למהדרין</h2>
           <p className="menu-contact">פלאפון - 054-6600-200 | מייל - eli6600200@gmail.com</p>
         </div>
+               {/* להודעת שגיאה */}
+             <Snackbar
+              open={!!errorMessage} 
+              autoHideDuration={6000} 
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} // מיקום ההודעה
+              onClose={() => setErrorMessage(null)} 
+            >
+              <Alert severity="error" sx={{ width: '100%' }}>
+                {errorMessage}
+              </Alert>
+            </Snackbar>
 
         <table className="menu-table-order-online" dir="rtl">
           <tbody>
@@ -481,7 +560,7 @@ return (
       <DialogTitle>תמונה מוגדלת</DialogTitle>
       <DialogContent>
         {/* התמונה שתופס את כל הרוחב */}
-        <img src={selectedImage} alt="מנה גדולה" className="image-dialog-img" />
+        <img src={selectedImage} alt="מנה גדולה" className="image-dialog-img" ObjectFit="cover"/>
       </DialogContent>
       <DialogActions>
         <Button onClick={closeDialog} color="primary">
@@ -527,6 +606,9 @@ return (
                 type="text"
                 fullWidth
                 value={eventOwner}
+                error={Boolean(errors.eventOwner)}
+                helperText={errors.eventOwner}
+                xs={{textAlign:'center'}}
                 onChange={(e) => setEventOwner(e.target.value)}
                 required
               />
@@ -560,7 +642,7 @@ return (
 
             <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
-                label=" סיסמא לאזור אישי                   " 
+                label=" סיסמא לאזור אישי" 
                 type={showPassword ? 'text' : 'password'}   fullWidth
                 value={userPassword}
                 onChange={(e) => setUserPassword(e.target.value)}
@@ -687,8 +769,9 @@ return (
  {customerOrderSummary && orderSummary && (
   <div className="kitchen-order-container"> <br />
   <div className='kitchen-order-header'>
+    <br/><br/>
     <h1>{eventOwner} תודה שבחרת בקיינטרינג הפנינה</h1>
-    <h1>הצעת המחיר שלנו להזמנה שלך סה"כ : <strong style={{color:"red"}}>{totalPrice}</strong></h1><br /> 
+    <h1>הצעת המחיר שלנו להזמנה שלך סה"כ ₪ <strong style={{color:"red"}}>{totalPrice}  </strong></h1><br /> 
     <p>... המחיר אינו כולל אולם / מלצרים / אנשי מטבח ועוד</p><br />
     <h2>פרטי ההזמנה שלך </h2><br />
     </div>
@@ -746,8 +829,10 @@ return (
    </div>
   </div>
   )}
+
+
+
    </div>
-   
  )}
 
 

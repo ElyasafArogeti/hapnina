@@ -360,21 +360,27 @@ app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
  app.post('/save-note/:orderId/:notes', authenticateToken , async (req, res) => { 
   const orderId = req.params.orderId;
   const note = req.params.notes;  // ההערה ששלח הלקוח
+  // פרוק ה- orderId לשני חלקים
+  const [customerId, orderIdValue] = orderId.split('-');
   try {
     if (req.user.role !== "manager") {
       return res.status(403).json({ message: "Access denied. Insufficient permissions." });
     } 
-    const [rows] = await connection.query('SELECT * FROM orders WHERE user_id = ?', [orderId]); 
+
+    // חיפוש הזמנה לפי הלקוח ומזהה ההזמנה
+    const [rows] = await connection.query('SELECT * FROM orders WHERE user_id = ? AND id = ?', [customerId, orderIdValue]); 
+
     if (rows.length === 0) {
       // אם לא נמצאה הזמנה
       return res.status(404).json({ error: 'לא נמצא אירוע בתאריך זה' });
     }
+
     if (note === "null" || note.trim() === "") { 
-      await connection.query('UPDATE orders SET notes = null WHERE user_id = ?', [ orderId]);
+      await connection.query('UPDATE orders SET notes = null WHERE user_id = ? AND id = ?', [customerId, orderIdValue]);
       return res.status(200).json({ message: 'ההערה נמחקה בהצלחה' });
-    }else{  // אם יש הערה, נעדכן אותה בטבלה
-    await connection.query('UPDATE orders SET notes = ? WHERE user_id = ?', [note, orderId]);
-    res.status(200).json({ message: 'ההערה נשמרה בהצלחה' });
+    } else {  // אם יש הערה, נעדכן אותה בטבלה
+      await connection.query('UPDATE orders SET notes = ? WHERE user_id = ? AND id = ?', [note, customerId, orderIdValue]);
+      res.status(200).json({ message: 'ההערה נשמרה בהצלחה' });
     }
   } catch (error) {
     console.error('שגיאה בשרת:', error);
@@ -645,8 +651,8 @@ app.put('/UserManagement/:id', authenticateToken, async (req, res) => {
     const currentEventDate = currentUser[0].event_date;
     // 3. עדכון טבלת המשתמשים אם יש שינוי בפרטי המשתמש
     const [result] = await connection.query(
-      'UPDATE users SET name = ?, phone = ?, event_date = ?, guest_count = ? WHERE id = ?',
-      [updatedData.name, updatedData.phone, eventDate, updatedData.guest_count, id]
+      'UPDATE users SET name = ?, phone = ?, email = ?, event_date = ?, guest_count = ? WHERE id = ?',
+      [updatedData.name, updatedData.phone, updatedData.email, eventDate, updatedData.guest_count, id]
     );
     // 4. אם לא נמצא משתמש עם ה-ID הספציפי
     if (result.affectedRows === 0) {
@@ -695,9 +701,10 @@ app.get('/OrderManagement',authenticateToken,  async (req, res) => {
         orders.guest_count, 
         orders.event_date, 
         orders.order_menu,-- הוספת שדה פריטי התפריט
-         orders.totalPrice,   
+        orders.totalPrice,   
         users.name AS owner_name, 
-        users.phone AS owner_phone  -- הוספת שדה טלפון של בעל ההזמנה
+        users.phone AS owner_phone , -- הוספת שדה טלפון של בעל ההזמנה
+        users.email AS owner_email -- הוספת שדה דוא"ל של בעל ההזמנה
       FROM orders 
       JOIN users ON orders.user_id = users.id
     `);

@@ -1,134 +1,160 @@
-/* כלל הדף */
+/* עיצוב טבלה מודרני */
 .table {
   width: 100%;
   border-collapse: collapse;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f460;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  margin-top: 20px;
-  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 30px;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
+
 .th, .td {
-  padding: 12px;
+  padding: 15px 20px;
   text-align: right;
+  font-weight: 500;
 }
+
+/* עיצוב כותרות טבלה */
 .th {
-  background-color: #f0f0f0;
-  font-weight: bold;
-  color: #333;
+  background-color: #2D3E50;
+  color: #ffffff;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  transition: background-color 0.3s ease;
 }
+
+.th:hover {
+  background-color: #34495e; /* שינוי צבע כותרת */
+}
+
+/* עיצוב שורות */
 .tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f5f5f5;
 }
+
 .tr:nth-child(even) {
   background-color: #f9f9f9;
 }
+
 .td {
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
 }
 
-
-
-
+/* כפתורים */
 .button {
   padding: 8px 16px;
   background-color: #4CAF50;
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .button:hover {
   background-color: #45a049;
+  transform: translateY(-2px);
 }
 
+.button:active {
+  transform: translateY(1px);
+}
 
-
+/* עיצוב טופס עריכה */
 .editForm {
   position: fixed;
   top: 50%;
   left: 50%;
   width: 100%;
   height: 100%;
-  transform: translate(-50%, -50%); 
-  background: rgba(0, 0, 0, 0.5); 
-  z-index: 1000; 
-
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .editCentner {
   background: #fff;
-  margin-top: 0;
   text-align: center;
   width: 100%;
   padding: 30px;
   border-radius: 10px;
-  padding: 20px;
-  border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: auto;
   max-width: 500px;
+  transition: all 0.3s ease;
 }
+
 .editForm h2 {
-  text-align: center;
   color: #333;
   margin-bottom: 20px;
 }
+
 .formGroup {
   margin-bottom: 15px;
 }
+
 .formGroup label {
   display: block;
   font-size: 14px;
-   color: #333;
+  color: #333;
   margin-bottom: 5px;
 }
+
 .formGroup input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #000000;
-  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   font-size: 14px;
   background-color: #f9f9f9;
   color: #333;
+  transition: border-color 0.3s ease;
 }
+
 .formGroup input:focus {
   border-color: #4CAF50;
   outline: none;
   background-color: #fff;
 }
 
-
-
-
 .editForm button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: #367ea8;
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 16px;
   margin-bottom: 10px;
+  transition: background-color 0.3s ease;
 }
+
 .editForm button:hover {
   background-color: #25526e;
 }
+
 .cancelButton {
   background-color: #f44336;
 }
+
 .cancelButton:hover {
   background-color: #d32f2f;
 }
 
-.close{
+.close {
   color: white;
   top: 0;
   right: 0;
@@ -137,11 +163,12 @@
   font-size: 30px;
   cursor: pointer;
 }
+
 .close:hover {
   color: #f44336;
 }
 
-
+/* עיצוב שדה חיפוש */
 .searchContainer {
   display: flex;
   align-items: center;
@@ -149,8 +176,8 @@
   margin-bottom: 20px;
   justify-content: center;
   margin: auto;
-
 }
+
 .searchInput {
   width: 300px;
   padding: 10px;
@@ -159,20 +186,28 @@
   border: 1px solid #ddd;
   outline: none;
   margin-right: 10px;
+  transition: border-color 0.3s ease;
 }
+
 .searchInput:focus {
   border-color: #007bff;
 }
+
 .searchIcon {
   color: #777;
   font-size: 20px;
   cursor: pointer;
+  transition: color 0.3s ease;
 }
 
+.searchIcon:hover {
+  color: #007bff;
+}
 
+/* עיצוב למסכים קטנים */
 @media (max-width: 768px) {
   .table {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .editForm {
@@ -182,7 +217,8 @@
   .button {
     font-size: 12px;
   }
+
+  .searchInput {
+    width: 250px;
+  }
 }
-
-
-

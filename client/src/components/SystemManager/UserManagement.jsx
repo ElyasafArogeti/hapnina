@@ -14,6 +14,7 @@ const UserManagement = () => {
     phone: '',
     event_date: '',
     guest_count: 0,
+    email: '',
   });
 
   const token = localStorage.getItem('authToken');
@@ -42,7 +43,7 @@ const UserManagement = () => {
   const handleSave = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3001/UserManagement/${editingUser.id}`, formData,{ headers: {  Authorization: `Bearer ${token}` }} );  
+        `http://localhost:3001/UserManagement/${editingUser.id}`, formData,{ headers: { Authorization: `Bearer ${token}` }} );  
       if (response.data.success) {
         setUsers(
           users.map((user) =>
@@ -56,6 +57,7 @@ const UserManagement = () => {
         phone: '',
         event_date: '',
         guest_count: 0,
+        email: '',
       });
       }
 
@@ -150,6 +152,11 @@ const UserManagement = () => {
               onChange={handleInputChange}/>         
           </div>
           <div className={styles.formGroup}>
+            <label>כתובת מייל</label>
+            <input type="text"  name="email" value={formData.email}
+              onChange={handleInputChange}/>         
+          </div>
+          <div className={styles.formGroup}>
             <label>תאריך אירוע : {formatDate(formData.event_date)}</label>
             <input type="date" name="event_date" value={formData.event_date}
               onChange={handleInputChange} />
@@ -180,6 +187,7 @@ const UserManagement = () => {
             <th className={styles.th}>לקוח</th>
             <th className={styles.th}>שם הלקוח</th>
             <th className={styles.th}>פלאפון</th>
+            <th className={styles.th}>מייל</th>
             <th className={styles.th}>תאריך אירוע</th>
             <th className={styles.th}>מספר מוזמנים</th>
             <th className={styles.th}>עריכת פרטים</th>
@@ -192,6 +200,7 @@ const UserManagement = () => {
               <td className={styles.td}>{users.length - index}</td>
               <td className={styles.td}>{user.name}</td>
               <td className={styles.td}>{user.phone}</td>
+              <td className={styles.td}>{user.email}</td>
               <td className={styles.td}>{formatDate(user.event_date)}</td>
               <td className={styles.td}>{user.guest_count}</td>
               <td className={styles.td}>
@@ -204,6 +213,7 @@ const UserManagement = () => {
                      phone: user.phone,
                      event_date: user.event_date,
                      guest_count: user.guest_count,
+                     email: user.email
                    });
                  }}
                >

@@ -6,6 +6,10 @@ import styles from '../../assets/stylesManager/OrderManagement.module.css';
 import NavbarAll from './NavbarAll';
 
 
+import DescriptionIcon from '@mui/icons-material/Description';
+import EditIcon from '@mui/icons-material/Edit';
+
+
 import { FaSearch } from 'react-icons/fa';  // אייקון חיפוש
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
@@ -13,7 +17,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+
+
 import { Snackbar, Alert } from '@mui/material';
 import  {ShoppingCart} from '@mui/icons-material';
 const OrderManagement = () => {
@@ -48,6 +53,7 @@ const [snackbarMessage, setSnackbarMessage] = useState('');
 const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
 const token = localStorage.getItem('authToken');
+
 //-------------------------------
   useEffect(() => {
     const fetchOrders = async () => {
@@ -280,10 +286,6 @@ const handleQuantityChange = (category , id, quantity) => {
   const handleDeleteDialogClose = () => {
     setOpenDeleteDialog(false);
   };
-//-------------תצוגת הזמנה------------------------------
- const viewOrderDetails = (order) => {
-  navigate('/OrderManagementDetails', { state: { orderDetails: order } });
-};
 
 //--------פונקציה לחיפוש הזמנה---------------------------
 const handleSearch = (e) => {
@@ -299,10 +301,24 @@ const handleSearch = (e) => {
     return ownerName.includes(query) || eventDate.includes(query); // חיפוש במילים
   });
 
-  // עדכון רשימת ההזמנות המוצגות על פי החיפוש
   setOrders(filtered);  // הצג את התוצאות הסינוניות
 };
-//---------------------------------------------------
+//------------עריכת תוכן ההזמנה---------------------------------------
+const editOrderDetails = (order) => {
+
+  // שולח את המידע הרלוונטי לעריכת ההזמנה לדף KitchenOrder
+  navigate('/KitchenOrder', {
+    state: {
+      orderSummary: [order],
+      eventOwner: order.owner_name,
+      eventDate: order.event_date,
+      phoneNumber: order.owner_phone,
+      guestCount: order.guest_count,
+      totalPrice: order.totalPrice,  // אם יש לך שדה כזה בהזמנה
+      email: order.owner_email,  // אם יש לך שדה כזה בהזמנה
+    }
+  });
+};
 
 
   return (
@@ -327,8 +343,9 @@ const handleSearch = (e) => {
             <th className={styles.th}>שם בעל ההזמנה</th>
             <th className={styles.th}>תאריך אירוע</th>
             <th className={styles.th}>מספר מוזמנים</th>
-            <th className={styles.th}>צפייה בהזמנה</th>
-            <th className={styles.th}>שינוי ההזמנה</th>
+          
+            <th className={styles.th}>צפייה / עריכה בהזמנה</th>
+             <th className={styles.th}>ביצוע חישוב מחדש </th>
             <th className={styles.th}>מחיקה</th>
           </tr>
         </thead>
@@ -339,18 +356,22 @@ const handleSearch = (e) => {
                <td className={styles.td}>{order.owner_name}</td>
                <td className={styles.td}>{new Date(order.event_date).toLocaleDateString('he-IL')}</td>
                <td className={styles.td}>{order.guest_count}</td>
-               <td className={styles.td}>              
-                 <div style={{ cursor: 'pointer' }} onClick={() => viewOrderDetails(order)}>
-                   <VisibilityIcon style={{ marginRight: '5px' }} /> צפייה בהזמנה
+              
+
+               <td className={styles.td}>
+               <div style={{ cursor: 'pointer' }} onClick={() => editOrderDetails(order)}>
+                 <DescriptionIcon style={{ marginRight: '5px' }} />
+
+                צפייה בהזמנה
                </div>
-               </td>
+             </td>
+
+               <td className={styles.td}>
+               <button className={styles.blue} onClick={() => OpenEditingOrder(order)} >
+                 פתיחה </button>      
+                 </td>
 
                 <td className={styles.td}>
-               <button className={styles.blue} onClick={() => OpenEditingOrder(order)} >
-                 עריכה </button>      
-                          </td>
-                <td className={styles.td}>
-                 
                 <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteDialogOpen(order)}>
                  <DeleteIcon style={{ marginRight: '8px' }} />
                </div>

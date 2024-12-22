@@ -27,7 +27,7 @@ function EventCalendar() {
   const [showNoteModal, setShowNoteModal] = useState(false); // משתנה למעקב אחרי אם המודל מוצג
 
   const [loading, setLoading] = useState(false); 
-
+  
   useEffect(() => {
     fetchOrders();
     const today = new Date();
@@ -51,11 +51,11 @@ function EventCalendar() {
           'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
         }
       });
-     
       if (!response.ok) {
         throw new Error('שגיאה ברשת');
       }
       const ordersData = await response.json();
+
       const userPromises = ordersData.map(async (order) => { // להביא שם בעל האירוע 
         const userResponse = await fetch(`http://localhost:3001/user_calendar/${order.user_id}`, {
           method: 'GET',
@@ -76,22 +76,25 @@ function EventCalendar() {
       // חיבור הנתונים
       const ordersWithUserNames = await Promise.all(userPromises);
 
+      // כאן משנה את ה-ID לכל הזמנה על ידי שילוב של user_id ו-order.id
       const formattedOrders = ordersWithUserNames.map(order => {
-
         const israelDate = new Date(order.event_date);
-        israelDate.setMinutes(israelDate.getMinutes() - israelDate.getTimezoneOffset()); // התאמת זמן ישראל
+        israelDate.setMinutes(israelDate.getMinutes() - israelDate.getTimezoneOffset()); 
         order.event_date = israelDate.toLocaleDateString('en-CA'); // שמירת התאריך בפורמט YYYY-MM-DD
+        
         return {
-          id: order.user_id,
+          id: `${order.user_id}-${order.id}`, // שילוב user_id ו-order.id ל-ID ייחודי
           title: order.user_name,
-          start: order.event_date,   // תאריך מותאם לזמן ישראל
+          start: order.event_date,   
           order_menu: order.order_menu,
           notes: order.notes,
         };
       });
-      setOrders(formattedOrders); // עדכון המצב
-      setNote(formattedOrders.notes)
-    
+      
+
+    setOrders(formattedOrders); // עדכון המצב
+    setNote(formattedOrders.notes)
+   
     } catch (error) {
       console.error('שגיאה בעת הבאת ההזמנות:', error);
     }finally {
@@ -103,44 +106,64 @@ function EventCalendar() {
   const fetchUser = async (userId) => {
     try {
       const token = localStorage.getItem("authToken");
-      const user = userId
-      const response = await fetch(`http://localhost:3001/user_calendar/${user}`, {
+     
+    const [customerId, orderId] = userId.split('-'); 
+      const response = await fetch(`http://localhost:3001/user_calendar/${userId}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
-        }
+          'Authorization': `Bearer ${token}`,
+        },
       });
-
+  
       if (!response.ok) {
         throw new Error('שגיאה ברשת');
       }
-      const data = await response.json(); 
-      
+
+      const data = await response.json();
+
       if (data.orders_user && data.orders_user.length > 0) {
-        Navigate('/KitchenOrder', {
-          state: {
-            orderSummary: data.orders_user,
-            eventOwner: data.user_name,
-            eventDate: data.orders_user[0].event_date,
-            phoneNumber: data.phone_number,
-            guestCount: data.orders_user[0].guest_count,
-            totalPrice: data.totalPrice,
-            email: data.email
+        const selectedOrder = data.orders_user.find(order => order.id === parseInt(orderId));
+          if (selectedOrder) {
+            Navigate('/KitchenOrder', {
+              state: {
+                orderSummary: [selectedOrder], // ההזמנה שנבחרה
+                eventOwner: data.user_name,
+                eventDate: selectedOrder.event_date,
+                phoneNumber: data.phone_number,
+                guestCount: selectedOrder.guest_count,
+                totalPrice: selectedOrder.totalPrice,
+                email: data.email,
+              }
+            });
+          } else {
+            console.error('לא נמצאה הזמנה עם מספר זה');
           }
-        });
-      } else {
-        console.error('אין נתונים מתאימים במערך orders_user');
-     }    
+        } else {   // אם יש הזמנה אחת בלבד, פשוט העבר לדף עם הזמנה זו
+          const order = data.orders_user[0];
+          Navigate('/KitchenOrder', {
+            state: {
+              orderSummary: [order],
+              eventOwner: data.user_name,
+              eventDate: order.event_date,
+              phoneNumber: data.phone_number,
+              guestCount: order.guest_count,
+              totalPrice: order.totalPrice,
+              email: data.email,
+            }
+          });
+        }
     } catch (error) {
       console.error('שגיאה בעת הבאת פרטי המשתמש:', error);
     }
-  };
+  }
+  
+  // קריאה לפונקציה
   useEffect(() => {
-    fetchOrders();
-  }, 
-  []);
+    fetchUser(79);  // דוגמת קריאה עם user_id = 79
+  }, []);
+  
 
-
+//-------------------------------------------------
   const openEditNoteModal = (date) => {
     const Date = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     const existingOrder = orders.find(order => order.start === Date);
@@ -153,27 +176,22 @@ function EventCalendar() {
   };
   
   
-  
+
+  ///----------------------------------------------------
   const saveNote = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      // קביעת התאריך הנוכחי במבנה מתאים
       const currentDateFormatted = currentDate.toLocaleDateString('en-CA'); // התאריך בפורמט YYYY-MM-DD
       const updatedOrder = orders.find(order => order.start === currentDateFormatted);
-  
+    
       if (!updatedOrder) {
-        // אם לא נמצאה הזמנה עבור התאריך
         alert('לא נמצא אירוע בתאריך זה');
         return;
       }
   
-      // אם ההערה ריקה, נשלח null כדי למחוק את ההערה
-      const noteToSend = note.trim() === "" ? null : note; // אם ההערה ריקה, נשלח null
+      const noteToSend = note.trim() === "" ? null : note;
   
-      // עדכון ההערה
       setNote(note); // עדכון הסטייט של ההערה החדשה
-  
-      // שמירת ההערה (או מחיקת ההערה אם היא ריקה)
       const response = await fetch(`http://localhost:3001/save-note/${updatedOrder.id}/${noteToSend}`, {
         method: 'POST',
         headers: {
@@ -181,16 +199,15 @@ function EventCalendar() {
           'Authorization': `Bearer ${token}`,
         },
       });
-  
+      
       if (!response.ok) {
         throw new Error('שגיאה ברשת');
       }
-  
+      
       // עדכון רשימת ההזמנות אם הבקשה הצליחה
       setOrders((prevOrders) => {
         return prevOrders.map(order => {
           if (order.id === updatedOrder.id) {
-            // עדכון ההזמנה עם ההערה החדשה או עם null אם ההערה נמחקה
             return { ...order, notes: noteToSend };
           }
           return order;
@@ -203,25 +220,31 @@ function EventCalendar() {
     }
   };
   
+  
+  
 
 
 
-
+//----------------------------------------------------
 // פונקציה לחישוב תאריך עברי
 const getHebrewDate = (date) => {
   const hdate = new HDate(date); // יצירת תאריך עברי
   return hdate.renderGematriya(); // מחזיר תאריך עברי בפורמט עברי
 };
 
+//---------------------------------------------------------
   // תצוגת הזמנה
   const openEditModal = (info) => {
-    const orderId = info.event._def.publicId; // העברת המזהה לקוח
+    const orderId = info.event._def.publicId; 
     fetchUser(orderId); 
-  
-    const existingNote = info.event.extendedProps.notes || ''; // קבלת ההערה אם קיימת, אחרת מחרוזת ריקה
+    
+    const existingNote = info.event.extendedProps.notes || ''; // קבלת ההערה אם קיימת
     setNote(existingNote);  // עדכון הערה במצב
   };
+  
+  
 
+//----------------------------------------------------------
  const updateHebrewDateHeader = (date) => {
     const hdate = new HDate(date);
     const hebrewMonth = hdate.renderGematriya('he');  // שם החודש העברי בעברית
@@ -233,7 +256,7 @@ const getHebrewDate = (date) => {
 };
 
 
-
+//------------------------------------------------------
   const updateCurrentTime = () => {
     const now = new Date(); // יצירת אובייקט תאריך חדש עבור הזמן הנוכחי
     const hours = now.getHours().toString().padStart(2, '0');  // שעות
@@ -243,7 +266,7 @@ const getHebrewDate = (date) => {
     setCurrentTime(timeString);  // עדכון הסטייט של השעה הנוכחית
   };
   
-
+//--------------------------------------------------------------
 // נוסיף טיפול כאשר תצוגת החודש משתנה
 const handleDateChange = (info) => {
   const viewType = info.view.type;  
@@ -300,6 +323,7 @@ const handleDateChange = (info) => {
           locale="he"     // הגדרת שפת הקלנדר לעברית
 
           eventClick={(info) => {
+            
             openEditModal(info); // הצגת פרטי האירוע בלחיצה
           }}
 

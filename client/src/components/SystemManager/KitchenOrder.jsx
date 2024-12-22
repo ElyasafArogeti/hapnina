@@ -50,6 +50,8 @@ const KitchenOrder = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [severity, setSeverity] = useState('success'); // ערך ברירת מחד
+
+
  // קריאה לשרת לקבלת התפריט הכללי
   useEffect(() => {
     const fetchAllDishes = async () => {
@@ -63,6 +65,8 @@ const KitchenOrder = () => {
         });
         const data = await response.json();
         setAllDishes(data);
+     
+        
       } catch (error) {
         console.error('Error fetching dishes:', error);
       }
@@ -515,6 +519,7 @@ const handleShowDeleteConfirmation = (id) => {
           </tr>
         `;
       });
+      
       categoryContent += '</tbody></table><br />';
       return categoryContent;
     };

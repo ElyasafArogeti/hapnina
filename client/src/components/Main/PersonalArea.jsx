@@ -141,7 +141,7 @@ const PersonalArea = () => {
         
         <Grid size={{ xs: 12, sm: 4 }} md={4}>
 
-        <TableContainer dir="rtl" component={Paper}>
+        <TableContainer component={Paper}>
           <Table dir="rtl">
             <TableHead>
               <TableRow>

@@ -1203,6 +1203,7 @@ app.get('/getUploadedImages', async (req, res) => {
     const mainCourses = await fetchImagesByFolder("manager_images/main_courses");
     const salads = await fetchImagesByFolder("manager_images/salads");
     const sideDishes = await fetchImagesByFolder("manager_images/side_dishes");
+    console.log("wwww");
     
     // החזרת תוצאות
     res.send({

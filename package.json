@@ -1,9 +1,11 @@
 {
   "name": "hapnina",
   "version": "1.0.0",
+  "main": "server/my_server.js",
   "scripts": {
-    "start": "npm --prefix server start"
+    "start": "npm --prefix server start" 
   },
+ 
   "devDependencies": {
     "nodemon": "^3.1.7"
   },

@@ -4,7 +4,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { FaWaze } from "react-icons/fa";
 import { Link  } from 'react-router-dom';
 import {BsTelephoneOutbound} from "react-icons/bs";
-import logo from "../../assets/imgs/הלוגו.png";
+import logo from "../../assets/imgs/logo.jpg";
 const Footer = () => {
   return (
     <Box
@@ -68,7 +68,7 @@ const Footer = () => {
           sx={{
             fontSize: '0.9rem',
             marginTop: '1rem',
-            color: 'rgba(255, 255, 255, 0.7)',
+            color: 'rgba(255, 255, 255, 0.26)',
           }}
         >
          אולמי הפנינה בעם  © {new Date().getFullYear()}

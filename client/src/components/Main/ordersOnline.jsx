@@ -6,10 +6,13 @@ import dayjs from 'dayjs';
 // import html2pdf from 'html2pdf.js';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import  Grid  from '@mui/material/Grid2';
-import CircularProgress from '@mui/material/CircularProgress'
-import {  Snackbar, Alert ,Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography, InputAdornment, IconButton } from '@mui/material';
+
+import { MenuItem,Select,InputLabel, Snackbar, Alert ,Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography, InputAdornment, IconButton,Autocomplete } from '@mui/material';
 import NavbarHome from './NavbarHome';
-import { textAlign } from '@mui/system';
+import LinearProgress from '@mui/material/LinearProgress';
+import axios from 'axios';
+
+
 const OrdersOnline = () => {
     const Navigate = useNavigate();
 
@@ -55,17 +58,31 @@ const OrdersOnline = () => {
     const [errorMessage , setErrorMessage] = useState(null); // הודעת שגיאה כללית 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [imgArraySalad, setImgArraySalad] = useState([]);//מערך התמונות
+
     const [selectedImage, setSelectedImage] = useState(null); // בחירת ראיית תמונה
 
     const [openImageDialog, setOpenImageDialog] = useState(false);
-    const [loading, setLoading] = useState(true); // מצב טעינה
 
      // המגבלות עבור כל קטגוריה
   const maxSalads = 8;
   const maxFirstDishes = 3;
   const maxMainDishes = 3;
   const maxSides = 3;
+
+    const [deliveryRegion, setDeliveryRegion] = useState(null); 
+    const [totalDelivery , setTotalDelivery] = useState(0);
+
+    const [address, setAddress] = useState("");  // מיקום קבלת המשלוח
+  
+     const [imagesByCategory, setImagesByCategory] = useState({
+       first_courses: [],
+       main_courses: [],
+       salads: [],
+       side_dishes: [],
+     });
+console.log(imagesByCategory);
+
+   const [loading, setLoading] = useState(false); 
 
   //--------------------------------------------------------------------------
     useEffect(() => {
@@ -79,14 +96,35 @@ const OrdersOnline = () => {
             }
         };
         fetchInventoryAll();
-        setLoading(false);
-        setImgArraySalad(["https://magashim.co.il/wp-content/uploads/2024/07/4-1.webp","https://images.kikar.co.il/cdn-cgi/image/format=jpeg,fit=contain,width=1200/2021/03/31/ebd5d7e0-01c5-11ef-8590-ed85b6ab3b94__h667_w1000.jpg","https://www.gorme.co.il/wp-content/uploads/2023/10/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9C%D7%9C%D7%90-%D7%A9%D7%9D-55.jpg"]);
+       
+        
     }, []);
-  //--------------------------------------------------------------------------
+
+    // פונקציה להורדת כל התוויים שאינם עבריים מהשם
+const removeNonHebrew = (text) => { 
+  return text.replace(/_/g, ' ').replace(/_[a-zA-Z0-9]+$/, ''); // מחליף את כל ה-underscore לרווח ומסיר את כל התוויים הלטיניים אחרי קו תחתון
+};
+  //------------תמונות התפריט---------------------------------------------------------------
+  useEffect(() => {
+    setLoading(true);
+    const fetchImages = async () => {
+      try {
+        const response = await axios('http://localhost:3001/getUploadedImages');
+        setImagesByCategory(response.data);
+      } catch (err) {
+        console.error('Error fetching images by categories:', err);
+
+      }finally {
+        setLoading(false); // סיום טעינה
+      }
+    };
+
+    fetchImages();
+  }, []);
+  //------------------------------------------------------------------
     useEffect(() => {
       if (customerOrderSummary && orderSummary) {
         setIsModalOpen(true); // פותחים את המודל כאשר יש מידע להזמנה
-        console.log(isModalOpen);
       }
     }, [customerOrderSummary, orderSummary]);
   //--------------------------------------------------------------------------
@@ -118,95 +156,109 @@ const OrdersOnline = () => {
 
       const totalFirstDish = Object.values(firstDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
       const totalMainDish  = Object.values(mainDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
-    setErrorFirstDish(totalFirstDish);
-    setErrorMainDish(totalMainDish);
+      setErrorFirstDish(totalFirstDish);
+      setErrorMainDish(totalMainDish);
+      
       if (totalFirstDish > guestCount || totalFirstDish < guestCount || totalMainDish > guestCount || totalMainDish < guestCount ) {
         setErrorMessage(" הכמויות שהזנת לא תואמות את כמות המוזמנים . אנא חשב שוב את הכמויות");  
         setTimeout(() => {
            setErrorMessage(null);
         },7000);
-       
       } else {
-          setErrorMessage(null); // אם אין שגיאה, ננקה את ההודעה
-
-          let total = 0;
-          // חישוב סיכום הזמנה
-          const selectedSaladsData = selectedSalads.map((id) => {
-              const salad = inventoryAll.salads[id - 1];
-              const totalPrice = salad.weight * salad.price / 1000 * guestCount ;
-              total += totalPrice;
-              return {
-                  dish_name: salad.dish_name,
-                  totalPrice: totalPrice.toFixed(2),
-                  totalWeight: (salad.weight * guestCount).toFixed(2)
-              };
-          });
+        setErrorMessage(null); // אם אין שגיאה, ננקה את ההודעה
+    
+        let total = 0;
   
-          const selectedFirstDishesData = selectedFirstDishes.map((id) => {
-              const firstDish = inventoryAll.first_courses.find(d => d.id === id);
-              let totalPrice = 0 ;
-              let totalWeight = 0;
-              if(firstDish.weight > 0 && firstDish.weight < 2) { // יחידות
-                  totalPrice = firstDishQuantities[id] * firstDish.price;
-                  totalWeight = firstDishQuantities[id];
-              } else {
-                  totalPrice = (firstDishQuantities[id] * firstDish.weight) / 1000 * firstDish.price;
-                  totalWeight = firstDishQuantities[id];
-              }
-              total += totalPrice;
-              return {
-                  dish_name: firstDish.dish_name,
-                  totalPrice: totalPrice.toFixed(2),
-                  totalWeight: totalWeight
-              };
-          });
-  
-          const selectedMainDishesData = selectedMainDishes.map((id) => {
-              const mainDish = inventoryAll.main_courses.find(d => d.id === id);
-              let totalPrice = 0 ;
-              let totalWeight = 0;
-              if(mainDish.weight > 0 && mainDish.weight < 2) { // יחידות
-                  totalPrice = mainDishQuantities[id] * mainDish.price;
-                  totalWeight = mainDishQuantities[id];
-              } else {
-                  totalPrice = (mainDishQuantities[id] * mainDish.weight) / 1000 * mainDish.price;
-                  totalWeight = mainDishQuantities[id];
-              }
-              total += totalPrice;
-              return {
-                  dish_name: mainDish.dish_name,
-                  totalPrice: totalPrice.toFixed(2),
-                  totalWeight: totalWeight
-              };
-          });
-
-          const selectedSidesData = selectedSides.map((id) => {
-              const side = inventoryAll.side_dishes[id - 1];
-              const totalPrice = (side.weight * side.price) / 1000 * guestCount;
-              total += totalPrice;
-              return {
-                  dish_name: side.dish_name,
-                  totalPrice: totalPrice.toFixed(2),
-                  totalWeight: (side.weight * guestCount).toFixed(2)
-              };
-          });
-
-          const selectedItems = {
-              salads: selectedSaladsData,
-              first_courses: selectedFirstDishesData,
-              main_courses: selectedMainDishesData,
-              side_dishes: selectedSidesData
-          };
- 
-          setOrderSummary(selectedItems);
-          setTotalPrice(total.toFixed(2));
-          setCustomerOrderSummary(selectedItems);  
-          setIsQuantityModalOpen(false);
-          setOnlineOrderMain(false);
-
-      };
-    }
-    //--------------------------------------------------------------------------
+        const roundWeight = (weight) => {  // פונקציה לעיגול המשקל
+          const rounded = Math.ceil(weight / 500) * 500;
+          return rounded;
+        };
+    
+        // חישוב סיכום הזמנה
+        const selectedSaladsData = selectedSalads.map((id) => {
+            const salad = inventoryAll.salads[id - 1];
+            const totalWeight = roundWeight(salad.weight * guestCount); // עיגול המשקל
+            const totalPrice = totalWeight * salad.price / 1000;
+            total += totalPrice;       
+            return {
+                dish_name: salad.dish_name,
+                totalPrice: totalPrice.toFixed(2),
+                totalWeight: Number(totalWeight).toFixed(2)
+            };
+        });
+    
+        const selectedFirstDishesData = selectedFirstDishes.map((id) => {
+            const firstDish = inventoryAll.first_courses.find(d => d.id === id);
+            let totalPrice = 0;
+            let totalWeight = 0;
+            if (firstDish.weight > 0 && firstDish.weight < 2) { // יחידות
+                totalPrice = firstDishQuantities[id] * firstDish.price;
+                totalWeight = firstDishQuantities[id];
+            } else {
+                totalWeight = roundWeight(firstDishQuantities[id] * firstDish.weight);
+                totalPrice = (totalWeight * firstDish.price / 1000);  
+            }
+            total += totalPrice;
+            return {
+                dish_name: firstDish.dish_name,
+                totalPrice: totalPrice.toFixed(2),
+                totalWeight: Number(totalWeight).toFixed(2)
+            };
+        });
+    
+        const selectedMainDishesData = selectedMainDishes.map((id) => {
+            const mainDish = inventoryAll.main_courses.find(d => d.id === id);
+            let totalPrice = 0;
+            let totalWeight = 0;
+            if (mainDish.weight > 0 && mainDish.weight < 2) { // יחידות
+                totalPrice = mainDishQuantities[id] * mainDish.price;
+                totalWeight = mainDishQuantities[id];
+            } else {
+                totalWeight = roundWeight(mainDishQuantities[id] * mainDish.weight); // עיגול המשקל
+                totalPrice = totalWeight * mainDish.price / 1000;
+            }
+            total += totalPrice;
+            return {
+                dish_name: mainDish.dish_name,
+                totalPrice: totalPrice.toFixed(2),
+                totalWeight: Number(totalWeight).toFixed(2)
+            };
+        });
+    
+        const selectedSidesData = selectedSides.map((id) => {
+            const side = inventoryAll.side_dishes[id - 1];
+            const totalWeight = roundWeight(side.weight * guestCount ); // עיגול המשקל
+            const totalPrice = totalWeight * side.price / 1000;
+            total += totalPrice;
+            return {
+                dish_name: side.dish_name,
+                totalPrice: totalPrice.toFixed(2),
+                totalWeight: Number(totalWeight).toFixed(2)
+            };
+        });
+    
+        const selectedItems = {
+            salads: selectedSaladsData,
+            first_courses: selectedFirstDishesData,
+            main_courses: selectedMainDishesData,
+            side_dishes: selectedSidesData
+        };
+        console.log(total);
+        
+        total += totalDelivery;
+        console.log(total);
+        
+        setOrderSummary(selectedItems);
+        setTotalPrice(total.toFixed(2));
+        setCustomerOrderSummary(selectedItems);  
+        setIsQuantityModalOpen(false);
+        setOnlineOrderMain(false);
+      }
+    };
+    
+    
+    
+    //--------------הוספת הזמנה למערכת מנהל ------------------------------------------------------------
    const addOrdersOnline = async () => {
      try {
               const response = await fetch('http://localhost:3001/addOrdersOnline', {
@@ -223,7 +275,9 @@ const OrdersOnline = () => {
                       totalPrice: totalPrice,
                       shippingDate: shippingDate,
                       email: email,
-                      Password : userPassword
+                      Password : userPassword,
+                      event_location: deliveryRegion,
+                      address: address  // כתובת מדויקת לשליחה
                   }),
               });
               const data = await response.json();
@@ -240,7 +294,8 @@ const OrdersOnline = () => {
         phoneNumber: '',
         guestCount: '',
         email:'',
-        Password: ''
+        Password: '',
+        address: ''
     });
   //--------------------------------------------------------------------------
   const openQuantityModal = () => { // כמות המנות שבוחר הלקוח
@@ -251,7 +306,8 @@ const OrdersOnline = () => {
         phoneNumber: '',
         guestCount: '',
         email: '',
-        Password: ''
+        Password: '', 
+        address: ''
     };
 
     const phoneRegex = /^[0-9]{10}$/;
@@ -298,8 +354,14 @@ const OrdersOnline = () => {
      hasError = true;
    }
 
+   if(address.length === 0){
+    newErrors.address = "  שדה חובה";
+    hasError = true;
+   }
     setErrors(newErrors);
     setShippingDate(new Date().toISOString().slice(0, 19).replace('T', ' '));
+    setTotalDelivery(calculateDeliveryCost(deliveryRegion));
+
     if (!hasError) {
       setIsQuantityModalOpen(true);
       setLoginUser(null);
@@ -333,37 +395,22 @@ const OrdersOnline = () => {
     }
   };
 
+// בדיקה אם המשתמש בחר משהו מכל הקטגוריות----------------------------------------------------
+  const handleOrderSummaryClick = () => {
+    if (
+      selectedSalads.length === 0 ||
+      selectedFirstDishes.length === 0 ||
+      selectedMainDishes.length === 0 ||
+      selectedSides.length === 0
+    ) {
+      // אם לא נבחר שום דבר, הצג הודעת שגיאה
+      setErrorMessage("נא לבחור לפחות מנה אחת מכל קטגוריה.");
+    } else {
+      // אם נבחרו פריטים, פתח את המודל
+      openEditModal();
+    }
+  };
 
-  //--------------------------------------------------------------------------
-//   // קבלה ללקוח 
-//   const handleDownloadReceipt = () => {
-//     const receiptContent = `
-//         <div style="text-align: center; font-family: 'Helvetica', sans-serif; direction: rtl; padding: 20px; font-size: 16px;">
-
-//             <h1>הזמנה נשלחה בהצלחה</h1>
-//             <h1> אולמי הפנינה</h1>
-//             <h2>תאריך האירוע: ${eventDate}</h2>
-//             <h2>שם בעל האירוע: ${eventOwner}</h2>
-//             <h2>מספר מוזמנים: ${guestCount}</h2>
-//         </div>
-//     `;
-//     const element = document.createElement('div');
-//     element.innerHTML = receiptContent;
-//     document.body.appendChild(element);
-//     const options = {
-//         margin:       10,
-//         filename:     `קבלה_${eventOwner}_${eventDate}.pdf`,
-//         image:        { type: 'jpeg', quality: 0.98 },
-//         html2canvas:  { scale: 2 },
-//         jsPDF: {
-//             unit: 'mm',
-//             format: [80, 130],
-//             orientation: 'portrait'
-//         }
-//     };
-//     html2pdf().from(element).set(options).save();
-//     document.body.removeChild(element);
-// };
 //--------------------------------------------------
 const handleImageClick = (imageSrc) => {
   setSelectedImage(imageSrc);
@@ -385,10 +432,36 @@ const handleClickShowPassword = () => { // מתחלף בין הצגת הסיסמ
   setShowPassword((prev) => !prev); 
 };
 
+//------------משלוח לאזורים ----------------------------------
+const regionPrices = {
+  "ירושלים והסביבה": 50,
+  "תל אביב והמרכז": 40,
+  "חיפה והצפון": 60,
+  "באר שבע והדרום": 70,
+  "השפלה": 45,
+  "יהודה ושומרון": 55,
+  "השרון": 50,
+  "הגליל": 65,
+  "נגב": 75,
+ "אולמי הפנינה": 0
+};
+
+// לאחר בחירת האזור, חישוב עלות ההובלה
+const calculateDeliveryCost = (region) => {
+  return regionPrices[region] || 0; // אם לא נמצא אזור, מחזיר 0
+};
+
+//-------------------------------------------------------------------------------------
+
+
+
+
 return (
   <div>
     <NavbarHome/>
 
+
+    
 {onlineOrderMain && (
     <div className="online-order-container">
       <div className="order-header">
@@ -400,6 +473,13 @@ return (
           <h2 className="menu-subtitle">קייטרינג הפנינה - כשר למהדרין</h2>
           <p className="menu-contact">פלאפון - 054-6600-200 | מייל - eli6600200@gmail.com</p>
         </div>
+        {loading && (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      )} 
+
+
                {/* להודעת שגיאה */}
              <Snackbar
               open={!!errorMessage} 
@@ -416,17 +496,21 @@ return (
           <tbody>
             {/* סלטים */}
             <tr>
-              <td className="menu-section-from">
-                <h2 className="menu-section-title">סלטים [8 לבחירה]</h2>
-                <ul className="menu-list">
-                  { inventoryAll.salads.filter(side => side.is_hidden).map((salad) => (
+            <td className="menu-section-from">
+              <h2 className="menu-section-title">סלטים [8 לבחירה]</h2>
+              <ul className="menu-list">
+                {inventoryAll.salads.filter(side => side.is_hidden).map((salad) => { // מציאת התמונה המתאימה לפי שם המנה
+                console.log(salad);
+                
+                  const image = imagesByCategory.salads.find(img =>removeNonHebrew(img.display_name).includes(salad.dish_name));      
+                  return (
                     <div key={salad.id} className="menu-item-img">
-                      <img
-                        src={imgArraySalad[salad.id - 1]}
-                        alt="תמונה להמחשב בלבד"
-                        className="menu-item-thumbnail"
-                        onClick={() => handleImageClick(imgArraySalad[salad.id - 1])} // לחיצה על התמונה
-                      />
+                    <img
+                     src={image ? image.url : 'https://via.placeholder.com/150'}  // תמונה ברירת מחדל
+                     alt={salad.dish_name}
+                     className="menu-item-thumbnail"
+                     onClick={() => handleImageClick(image ? image.url : '')}  // לחיצה על התמונה
+                   />
                       <label className="menu-item-label">
                         <span className="menu-item-name">{salad.dish_name}</span>
                       </label>
@@ -446,114 +530,149 @@ return (
                         }}
                       />
                     </div>
-                  ))}
-                </ul>
-              </td>
+                  );
+                })}
+              </ul>
+            </td>
             </tr>
 
-            {/* מנה ראשונה */}
-            <tr>
-              <td className="menu-section-from">
-                <h2 className="menu-section-title">מנה ראשונה [3 לבחירה]</h2>
-                <ul className="menu-list">
-                  { inventoryAll.first_courses.filter(side => side.is_hidden).map((firstDish) => (
-                    <li key={firstDish.id} className="menu-item">
-                      <label className="menu-item-label">
-                        <input
-                          type="checkbox"
-                          value={firstDish.id}
-                          className="menu-checkbox"
-                          onChange={(e) => {
-                            const id = firstDish.id;
-                            setSelectedFirstDishes((prev) => {
-                              if (e.target.checked) {
-                                return [...prev, id];
-                              } else {
-                                return prev.filter((f) => f !== id);
-                              }
-                            });
-                          }}
-                        />
-                        <span className="menu-item-name">{firstDish.dish_name}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </td>
-            </tr>
+   {/* מנה ראשונה */}
+<tr>
+  <td className="menu-section-from">
+    <h2 className="menu-section-title">מנה ראשונה [3 לבחירה]</h2>
+    <ul className="menu-list">
+      {inventoryAll.first_courses.filter(side => side.is_hidden).map((firstDish) => {
+        const image = imagesByCategory.first_courses.find(img =>
+          removeNonHebrew(img.display_name).includes(firstDish.dish_name)
+        );
+        return (
+          <div key={firstDish.id} className="menu-item-img">
+            <img
+              src={image ? image.url : 'https://via.placeholder.com/150'} // תמונה ברירת מחדל
+              alt={firstDish.dish_name}
+              className="menu-item-thumbnail"
+              onClick={() => handleImageClick(image ? image.url : '')} // לחיצה על התמונה
+            />
+            <label className="menu-item-label">
+              <span className="menu-item-name">{firstDish.dish_name}</span>
+            </label>
+            <input
+              type="checkbox"
+              value={firstDish.id}
+              className="menu-checkbox"
+              onChange={(e) => {
+                const id = firstDish.id;
+                setSelectedFirstDishes((prev) => {
+                  if (e.target.checked) {
+                    return [...prev, id];
+                  } else {
+                    return prev.filter((f) => f !== id);
+                  }
+                });
+              }}
+            />
+          </div>
+        );
+      })}
+    </ul>
+  </td>
+</tr>
 
-            {/* מנה עיקרית */}
-            <tr>
-              <td className="menu-section-from">
-                <h2 className="menu-section-title">מנה עיקרית [3 לבחירה]</h2>
-                <ul className="menu-list">
-                  { inventoryAll.main_courses.filter(side => side.is_hidden).map((mainDish) => (
-                    <li key={mainDish.id} className="menu-item">
-                      <label className="menu-item-label">
-                        <input
-                          type="checkbox"
-                          value={mainDish.id}
-                          className="menu-checkbox"
-                          onChange={(e) => {
-                            const id = mainDish.id;
-                            setSelectedMainDishes((prev) => {
-                              if (e.target.checked) {
-                                return [...prev, id];
-                              } else {
-                                return prev.filter((m) => m !== id);
-                              }
-                            });
-                          }}
-                        />
-                        <span className="menu-item-name">{mainDish.dish_name}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </td>
-            </tr>
+{/* מנה עיקרית */}
+<tr>
+  <td className="menu-section-from">
+    <h2 className="menu-section-title">מנה עיקרית [3 לבחירה]</h2>
+    <ul className="menu-list">
+      {inventoryAll.main_courses.filter(side => side.is_hidden).map((mainDish) => {
+        const image = imagesByCategory.main_courses.find(img =>
+          removeNonHebrew(img.display_name).includes(mainDish.dish_name)
+        );
+        return (
+          <div key={mainDish.id} className="menu-item-img">
+            <img
+              src={image ? image.url : 'https://via.placeholder.com/150'} // תמונה ברירת מחדל
+              alt={mainDish.dish_name}
+              className="menu-item-thumbnail"
+              onClick={() => handleImageClick(image ? image.url : '')} // לחיצה על התמונה
+            />
+            <label className="menu-item-label">
+              <span className="menu-item-name">{mainDish.dish_name}</span>
+            </label>
+            <input
+              type="checkbox"
+              value={mainDish.id}
+              className="menu-checkbox"
+              onChange={(e) => {
+                const id = mainDish.id;
+                setSelectedMainDishes((prev) => {
+                  if (e.target.checked) {
+                    return [...prev, id];
+                  } else {
+                    return prev.filter((m) => m !== id);
+                  }
+                });
+              }}
+            />
+          </div>
+        );
+      })}
+    </ul>
+  </td>
+</tr>
 
-            {/* תוספות */}
-            <tr>
-              <td className="menu-section-from">
-                <h2 className="menu-section-title">תוספות [3 לבחירה]</h2>
-                <ul className="menu-list">
-                  {inventoryAll.side_dishes.filter(side => side.is_hidden).map((side) => (
-                    <li key={side.id} className="menu-item">
-                      <label className="menu-item-label">
-                        <input
-                          type="checkbox"
-                          value={side.id}
-                          className="menu-checkbox"
-                          onChange={(e) => {
-                            const id = side.id;
-                            setSelectedSides((prev) => {
-                              if (e.target.checked) {
-                                return [...prev, id];
-                              } else {
-                                return prev.filter((s) => s !== id);
-                              }
-                            });
-                          }}
-                        />
-                        <span className="menu-item-name">{side.dish_name}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </td>
-            </tr>
+{/* תוספות */}
+<tr>
+  <td className="menu-section-from">
+    <h2 className="menu-section-title">תוספות [3 לבחירה]</h2>
+    <ul className="menu-list">
+      {inventoryAll.side_dishes.filter(side => side.is_hidden).map((side) => {
+        const image = imagesByCategory.side_dishes.find(img =>
+          removeNonHebrew(img.display_name).includes(side.dish_name)
+        );
+        return (
+          <div key={side.id} className="menu-item-img">
+            <img
+              src={image ? image.url : 'https://via.placeholder.com/150'} // תמונה ברירת מחדל
+              alt={side.dish_name}
+              className="menu-item-thumbnail"
+              onClick={() => handleImageClick(image ? image.url : '')} // לחיצה על התמונה
+            />
+            <label className="menu-item-label">
+              <span className="menu-item-name">{side.dish_name}</span>
+            </label>
+            <input
+              type="checkbox"
+              value={side.id}
+              className="menu-checkbox"
+              onChange={(e) => {
+                const id = side.id;
+                setSelectedSides((prev) => {
+                  if (e.target.checked) {
+                    return [...prev, id];
+                  } else {
+                    return prev.filter((s) => s !== id);
+                  }
+                });
+              }}
+            />
+          </div>
+        );
+      })}
+    </ul>
+  </td>
+</tr>
           </tbody>
         </table>
 
         <div className="order-summary-container">
-          <br />
-          <button onClick={openEditModal} className="order-summary-button">
-            סיכום הזמנה
-          </button>
-          <br />
-          <br />
-        </div>
+        <br />
+        <button onClick={handleOrderSummaryClick} className="order-summary-button">
+          סיכום הזמנה
+        </button>
+        <br />
+        <br />
+      </div>
+
       </div>
    
       <Dialog open={openImageDialog} onClose={closeDialog} maxWidth="md" fullWidth>
@@ -642,8 +761,8 @@ return (
 
             <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
-                label=" סיסמא לאזור אישי" 
-                type={showPassword ? 'text' : 'password'}   fullWidth
+                label="בחר סיסמא לאזור אישי  " 
+                type={showPassword ? 'text' : 'password'}fullWidth
                 value={userPassword}
                 onChange={(e) => setUserPassword(e.target.value)}
                 error={Boolean(errors.Password)}  // הצגת שגיאה אם קיימת
@@ -675,6 +794,45 @@ return (
               />
             </Grid>
 
+           <Grid size={{ xs: 12, sm: 6 }}>
+          <InputLabel htmlFor="region-select">בחר אזור משלוח </InputLabel>
+          <Select
+            labelId="region-select"
+            id="region-select"
+            value={deliveryRegion}
+            onChange={(e) => setDeliveryRegion(e.target.value)}
+            fullWidth
+            required
+          >
+            <MenuItem value="ירושלים והסביבה">אזור ירושלים והסביבה</MenuItem>
+            <MenuItem value="תל אביב והמרכז">אזור תל אביב והמרכז</MenuItem>
+            <MenuItem value="חיפה והצפון">אזור חיפה והצפון</MenuItem>
+            <MenuItem value="באר שבע והדרום">אזור באר שבע והדרום</MenuItem>
+            <MenuItem value="השפלה">אזור השפלה</MenuItem>
+            <MenuItem value="יהודה ושומרון">אזור יהודה ושומרון</MenuItem>
+            <MenuItem value="השרון">אזור השרון</MenuItem>
+            <MenuItem value="הגליל">אזור הגליל</MenuItem>
+            <MenuItem value="נגב">אזור הנגב</MenuItem>
+            <MenuItem value="אולמי הפנינה">אולמי הפנינה</MenuItem>
+          </Select>
+        </Grid>
+
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+          <InputLabel htmlFor="address-select"> כתובת מדויקת למשלוח </InputLabel>
+          <TextField
+            label="הכנס כתובת מדויקת"
+           type="text"
+            fullWidth
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            error={Boolean(errors.address)}
+            helperText={errors.address}
+            required
+          />
+         </Grid>
+
+
             <Grid size={{ xs: 12, sm:12 }} display="flex" justifyContent="center">
               <Button variant="contained" onClick={openQuantityModal} color="primary">
                 המשך בהזמנה
@@ -684,6 +842,10 @@ return (
         </Box>
       </Modal>
     )};
+
+
+
+
 
   {/* ---------------- חלון כמות מנות -------------------------------------------------------------------- */}
   <Dialog textAlign="center" open={isQuantityModalOpen}>
@@ -770,10 +932,16 @@ return (
   <div className="kitchen-order-container"> <br />
   <div className='kitchen-order-header'>
     <br/><br/>
+    
     <h1>{eventOwner} תודה שבחרת בקיינטרינג הפנינה</h1>
-    <h1>הצעת המחיר שלנו להזמנה שלך סה"כ ₪ <strong style={{color:"red"}}>{totalPrice}  </strong></h1><br /> 
-    <p>... המחיר אינו כולל אולם / מלצרים / אנשי מטבח ועוד</p><br />
-    <h2>פרטי ההזמנה שלך </h2><br />
+<h1>הצעת המחיר שלנו להזמנה שלך <br/> סה"כ :
+  ₪  <strong style={{color:"#1F8A70"}}>{totalPrice}  </strong></h1>
+<h3 style={{color: '#4F4F4F'}}>תאריך ביצוע ההזמנה שלך: <strong  style={{color:"#1F8A70"}}>{new Date(eventDate).toLocaleDateString('he-IL')}</strong></h3>
+<h3 style={{color: '#4F4F4F'}}>מיקום ההזמנה שלך: <strong style={{color:"#1F8A70"}}>{address}</strong> </h3>
+<h3 style={{color: '#4F4F4F'}}>דמי משלוח: ₪ <strong style={{color:"#1F8A70"}}>{totalDelivery}</strong></h3>
+<br/>
+<h2 style={{color: '#1F8A70'}}>פרטי ההזמנה שלך</h2>
+
     </div>
     {Object.keys(orderSummary).map((category) => ( 
       <div key={category} className="kitchen-order-category">   
@@ -785,8 +953,7 @@ return (
         <table className="kitchen-order-table" dir='rtl'>
           <thead>
             <tr>
-              <th>שם המנה</th>
-             
+              <th>שם המנה</th>    
             </tr>
           </thead>
           <tbody>
@@ -837,4 +1004,3 @@ return (
 
 
 export default OrdersOnline;
-

@@ -152,6 +152,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+
 /* כפתור סגירה */
 .close-button-user-order-online {
   background-color: transparent;
@@ -312,20 +313,46 @@ text-align: center;
   background-color: rgba(33, 70, 139, 0.682);
 }
 
-/* Media Query עבור מסכים קטנים (מובייל) */
+
+.image-dialog-img {
+  width: 100%;  /* תמונה תתפוס את כל רוחב הדיאלוג */
+  height: auto; /* גובה התמונה יתאים אוטומטית לפי רוחב התמונה, שומר על פרופורציות */
+  max-height: 450px;
+  display: block;
+  margin: 0 auto;  /* מרכז את התמונה בדיאלוג */
+  Object-Fit:cover;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 767px) {
 
   /* התאמת הגריד של רשימת המנות */
   .menu-list {
-    grid-template-columns: 1fr; /* כל פריט יתפוס את כל הרוחב ויוצג אחד מתחת לשני */
+    grid-template-columns: 1fr 1fr; /* כל שורה תכיל שני פריטים */
+    gap: 15px; /* ריווח בין התמונות */
   }
 
-  /* התאמת התמונה */
+  /* התאמת התמונה כך שהיא תהיה קצת נמוכה יותר מהשנייה */
   .menu-item-img img {
     width: 100%; /* התמונה תתפוס את כל הרוחב של המסך */
     height: 250px; /* הגדרת גובה קבוע לתמונה כדי שתהיה יפה ומרווחת */
     object-fit: cover; /* זה שומר על יחס הגובה/רוחב של התמונה */
     border-radius: 10px; /* פינות מעוגלות לתמונה */
+  }
+
+  /* הוספת עימוד גובה לתמונה כדי שתהיה נמוכה יותר מהשנייה */
+  .menu-item-img:nth-child(odd) img { /* התמונות האי זוגיות יהיו נמוכות יותר */
+    height: 230px; /* גובה נמוך יותר לתמונה */
   }
 
   /* התאמת טקסט המלל */
@@ -350,11 +377,4 @@ text-align: center;
     margin-top: 15px; 
     border-radius: 8px; 
   }
-}
-/* תמונה בתוך הדיאלוג שתהיה מותאמת לחלון */
-.image-dialog-img {
-  width: 100%;  /* תמונה תתפוס את כל רוחב הדיאלוג */
-  height: auto; /* גובה התמונה יתאים אוטומטית לפי רוחב התמונה, שומר על פרופורציות */
-  display: block;
-  margin: 0 auto;  /* מרכז את התמונה בדיאלוג */
 }

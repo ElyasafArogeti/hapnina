@@ -9,8 +9,13 @@ import Grid2 from '@mui/material/Grid2';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton';
 
+import { useNavigate } from 'react-router-dom';
 const SystemManagerHome = () => {
+  const navigate = useNavigate(); // יצירת פונקציה לנווט
   const [userCount, setUserCount] = useState(0); // כמות משתמשים
   const [monthlyOrders, setMonthlyOrders] = useState([]); // כמות אירועים לפי חודש
   const [weeklyEvents, setWeeklyEvents] = useState([]); // אירועים לשבוע הקרוב
@@ -28,6 +33,8 @@ const SystemManagerHome = () => {
     weeklyEvents: true,
     pendingEvents: true,
   });
+
+  const [newRequests, setNewRequests] = useState(0); // פניות חדשות
 
   const monthNamesHebrew = [
     'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 
@@ -53,13 +60,19 @@ const SystemManagerHome = () => {
             weeklyEventsRes,
             pendingEventsRes,
             yearlyOrdersRes,
+            newRequestsRes
           ] = await Promise.all([
             axios.get('http://localhost:3001/user-count', { headers }),
             axios.get('http://localhost:3001/monthly-orders', { headers }),
             axios.get('http://localhost:3001/weekly-events', { headers }),
             axios.get('http://localhost:3001/events-pending', { headers }),
             axios.get('http://localhost:3001/monthly-orders-summary', { headers }),
+            axios.get('http://localhost:3001/getMessages', { headers }),  // קריאה לפניות החדשות
           ]);
+          const unreadMessages = newRequestsRes.data.filter(message => !message.isRead);
+
+          setNewRequests(unreadMessages.length);  // עדכון מצב הפניות החדשות
+
           setUserCount(userCountRes.data.user_count);
           setMonthlyOrders(
             monthlyOrdersRes.data.map(item => ({
@@ -123,12 +136,27 @@ const isLoading = Object.values(loadingData).includes(true);
   return (
     <>
 
-     <NavbarAll />
+    <NavbarAll />
    <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 4 }}>
    <Grid2 container spacing={3}>
 
+    {/*  פעמון פניות חדשות*/}
+   <Box sx={{  
+        position: 'fixed',
+        top: 20,
+        right: 20,
+        zIndex: 9999,
+      }}>
+        <IconButton color="inherit"   onClick={() => navigate('/ContactManager')}>
+          <NotificationsIcon sx={{ fontSize: 40 }} />
+          {newRequests > 0 && (
+            <Badge badgeContent={newRequests} color="error" sx={{ marginLeft: -1 }} />
+          )}
+        </IconButton>
+      </Box>
+
     {/* כרטיס כמות משתמש */}
-   <Grid2 size={3} md={6} lg={4}>
+   <Grid2 size={{ xs: 12, sm: 3 }} md={6} lg={4}>
           <Card sx={{ height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
           <CardContent sx={{ textAlign: 'center' }}>
             <Typography variant="subtitle1" sx={{ color: '#888888', fontWeight: 'bold' }}>
@@ -142,7 +170,7 @@ const isLoading = Object.values(loadingData).includes(true);
          </Grid2>
 
    {/* כרטיס כמות אירועים שעדיין לא אושרו */}
-<Grid2 size={3} md={6} lg={4}>
+<Grid2 size={{ xs: 12, sm: 3 }} md={6} lg={4}>
 <Card sx={{ height: '150px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
     <CardContent sx={{ textAlign: 'center' }}>
       <Typography variant="subtitle1" sx={{ color: '#888888', fontWeight: 'bold' }} component="div" gutterBottom>כמות ההזמנות הממתינים לאישור</Typography>
@@ -162,7 +190,7 @@ const isLoading = Object.values(loadingData).includes(true);
 </Grid2>
 
     {/* אירועים לשבוע הקרוב */}
-          <Grid2 size={6} md={12}>
+          <Grid2 size={{ xs: 12, sm: 6 }}lg={4} md={6}>
             <Card>
               <CardContent>
                 <Typography variant="h5" component="div" gutterBottom>
@@ -206,7 +234,7 @@ const isLoading = Object.values(loadingData).includes(true);
 
  
     {/* גרף כמות הזמנות חודשיות */}
-          <Grid2 size={12} md={12}>
+          <Grid2 size={{ xs: 12, sm: 12 }}lg={4} md={6}>
             <Card>
               <CardContent>
                 <Typography variant="h5">גרף כמות אירועים לפי חודש</Typography>
@@ -228,7 +256,7 @@ const isLoading = Object.values(loadingData).includes(true);
           </Grid2>
 
     {/* גרף אחוזי עלייה */}
-      <Grid2 size={12}  md={6} lg={4}>
+      <Grid2 size={{ xs: 12, sm: 12 }} md={6} lg={4}>
             <Card sx={{ height: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="subtitle1" sx={{ color: '#888888', fontWeight: 'bold' }}>

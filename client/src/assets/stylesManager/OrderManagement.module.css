@@ -158,3 +158,60 @@
 .searchIcon:hover {
   color: #2980b9;
 }
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+  .table {
+    width: 100%;
+    font-size: 12px;
+    box-shadow: none;
+    margin-top: 20px;
+  }
+
+  /* דחיסת טבלה כך שהשורות יהיו רגילות במובייל */
+  .th, .td {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .th {
+    font-size: 12px;
+  }
+
+  .td {
+    font-size: 12px;
+  }
+
+  /* הצרת רוחב השורות */
+  .tr {
+    width: 100%;
+    display: table-row;
+    margin-bottom: 10px;
+  }
+
+  .td {
+    padding: 8px 12px;
+  }
+
+  /* כפתורים */
+  .buttons {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .button, .blue, .red {
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+  }
+}

@@ -314,8 +314,10 @@ const editOrderDetails = (order) => {
       eventDate: order.event_date,
       phoneNumber: order.owner_phone,
       guestCount: order.guest_count,
-      totalPrice: order.totalPrice,  // אם יש לך שדה כזה בהזמנה
-      email: order.owner_email,  // אם יש לך שדה כזה בהזמנה
+      totalPrice: order.totalPrice, 
+      email: order.owner_email, 
+      event_location: order.event_location, 
+      address: order.address, 
     }
   });
 };
@@ -335,6 +337,7 @@ const editOrderDetails = (order) => {
         />
         <FaSearch className={styles.searchIcon} />
       </div>
+
 
       <table className={styles.table} dir="rtl">
         <thead>

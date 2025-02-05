@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavbarAll from "./NavbarAll";
 import '../../assets/stylesManager/OnlineOrdersSystem.css';
 import { useNavigate } from 'react-router-dom';
-import { Password } from "@mui/icons-material";
+
 
 const OnlineOrdersSystem = () => {
   const navigate = useNavigate();
@@ -51,8 +51,11 @@ const OnlineOrdersSystem = () => {
         orderMenu: orderToClose.order_menu,
         totalPrice: orderToClose.total_price,
         email: orderToClose.email,
-        password: orderToClose.password
+        password: orderToClose.password , 
+        event_location: orderToClose.event_location,
+        address: orderToClose.address
       };
+
       const response = await fetch('http://localhost:3001/online_orders/add_customer_order', {
         method: 'POST',
         headers: {
@@ -133,8 +136,10 @@ const OnlineOrdersSystem = () => {
               <h2 className="order-user-name">{order.user_name}</h2>
               <p className="order-user-phone">מספר טלפון: {order.userPhone}</p>
               <p className="order-guest-count">מספר אורחים: {order.guest_count}</p>
-              <p className="order-event-date">תאריך האירוע: {new Date(order.event_date).toLocaleDateString()}</p>      
-              <p className="order-title">שלח בתאריך: {new Date(order.shipping_date).toLocaleDateString()}</p>
+              <p className="order-guest-count"> אזור ההזמנה: {order.event_location}</p>
+              <p className="order-guest-count"> כתובת ההזמנה: {order.address}</p>
+              <p className="order-title">תאריך ביצוע ההזמנה: {new Date(order.event_date).toLocaleDateString()}</p>      
+              <p className="order-guest-count"> לקוח שלח בתאריך: {new Date(order.shipping_date).toLocaleDateString()}</p>
               <div className="online-order-actions-container">
                 <button  className="approve-button" onClick={() => setEditWindow(order.id)} >
                   אשר הזמנה

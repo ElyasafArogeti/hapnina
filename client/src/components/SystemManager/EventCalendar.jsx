@@ -3,6 +3,7 @@ import '../../assets/stylesManager/Calendar.css';
 import NavbarAll from './NavbarAll';
 import { useNavigate } from 'react-router-dom';
 
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 
@@ -27,7 +28,8 @@ function EventCalendar() {
   const [showNoteModal, setShowNoteModal] = useState(false); // משתנה למעקב אחרי אם המודל מוצג
 
   const [loading, setLoading] = useState(false); 
-  
+  const [showFullNote, setShowFullNote] = useState({});  
+
   useEffect(() => {
     fetchOrders();
     const today = new Date();
@@ -88,6 +90,8 @@ function EventCalendar() {
           start: order.event_date,   
           order_menu: order.order_menu,
           notes: order.notes,
+          event_location: order.event_location,
+          address: order.address
         };
       });
       
@@ -133,6 +137,8 @@ function EventCalendar() {
                 guestCount: selectedOrder.guest_count,
                 totalPrice: selectedOrder.totalPrice,
                 email: data.email,
+                event_location: selectedOrder.event_location,
+                address : selectedOrder.address
               }
             });
           } else {
@@ -149,6 +155,7 @@ function EventCalendar() {
               guestCount: order.guest_count,
               totalPrice: order.totalPrice,
               email: data.email,
+              
             }
           });
         }
@@ -220,11 +227,6 @@ function EventCalendar() {
     }
   };
   
-  
-  
-
-
-
 //----------------------------------------------------
 // פונקציה לחישוב תאריך עברי
 const getHebrewDate = (date) => {
@@ -242,19 +244,16 @@ const getHebrewDate = (date) => {
     setNote(existingNote);  // עדכון הערה במצב
   };
   
-  
-
 //----------------------------------------------------------
- const updateHebrewDateHeader = (date) => {
-    const hdate = new HDate(date);
-    const hebrewMonth = hdate.renderGematriya('he');  // שם החודש העברי בעברית
-    const hebrewDateFormatted = `${date.toLocaleDateString('he-IL')}`;
-    setHebrewDateHeader({
-      hebrewDateMonth: hebrewMonth,  // התאריך העברי
-      hebrewDateDay: hebrewDateFormatted  // התאריך הלועזי
-    });
+const updateHebrewDateHeader = (date) => {
+  const hdate = new HDate(date);  // יצירת אובייקט תאריך עברי
+  const hebrewMonth = hdate.renderGematriya('he');  // שם החודש העברי בעברית
+  const hebrewDateFormatted = `${date.toLocaleDateString('he-IL')}`; // תאריך לועזי עם פורמט עברי
+  setHebrewDateHeader({
+    hebrewDateMonth: hebrewMonth,  // התאריך העברי
+    hebrewDateDay: hebrewDateFormatted  // התאריך הלועזי
+  });
 };
-
 
 //------------------------------------------------------
   const updateCurrentTime = () => {
@@ -270,13 +269,22 @@ const getHebrewDate = (date) => {
 // נוסיף טיפול כאשר תצוגת החודש משתנה
 const handleDateChange = (info) => {
   const viewType = info.view.type;  
-  if (viewType === 'dayGridMonth') {
+  const currentStartDate = info.view.currentStart;  // התאריך הראשון בתצוגת החודש
+  const today = new Date();
+  const isCurrentMonth = currentStartDate.getMonth() === today.getMonth() && currentStartDate.getFullYear() === today.getFullYear();
 
-    const today = new Date();  // תאריך נוכחי
-    updateHebrewDateHeader(today);  // עדכון הכותרת עם התאריך הנוכחי
+  if (viewType === 'dayGridMonth') {
+    if (isCurrentMonth) {
+      // אם אנחנו בחודש הנוכחי, הצג את התאריך של היום
+      updateHebrewDateHeader(today);
+    } else {
+      // אחרת, הצג את תחילת החודש הנוכחי
+      updateHebrewDateHeader(currentStartDate);
+    }
   } else {
-    updateHebrewDateHeader(info.view.currentStart); // עדכון התאריך בעבור תצוגת יום או שבוע
+    updateHebrewDateHeader(currentStartDate); // עדכון תאריך עבור תצוגת יום או שבוע
   }
+
   if (viewType === 'timeGridDay') {
     const currentDate = info.view.currentStart; // התאריך הנוכחי בתצוגת היום
     openEditNoteModal(currentDate); // פתיחת המודל להוספת הערה
@@ -284,6 +292,16 @@ const handleDateChange = (info) => {
     setShowNoteModal(false); // סגירת המודל אם לא בתצוגת יום
   }
 };
+//---------------------------------------------------
+const toggleFullNote = (eventId) => {
+  setShowFullNote(prevState => ({
+    ...prevState,
+    [eventId]: !prevState[eventId]  // מתחלף בין להראות את כל ההערה או רק את החלק הקצר
+  }));
+};
+
+
+
 
   return (
     <div> 
@@ -303,90 +321,103 @@ const handleDateChange = (info) => {
        {hebrewDateHeader.hebrewDateDay} 
       </div>
       <br />
-        <FullCalendar
-          direction="rtl"
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, rrulePlugin]}
-          
-          headerToolbar={{
-            left: 'prev,next',
-            center: 'title',
-            right: 'today,dayGridMonth,dayGridWeek,dayGridDay',
-          }}
-          buttonText={{
-            today: 'היום',
-            month: 'תצוגת חודש',
-            week: 'שבוע',
-            day: 'יום',
-          }}
- 
-          events={orders} // הזמנות שהתקבלו מהשרת
-          locale="he"     // הגדרת שפת הקלנדר לעברית
+      <FullCalendar
+  direction="rtl"
+  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, rrulePlugin]}
+  headerToolbar={{
+    left: 'prev,next',
+    center: 'title',
+    right: 'today,dayGridMonth,dayGridWeek,dayGridDay',
+  }}
+  buttonText={{
+    today: 'היום',
+    month: 'תצוגת חודש',
+    week: 'שבוע',
+    day: 'יום',
+  }}
+  events={orders} // הזמנות שהתקבלו מהשרת
+  locale="he"     // הגדרת שפת הקלנדר לעברית
+  eventClick={(info) => openEditModal(info)} // הצגת פרטי האירוע בלחיצה
+  dateClick={(info) => openEditNoteModal(info.date)} // הצגת המודל להוספת או עדכון הערה
+  dayCellDidMount={(info) => {
+    const date = info.date;
+    const hebrewDate = getHebrewDate(date).split(' ')[0]; // תאריך עברי ללא השנה
+    const cellElement = info.el.querySelector('.fc-daygrid-day-top');
+    if (cellElement) {
+      const hebrewDateElement = document.createElement('span');
+      hebrewDateElement.innerHTML = hebrewDate;
+      hebrewDateElement.classList.add('hebrew-date'); // הוספת class חדש
+      cellElement.appendChild(hebrewDateElement);
+    }
+  }}
+  datesSet={(info) => handleDateChange(info)} // טיפול כשחודש משתנה
+  eventContent={(eventInfo) => {
+    const event = eventInfo.event;
+    const notes = event.extendedProps.notes || ''; 
+    const truncatedNotes = notes.slice(0, 8) + (notes.length > 5 ? '...' : '');
+    return (
+      <>
+        <div>{event.title}</div>
+            {notes && (
+              <div className="event-note-container">
+                <label className="event-label">הערות:</label>
+                <div className="event-note">
+                  {showFullNote[event.id] ? notes : truncatedNotes}
+                </div>
+                
+              
+              </div> 
+             )}
+      </>
+    );
+  }}
+/>
 
-          eventClick={(info) => {
-            
-            openEditModal(info); // הצגת פרטי האירוע בלחיצה
-          }}
 
-          eventClassNames={(info) => {
-            return info.event.extendedProps.status === 'busy' ? 'busy-event' : '';
-          }}
 
-          dateClick={(info) => { 
-            setCurrentDate(info.date);  // שמירת התאריך שנבחר בסטייט של currentDate
-            openEditNoteModal(info.date);  // הצגת המודל להוספת או עדכון הערה
-          }}
-          
-            
-          dayCellDidMount={(info) => {
-            const date = info.date; // תאריך לועזי
-            const hebrewDate = getHebrewDate(date).split(' ')[0]; // תאריך עברי ללא השנה
-            const cellElement = info.el.querySelector('.fc-daygrid-day-top');
-            if (cellElement) {
-                const hebrewDateElement = document.createElement('span');
-                hebrewDateElement.innerHTML = hebrewDate;
-                hebrewDateElement.classList.add('hebrew-date'); // הוספת class חדש
-                cellElement.appendChild(hebrewDateElement);
-              }
-          }}
-          
-           datesSet={(info) => {
-            handleDateChange(info);
-          }}
 
-          eventContent={(eventInfo) => {
-            const event = eventInfo.event;
-            const notes = event.extendedProps.notes || ''; // אם יש הערה, הצג אותה
-            const truncatedNotes = notes.length > 30 ? notes.slice(0, 17) + '...' : notes; // חיתוך הערות אם הן ארוכות מדי      
-            return (
-              <>
-                <div>{event.title}</div>
-                {truncatedNotes && <div className='event-note-container'>
-                  <label className='event-label'>הערות:</label>
-                  <div className="event-note">{truncatedNotes}</div>
-                </div>}
-              </>
-            );
-          }}
-          
-        
-        />
 
-        {showNoteModal && (
-          <div className="note-modal">
-          <h1 style={{ color: 'white', fontWeight: 'bold'}}>הערות אירוע בתאריך : {currentDate.toLocaleDateString('en-CA')}</h1><hr />
-            <h2 style={{ color: 'white',fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}> הוסף / ערוך הערות </h2>
-            <br />
-            <textarea className='note-textarea' value={note} dir='rtl'
-              onChange={(e) => setNote(e.target.value)} // עדכון הערה
-              placeholder="הקלד את ההערה כאן"
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between' , maxWidth: '400px'}}>
-            <button onClick={saveNote} className='save-button'>שמור</button>
-            <button onClick={() => {setNote('')
-               setShowNoteModal(false)}} className='save-button'>סגור</button>
-            </div>
-          </div>
-        )}
+<Dialog
+  open={showNoteModal}
+  onClose={() => setShowNoteModal(false)}
+  BackdropProps={{
+    style: {
+      backgroundColor: 'rgba(0, 0, 0, 0.4)' // רקע חשוך עם שקיפות
+    },
+  }}
+>
+  <DialogTitle sx={{ color: 'white', fontWeight: 'bold', backgroundColor: '#1976d2' }}>
+    הערות אירוע בתאריך: {currentDate ? currentDate.toLocaleDateString('he-IL') : 'תאריך לא זמין'}
+  </DialogTitle>
+
+  <DialogContent sx={{ 
+    backgroundColor: '#1976d2', 
+    color: 'white', 
+    maxHeight: '70vh',  // הגבלת גובה התוכן
+    overflowY: 'auto',  // אפשרות לגלול
+    paddingBottom: 2 // הוספת מרווח בתחתית
+  }}>
+    <h2 style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>הוסף / ערוך הערות</h2>
+    <TextField
+      fullWidth
+      multiline
+      rows={6}
+      value={note}
+      onChange={(e) => setNote(e.target.value)}
+      placeholder="הקלד את ההערה כאן"
+      sx={{ marginTop: 2, backgroundColor: '#fff', borderRadius: '4px' }}
+      inputProps={{ style: { textAlign: 'right' } }} // עריכת טקסט מימין לשמאל
+    />
+  </DialogContent>
+
+  <DialogActions sx={{ backgroundColor: '#1976d2' }}>
+    <Button onClick={saveNote} variant="contained" sx={{ backgroundColor: '#388e3c' }}>
+      שמור
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
 
 
 

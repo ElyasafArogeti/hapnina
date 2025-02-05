@@ -3,12 +3,11 @@ import { Box, Link, IconButton, Drawer, List, ListItem, ListItemButton, ListItem
 import { FaWaze } from "react-icons/fa";
 import { BsWhatsapp, BsTelephoneOutbound, BsPersonCircle} from "react-icons/bs";
 import MenuIcon from "@mui/icons-material/Menu";
-import logo from "../../assets/imgs/הלוגו.png";
+import logo from "../../assets/imgs/logo.jpg";
 import { Link as RouterLink } from 'react-router-dom';
+
 const NavbarHome = () => {
-
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
   };
@@ -90,42 +89,70 @@ const NavbarHome = () => {
 
 
       {/* תפריט רספונסיבי */}
-      <Box sx={{ display: { xs: "block", md: "none" }, backgroundColor: "#000", color: "#FFF"}}>
-        <IconButton sx={{ color: "#FFF" }} onClick={toggleDrawer(true)}
-        > <MenuIcon /> 
-        </IconButton>
+      <Box sx={{ display: { xs: "block", md: "none" }, backgroundColor: "black", color: "#FFF", padding: '0 1rem' }}>
 
-        <Drawer  anchor="left" 
-        sx={{'& .MuiDrawer-paper': {
-          backgroundColor: "#000", 
-          width: '250px', 
-          color: "#FFF", 
-          padding: '1rem 0',
-          maxHeight: '100vh', 
-       }}} 
-        open={drawerOpen} onClose={toggleDrawer(false)}  >
-          <Box >
-            <List>
-              {[  { label: "דף הבית", to: "/" },  { label: "קצת עלינו", to: "/about" }, { label: "צור קשר", to: "/contact" },
-              { label: "גלריה", to: "/Gallery" },   { label: "הזמנות אונליין", to: "/ordersOnline" },
-              ].map((link, index) => (
-                <ListItem key={index} disablePadding>
-                  <ListItemButton href={link.to}>
-                    <ListItemText primary={link.label}                
-                      sx={{
-                        textAlign: "center",
-                        color: "#FFF",
-                        transition: "color 0.3s",
-                        "&:hover": { color: "#FFD700" },
-                      }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        </Drawer>
-      </Box>
+  <IconButton sx={{ color: "#FFF" , transition: "color 0.3s", "&:hover": {color: "#FFD700" }}} onClick={toggleDrawer(true)}>
+    <MenuIcon />
+  </IconButton>
+
+  <Drawer
+    anchor="left"
+    sx={{
+      '& .MuiDrawer-paper': {
+        backgroundColor: "rgba(0, 0, 0, 0.9)", // צבע כהה יותר
+        width: '250px',
+        color: "#FFF",
+        padding: '1rem 0',
+        maxHeight: '100vh',
+      },
+    }}
+    open={drawerOpen}
+    onClose={toggleDrawer(false)}
+  >
+    <Box>
+      <List>
+        {[{ label: "דף הבית", to: "/" }, { label: "קצת עלינו", to: "/about" }, { label: "צור קשר", to: "/contact" },
+          { label: "גלריה", to: "/Gallery" }, { label: "הזמנות אונליין", to: "/ordersOnline" },
+        ].map((link, index) => (
+          <ListItem key={index} disablePadding>
+            <ListItemButton
+              href={link.to}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%', // נותן מרחב שלם לקישור
+                padding: '10px 0', // מרווחים גדולים יותר
+                border: '2px solid transparent', // גבול שקוף עבור hover
+                borderRadius: '8px',
+                margin: '5px 0', // מרווח בין קישורים
+                transition: 'background-color 0.3s, border-color 0.3s',
+                border: '2px solid #444',
+                fontSize: '2rem',
+                "&:hover": {
+                  backgroundColor: "#444", // רקע כהה יותר בהובר
+                  borderColor: "#FFD700", // גבול צבעוני בהובר
+                  color: "#FFD700", // שינוי צבע טקסט בהובר
+                },
+              }}
+            >
+              <ListItemText
+                primary={link.label}
+                sx={{
+                  textAlign: "center",
+                  color: "#FFF",
+                  fontSize: '1.1rem', // גודל טקסט גדול יותר
+                  transition: "color 0.3s",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  </Drawer>
+</Box>
+
 
 
      

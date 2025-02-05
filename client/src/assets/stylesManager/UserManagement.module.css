@@ -204,21 +204,50 @@
   color: #007bff;
 }
 
+
+
+
 /* עיצוב למסכים קטנים */
 @media (max-width: 768px) {
   .table {
-    font-size: 12px;
+    font-size: 12px; /* הקטנת גודל הטקסט */
+    margin-top: 20px;
+  }
+
+  /* שינוי במידות כותרות ותאים */
+  .th, .td {
+    padding: 10px 12px; /* הפחתת ריווח בשורות */
+    font-size: 12px; /* הקטנת גודל הטקסט בכותרות ובתאים */
+  }
+
+  .th {
+    font-size: 14px; /* גודל טקסט בכותרת */
+  }
+
+  /* כפתורים */
+  .button {
+    font-size: 12px; /* הקטנת גודל הכפתור */
+    padding: 8px 12px;
+  }
+
+  .searchInput {
+    width: 250px; /* הצרת שדה החיפוש */
   }
 
   .editForm {
     width: 90%;
   }
 
-  .button {
+  /* עיצוב הטופס בעריכה במובייל */
+  .formGroup label {
     font-size: 12px;
   }
 
-  .searchInput {
-    width: 250px;
+  .formGroup input {
+    font-size: 12px;
+  }
+
+  .editForm button {
+    font-size: 14px;
   }
 }

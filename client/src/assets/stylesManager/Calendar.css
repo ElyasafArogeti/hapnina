@@ -172,13 +172,13 @@
   margin-bottom: 10px;
 }
 
-.event-note-container .event-label {
+ .event-label {
   font-weight: bold;
   font-size: 14px;
 }
 
-.event-note-container .event-note {
-  font-size: 14px;
+ .event-note {
+  font-size: 12px;
   font-style: italic;
   margin-top: 5px;
 }
@@ -191,3 +191,113 @@
 .MuiLinearProgress-bar {
   background-color: #007bff;
 }
+
+/* התאמות רספונסיביות עבור הערות וכפתורים */
+@media (max-width: 768px) {
+  .event-calendar-container {
+    padding: 5px;
+    height: 20px;
+    height: 100vh;
+  }
+
+  .hebrew-date-header, .hebrew-date-month {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  .fc-daygrid-day-top {
+    font-size: 10px; /* הקטנה של תאריכים */
+    padding: 4px;
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 12px;  /* הקטנה של מספרי ימים */
+  }
+
+  .fc-event {
+    font-size: 10px;  /* הקטנה של גודל הטקסט של האירועים */
+    padding: 3px;
+  }
+
+  .note-modal {
+    width: 90%;   /* הגבלת הרוחב של המודל */
+    padding: 12px;
+  }
+
+  .note-textarea {
+    height: 90px;  /* הקטנה של גובה תיבת הטקסט */
+    font-size: 14px;  /* הקטנה של גודל הטקסט בתיבה */
+    width: 90%;  /* הגבלת הרוחב של תיבת הטקסט */
+  }
+
+  .save-button, .save-button + .save-button {
+    font-size: 12px;
+    padding: 6px 10px; /* הקטנה של כפתורים */
+  }
+
+
+
+  .event-label {
+    font-size: 9px; /* הקטנה של כותרת ההערה */
+  }
+
+
+  .fc-button {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .fc-button:hover {
+    background-color: #1565C0;
+  }
+
+  .fc-button-active {
+    background-color: #0D47A1;
+  }
+  .event-note-container .show-more-btn {
+    font-size: 12px;
+    color: #007bff;
+    cursor: pointer;
+    text-align: center;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+    .event-note-container {
+    font-size: 10px;  /* הקטנה של גודל הטקסט בהערות */
+    padding: 6px;
+    max-height: 50px; /* הגבלת גובה ההערה */
+    overflow: hidden; /* חיתוך תוכן ארוך */
+    position: relative;
+  }
+  .event-note-container .event-note {
+    font-size: 8px; /* פונט קטן יותר להערה */
+    line-height: 1.4;
+    color: #333;
+    padding: 4px 0;
+  }
+  /* כפתור "הצג יותר" */
+  .show-more-btn {
+    font-size: 10px;
+    color: #007bff;
+    cursor: pointer;
+    text-align: center;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+.fc .fc-toolbar {
+  display: block;
+}
+.fc .fc-toolbar-title {
+  font-size: 17px;
+}
+.fc-toolbar-chunk {
+  font-size: 12px;
+}
+
+}
+

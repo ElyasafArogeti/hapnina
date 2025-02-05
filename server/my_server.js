@@ -16,6 +16,7 @@ const bcrypt = require("bcrypt");
 
 const fs = require('fs');
 const path = require('path');
+const e = require("express");
 require('dotenv').config(); // בתחילת הקובץ
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
 
@@ -387,61 +388,8 @@ app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
     res.status(500).json({ error: 'שגיאה בעת שמירת ההערה' });
   }
 });
-
-
 //---------------------------------------------------------------------
 
-
-
-// קביעת טרנספורטר לשליחת מיילים
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'elyasaf852@gmail.com',
-//     pass: 'Aa135923',  // כדאי לשמור את הסיסמאות בסביבה מאובטחת
-//   },
-// });
-
-// פונקציה לשליחת מייל למנהל
-// const sendReminderEmail = (eventTitle, eventDate) => {
-//   const mailOptions = {
-//     from: 'ahdasa5340@gmail.com',
-//     to: 'elyasaf852@gmail.com',  // המנהל
-//     subject: `Reminder: Event Today - ${eventTitle}`,
-//     text: `שלום! זהו תזכורת שיש לך אירוע היום, ${eventTitle}, בתאריך ${eventDate} בשעה 08:00 בבוקר.`,
-//   };
-
-//   transporter.sendMail(mailOptions, (error, info) => {
-//     if (error) {
-//       console.log('Error sending email:', error);
-//     } else {
-//       console.log('Email sent:', info.response);
-//     }
-//   });
-// };
-
-// תזמון שליחת תזכורת כל יום ב- 8:00 בבוקר
-// cron.schedule('0 8 * * *', async () => {
-//   const today = new Date().toISOString().split('T')[0];  // מקבלים את התאריך הנוכחי ב-YYYY-MM-DD
-//   try {
-//     const [orders] = await connection.query('SELECT * FROM orders');
-//          // מסננים את ההזמנות שמתאימות לתאריך של היום
-//     const todayOrders = orders.filter(order => order.event_date === today);
-
-//     todayOrders.forEach(order => {
-//       sendReminderEmail(order.title, order.event_date);  // שולחים את המייל
-//     });
-//   } catch (err) {
-//     console.error('Error fetching orders for reminder email:', err);
-//   }
-// });
-// const today = new Date().toISOString().split('T')[0]; // מקבל את התאריך היום ב-YYYY-MM-DD
-// sendReminderEmail("Event Title", today); 
-
-// cron.schedule('46 14 * * *', () => {
-//   const today = new Date().toISOString().split('T')[0];
-//   sendReminderEmail("Event Title", today);  // או כל שם אירוע שתרצה
-// });
 
 
 
@@ -452,16 +400,79 @@ app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
 //  ---------הזמנות אונליין הוספת הזמנה למאגר----------------------------
 app.post('/addOrdersOnline', async (req, res) => {
   try {
-      const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, shippingDate , email , Password} = req.body;
-      // הצפנת הסיסמה לפני ששולחים אותה למסד הנתונים
+      const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, shippingDate , email , Password, event_location , address} = req.body;
+        // הצפנת הסיסמה לפני ששולחים אותה למסד הנתונים
       const saltRounds = 10; // מספר סיבובי ההצפנה, יותר סיבובים מבטיחים הצפנה חזקה יותר
       const hashedPassword = await bcrypt.hash(Password, saltRounds);
 
       const [result] = await connection.query(`
-          INSERT INTO online_orders (user_name, userPhone, guest_count, event_date, order_menu, total_price, shipping_date, email , password)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [userName, userPhone, guestCount, eventDate, JSON.stringify(orderMenu), totalPrice, shippingDate, email, hashedPassword]);
-      res.status(201).json({ message: 'נשלח בהצלחה' });
+          INSERT INTO online_orders (user_name, userPhone, guest_count, event_date, order_menu, total_price, shipping_date, email , password, event_location, address)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [userName, userPhone, guestCount, eventDate, JSON.stringify(orderMenu), totalPrice, shippingDate, email, hashedPassword,event_location, address]);
+    
+  // קריאת תבנית ה-HTML ממערכת הקבצים
+  const templatePath = path.join(__dirname, 'templates', 'orderEmailTemplate.html');
+
+   let emailTemplate = fs.readFileSync(templatePath, 'utf8'); 
+
+         // יצירת תוכן פרטי ההזמנה להחלפה בתבנית ה-HTML
+    const orderMenuContent = Object.keys(orderMenu).map((category) => {
+      return `
+        <h4 style="font-size: 22px; text-align: center;">${category === 'salads' ? 'סלטים' :
+        category === 'first_courses' ? 'מנות ראשונות' :
+        category === 'main_courses' ? 'מנות עיקריות' : 'תוספות'}</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>שם המנה</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${orderMenu[category].map((item) => {
+              return `
+                <tr>
+                  <td>${item.dish_name}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }).join('');
+    emailTemplate = emailTemplate.replace('{{orderMenuContent}}', orderMenuContent);
+ emailTemplate = emailTemplate.replace('{{userName}}', userName);
+ emailTemplate = emailTemplate.replace('{{eventDate}}', eventDate);
+  emailTemplate = emailTemplate.replace('{{guestCount}}', guestCount);
+    emailTemplate = emailTemplate.replace('{{totalPrice}}', totalPrice);
+   
+   
+
+    // שליחת המייל ללקוח
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'hpnina6600200@gmail.com',  // כתובת המייל שלך
+        pass: 'ycxt oeyj ojha xvyt',   // סיסמא של המייל שלך
+      },
+    });
+
+    const mailOptions = {
+      from: 'hpnina6600200@gmail.com',  // כתובת המייל ששולחת
+      to: email,       // המייל של המשתמש
+      subject: 'הזמנתך התקבלה בהצלחה',
+      html: emailTemplate,  // התוכן ה-HTML שיצרנו
+    };
+
+    // שליחת המייל
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.error('שגיאה בשליחת המייל', err);
+        return res.status(500).json({ success: false, message: 'בעיה בשליחת המייל.' });
+      }
+      console.log('הודעה נשלחה: ' + info.response);
+    });
+      
+        res.status(201).json({ message: 'נשלח בהצלחה' });
   } catch (err) {
       console.error('שגיאה בשליחה הזמנות אונליין', err);
       return res.status(500).json({ error: 'בעיה בשליחת אונליין' });
@@ -486,7 +497,7 @@ app.get("/online_orders",authenticateToken , async (req, res) => {
 })
  //---------------------סגירת הזמהת לקוח למערכת--------------------------------------------------          
 app.post('/online_orders/add_customer_order', authenticateToken , async (req, res) => {
-  const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice , email , password} = req.body;
+  const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice , email , password , event_location, address} = req.body;
 
   try {   // המרת התאריך לפורמט תואם MySQL
     const formattedEventDate = formatDateForMySQL(eventDate);
@@ -504,8 +515,8 @@ app.post('/online_orders/add_customer_order', authenticateToken , async (req, re
     }
     // הוספת ההזמנה לאחר יצירת או עדכון המשתמש
     await connection.query(
-      `INSERT INTO orders (user_id, order_menu, guest_count, event_date, totalPrice) VALUES (?, ?, ?, ?, ?)`,
-      [userId, orderMenu, guestCount, formattedEventDate, totalPrice]
+      `INSERT INTO orders (user_id, order_menu, guest_count, event_date, totalPrice ,event_location, address) VALUES ( ? ,?, ?, ?, ?, ? ,?)`,
+      [userId, orderMenu, guestCount, formattedEventDate, totalPrice, event_location ,address]
     );
     res.status(200).send({ message: 'ההזמנה והמשתמש הוספו בהצלחה!' });
   } catch (error) {
@@ -702,9 +713,12 @@ app.get('/OrderManagement',authenticateToken,  async (req, res) => {
         orders.event_date, 
         orders.order_menu,-- הוספת שדה פריטי התפריט
         orders.totalPrice,   
+        orders.event_location,
+        orders.address,
         users.name AS owner_name, 
         users.phone AS owner_phone , -- הוספת שדה טלפון של בעל ההזמנה
         users.email AS owner_email -- הוספת שדה דוא"ל של בעל ההזמנה
+
       FROM orders 
       JOIN users ON orders.user_id = users.id
     `);
@@ -743,6 +757,11 @@ app.put('/OrderManagement/UpdateOrder/:userId/:orderId',authenticateToken, async
       'UPDATE orders SET order_menu = ? WHERE user_id = ? AND id = ?',
       [JSON.stringify(order_menu), userId, orderId]
     );
+      // עדכון כמות המוזמנים בטבלת הלקוחות
+      await connection.query(
+        'UPDATE users SET guest_count = ? WHERE id = ?',
+        [guest_count, userId]
+      );
     res.json({ message: 'ההזמנה עודכנה בהצלחה' });
   } catch (err) {
     console.error("שגיאה בעדכון הזמנה:", err);
@@ -1032,7 +1051,7 @@ const sendOrderEmailToCustomer = async (orderHTML, customerEmail) => {
     attachments: [
       {
         filename: 'logo.png',
-        path: 'http://localhost:3000/static/media/%D7%94%D7%9C%D7%95%D7%92%D7%95.04b11a043e65a6ae2935.png',  // או כתובת URL אם זה משרת ציבורי
+        path: './imgs/logo.jpg',  // או כתובת URL אם זה משרת ציבורי
         cid: 'logo' 
       },
     ],
@@ -1100,8 +1119,147 @@ app.post('/sendOrderToKitchen', upload.single('file'), (req, res) => {
 
 
 
+
+
+        /*Cloudinary  שירות התמונות */
+
+//--------Cloudinary---התחברות לענן אחסון התמונות ---------------------------------------------------
+const multerImg = require('multer');
+const imageUpload = multerImg({ storage: multer.memoryStorage() }); // מאחסן את הקובץ בזיכרון
+
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: 'dhkegagjk',  // הכנס את שם הענן שלך מ-Cloudinary
+    api_key: '489637112758284', // הכנס את ה-API Key שלך
+    api_secret: '7ujnK9T1z-eHo69CcCYdbp5PUZE' // הכנס את ה-API Secret שלך
+});
+
+
+//---------Cloudinary-----הוספת תמונה -------------------------------------------------------------
+app.post('/uploadImage',authenticateToken, imageUpload.single('image'), async (req, res) => {
+  try {
+    const file = req.file; // הקובץ שהועלה
+    const name = req.body.name; // שם התמונה
+    const category = req.body.category; // הקטגוריה
+
+    if (!file) {
+      return res.status(400).json({ success: false, message: 'לא הועלתה תמונה' });
+    }
+    if (!name || !category) {
+      return res.status(400).json({ success: false, message: 'לא נבחר שם או קטגוריה' });
+    }
+    const result = await new Promise((resolve, reject) => { // העלאה ל-Cloudinary
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: `manager_images/${category}`,
+          display_name: name,
+          resource_type: 'image',
+          public_id: name,
+        },
+        (error, result) => {
+          if (error) {
+            reject(error); 
+          } else {
+            resolve(result);
+          }
+        }
+      );
+      stream.end(file.buffer);
+    });
+    res.status(200).json({
+      success: true,
+      url: result.secure_url,
+      public_id: result.public_id,
+      name: result.public_id,
+      category,
+    });
+
+  } catch (err) {
+    console.error('Error uploading image:', err);
+    res.status(500).json({ success: false, message: 'שגיאה בהעלאת התמונה' });
+  }
+});
+
+//---------- להורדת כל התמונות שהועלו-------------------------------------------------
+app.get('/getUploadedImages', async (req, res) => {
+  try {
+    // פונקציה לשאיבת תמונות לפי תיקיה
+    const fetchImagesByFolder = async (folder) => {
+      const result = await cloudinary.search
+        .expression(`folder:${folder}`) // חיפוש לפי תיקיה
+        .sort_by("public_id", "desc") // סדר לפי מזהה
+        .max_results(1000) // מספר מקסימלי של תוצאות
+        .execute();
+
+      return result.resources.map((image) => ({
+        public_id: image.public_id,
+        url: image.secure_url,
+        folder: folder,
+        display_name: image.public_id.split("/").pop(), 
+      }));
+    };
+
+    const firstCourses = await fetchImagesByFolder("manager_images/first_courses");
+    const mainCourses = await fetchImagesByFolder("manager_images/main_courses");
+    const salads = await fetchImagesByFolder("manager_images/salads");
+    const sideDishes = await fetchImagesByFolder("manager_images/side_dishes");
+    
+    // החזרת תוצאות
+    res.send({
+      first_courses: firstCourses,
+      main_courses: mainCourses,
+      salads: salads,
+      side_dishes: sideDishes,
+    });
+    
+  } catch (err) {
+    console.error("Failed to fetch images by categories:", err);
+    res.status(500).send("Error fetching images");
+  }
+});
+
+
+// ----- מחיקת תמונה ספציפית ---------------------------------------------------------
+app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
+  try {
+    const { public_id } = req.params;  
+    const result = await cloudinary.uploader.destroy(public_id); // מבצע את מחיקת התמונה
+
+    if (result.result === 'ok') {
+      // אם הצלחה, מחזירים תשובה חיובית
+      res.status(200).json({ success: true, message: 'תמונה נמחקה בהצלחה' });
+    } else {
+      // אם נכשל, מחזירים תשובת שגיאה
+      res.status(500).json({ success: false, message: 'שגיאה במחיקת התמונה' });
+    }
+  } catch (err) {
+    console.error('Error deleting image:', err);
+    res.status(500).json({ success: false, message: 'שגיאה במחיקת התמונה' });
+  }
+});
+
+//------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------------------------------------------------------
-  app.listen(3001, () => {
+  app.listen(process.env.PORT || 3001, () => {
     console.log("Server started on port 3001");
   });
 };

@@ -1,16 +1,19 @@
 import React from 'react';
 import { Box, Typography, Container ,Button,IconButton} from '@mui/material';
 import NavbarHome from './NavbarHome';
+import TextMove from './textMove';
 import Grid from '@mui/material/Grid2';
 import Footer from './Footer';
 import ContactSection from "./ContactSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BsWhatsapp, BsTelephoneOutbound } from 'react-icons/bs';
+
 const About = () => {
   return (
     <Box sx={{ backgroundColor: '#f9f9f9', width: '100%' }}>
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br/> <br/> <br/><br/>
+    <TextMove/>
       <Container disableGutters={true} maxWidth={false} sx={{ padding: 0 }}>
         {/* כותרת על תמונה */}
         <Box sx={{ position: 'relative', width: '100%', maxHeight: '500px', overflow: 'hidden' }}>

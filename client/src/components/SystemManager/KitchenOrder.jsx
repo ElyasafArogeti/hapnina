@@ -19,7 +19,7 @@ import { Snackbar, Alert } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 const KitchenOrder = () => {
   const location = useLocation();
-  const { orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber ,email} = location.state || {};
+  const { orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber , email , event_location , address} = location.state || {};
   const name = "ארוגטי";
    const EventDate = new Date(eventDate).toLocaleDateString('he-IL');
  const [parsedOrderMenu,setParsedOrderMenu]= useState( orderSummary[0] && JSON.parse(orderSummary[0].order_menu));// משתנה התפריט
@@ -51,6 +51,7 @@ const KitchenOrder = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [severity, setSeverity] = useState('success'); // ערך ברירת מחד
 
+console.log();
 
  // קריאה לשרת לקבלת התפריט הכללי
   useEffect(() => {
@@ -267,17 +268,7 @@ const handleShowDeleteConfirmation = (id) => {
 
 
 // שליחה במייל
-  const handleShareEmail = () => {
-    handleCreatePDF(true); // יצירת לפני שליחה
-    const subject = `הזמנה עבור ${name}`;
-    const body = `תאריך האירוע: ${EventDate}\nמספר אורחים: ${guestCount}\nפרטי ההזמנה (הקובץ מצורף);`;
-    window.location.href = `mailto:elyasaf852@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
-
-
-
-
-  const generateCustomerOrderHTML = () => {
+  const generateCustomerOrderHTML = () => { 
     const orderDetails = `
 <html>
   <head>
@@ -659,6 +650,8 @@ const handleShowDeleteConfirmation = (id) => {
         <h1>אולמי הפנינה</h1>
         <p>שם המזמין: {eventOwner || 'לא זמין'}</p>
         <p>תאריך האירוע: {EventDate}</p>
+        <p>אזור ההזמנה: {event_location}</p>
+        <p>מיקום ביצוע ההזמנה: {address}</p>
         <p>מספר אורחים: <MdPeopleAlt/> {guestCount}</p>
         <p>מספר פלאפון: <FaPhoneSquareAlt/> {phoneNumber}</p>
         <p>סה"כ מחיר: ₪ {totalPrice || 'לא זמין'}</p>  

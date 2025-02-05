@@ -6,6 +6,8 @@ import { TbLogout } from 'react-icons/tb';
 import DvrOutlinedIcon from '@mui/icons-material/DvrOutlined';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import { IoMdMailUnread } from "react-icons/io";
+import { IoMdPhotos } from "react-icons/io";
 const NavbarAll = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -82,16 +84,31 @@ const NavbarAll = () => {
             ))}
           </List>
         </Drawer>
+
+
         <Box
-        sx={{ display: 'flex', marginLeft: 'auto', marginRight: 'auto', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}
-        >
-        <IconButton color="inherit" component={Link} to="/" title="יציאה">
-          <TbLogout fontSize={"30px"}/>
-        </IconButton> 
-        <IconButton color="inherit"  component={Link} to="/ContactManager" title="יצירת קשר">
-            < ContactMailIcon fontSize={"30px"}/>
-        </IconButton> 
-        </Box>
+  size={{ xs: 12, sm: 4 }}
+  sx={{
+    display: 'flex',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: { xs: 'row', sm: 'column' }, // שינוי כיוון התצוגה על פי גודל המסך
+  }}
+>
+  <IconButton color="inherit" component={Link} to="/ImageUploadManager" title="תמונות האתר">
+    <IoMdPhotos fontSize={"27px"} />
+  </IconButton> 
+  
+  <IconButton color="inherit" component={Link} to="/ContactManager" title="יצירת קשר">
+    <IoMdMailUnread fontSize={"30px"} />
+  </IconButton>
+
+   <IconButton color="inherit" component={Link} to="/" title="יציאה">
+    <TbLogout fontSize={"30px"} />
+  </IconButton>
+</Box>
 
       </Toolbar>
     </AppBar>

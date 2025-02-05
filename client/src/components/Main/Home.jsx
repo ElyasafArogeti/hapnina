@@ -1,48 +1,56 @@
 import React from "react";
+import TextMove from "../Main/textMove";
+import NavbarHome from "../Main/NavbarHome";
 import { Typography, List, ListItem, ListItemText } from "@mui/material";
 import { Box, Button, Container, Card, CardContent } from "@mui/material";
-import NavbarHome from "../Main/NavbarHome";
+
 import styles from "../../assets/stylesMain/home.module.css";
 import Grid2 from '@mui/material/Grid2';
 import Footer from './Footer';
 import ContactSection from "./ContactSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import imgApnina from "../../assets/imgs/img3.jpeg";
+
 const Home = () => {
   return (
     <Box className={styles.mainHome}>
-      <NavbarHome /> <br/> <br/> <br/><br/>
-     
-      {/* סרטון רץ בחלק העליון */}
-      <Box
-        sx={{
-          width: "100%",
-          height: { xs: "550px", md: "550px" },
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-       <iframe autoPlay         
-          loop
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        src="https://www.youtube.com/embed/Q4Cm68My584?si=waoTf_eKMkybxgYI" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <Typography
-          variant="h3"  
-          sx={{   position: "absolute",top: "10%",   left: "50%",
-            transform: "translate(-50%, -50%)",
-            color: "#FFF",
-            textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
-            textAlign: "center",
-            fontSize: { xs: "1.5rem", md: "2.5rem" },
-          }}
-        >
-      
-        </Typography>
-      </Box>
+      <NavbarHome/><br/><br/><br/><br/>
+       <TextMove/> 
+
+       <Box
+  sx={{
+    width: "100%",
+    height: { xs: "450px", md: "500px" },
+    overflow: "hidden",
+    position: "relative",
+  }}
+>
+  <img 
+    src="https://res.cloudinary.com/dhkegagjk/image/upload/v1738236849/manager_images/general_photos/%D7%AA%D7%9E%D7%95%D7%A0%D7%AA%20%D7%A8%D7%A7%D7%A2%201.jpg" 
+    alt="" 
+    style={{ 
+      width: "100%", 
+      height: "100%", 
+      objectFit: "cover" 
+    }} 
+  />
+  <Typography
+    variant="h3"  
+    sx={{
+      position: "absolute",
+      top: "10%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      color: "#FFF",
+      textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
+      textAlign: "center",
+      fontSize: { xs: "1.5rem", md: "2.5rem" },
+    }}
+  >
+    {/* טקסט כאן */}
+  </Typography>
+</Box>
+
 
 {/* כרטיס קייטרינג */}
 <Container sx={{ padding: 4, width: "100%" }}>

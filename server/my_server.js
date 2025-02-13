@@ -17,6 +17,7 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
 const e = require("express");
+
 require('dotenv').config(); // בתחילת הקובץ
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
 
@@ -51,6 +52,7 @@ const startServer = async () => {
       console.log("חיבור מוצלח למסד נתונים...");
     }
   });
+
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
 const formatDateForMySQL = (isoDate) => {
   const date = new Date(isoDate);
@@ -1260,9 +1262,10 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
 
 
 //--------------------------------------------------------------------
-  app.listen(process.env.PORT || 3001, () => {
-    console.log("Server started on port 3001");
-  });
+  app.listen(process.env.PORT, () => {
+  console.log(`Server started on port ${process.env.PORT}`);
+});
+
 };
 
 startServer();

@@ -1,9 +1,9 @@
 {
-  "name": "my-server",
+  "name": "my_server",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-     "start": "node my-server.js",
+    "start": "node my_server.js",
     "heroku-postbuild": "npm run build --prefix client"
   },
   "dependencies": {

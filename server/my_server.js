@@ -6,7 +6,6 @@ const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 
 const moment = require('moment'); // לעבודה עם תאריכים
-
 const app = express();
 app.use(express.json());
 app.use(cors());

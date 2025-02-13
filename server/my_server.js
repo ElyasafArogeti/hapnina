@@ -36,7 +36,7 @@ const isManager = (userName) => {
 
 
 const startServer = async () => {
-  //----------------חיבור למוסד נתונים -------------------------------
+  //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים -------------------------------
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,

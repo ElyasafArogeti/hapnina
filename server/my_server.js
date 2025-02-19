@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
 
+
+
+
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 
@@ -49,7 +52,7 @@ const startServer = async () => {
     if (err) {
       console.log(err);
     } else {
-      console.log("חיבור מוצלח למסד נתונים...");
+      console.log("חיבור צלח למסד נתונים...");
     }
   });
 

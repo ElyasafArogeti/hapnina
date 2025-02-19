@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "server/my_server.js",
 "scripts": {
-  "start": "node server/my_server.js"
+  "start": "node server/my_server.js",
+  "postinstall": "npm install --prefix server",
+  "heroku-postbuild": "npm run build --prefix client"
 }
+
 ,
   "devDependencies": {
     "nodemon": "^3.1.7"

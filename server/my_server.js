@@ -115,7 +115,7 @@ app.post("/api/login", async (req, res) => {
     const user = rows[0]; 
     if (!user) {
       console.log("User not found.");
-      return res.status(401).json({ error: "שם משתמש או סיסמה שגויים." });
+      return res.status(401).json({ error: "שם משתמש או סיסמה שגוייה." });
     }
     // בדיקת סיסמה
     const passwordMatch = bcrypt.compareSync(password, user.password); 

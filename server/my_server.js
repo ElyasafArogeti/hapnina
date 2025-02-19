@@ -120,7 +120,7 @@ app.post("/api/login", async (req, res) => {
     // בדיקת סיסמה
     const passwordMatch = bcrypt.compareSync(password, user.password); 
     if (!passwordMatch) {
-      return res.status(401).json({ error: "שם משתמש או סיסמה שגויים." });
+      return res.status(401).json({ error: "שם משתמש או סיסמה שגוי." });
     }
     const token = jwt.sign({ userName, role: "user" }, JWT_SECRET, { expiresIn: "1h" });  
    return res.status(200).json({

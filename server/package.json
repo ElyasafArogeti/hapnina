@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node my_server.js",
-    "heroku-postbuild": "npm run build --prefix client"
+   "heroku-postbuild": "cd client && npm install && npm run build"
+
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

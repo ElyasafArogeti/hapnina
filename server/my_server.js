@@ -15,7 +15,7 @@ const bcrypt = require("bcrypt");
 
 const fs = require('fs');
 const path = require('path');
-const e = require("express");
+
 
 require('dotenv').config(); // בתחילת הקובץ
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env

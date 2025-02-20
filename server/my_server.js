@@ -18,7 +18,6 @@ const path = require('path');
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
-// ניתוב כל נתיב שאינו API לקובץ index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
@@ -52,7 +51,7 @@ const startServer = async () => {
     const db_url = process.env.JAWSDB_WHITE_URL;
     console.log(db_url);
     if (!db_url) {
-      throw new Error("Missing database URL (JAWSDB_WHITE_URL )");
+      throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
     }
     
     const connection = await mysql.createConnection(db_url);
@@ -90,10 +89,6 @@ const authenticateToken = (req, res, next) => {  // יצירת טוקן
     return res.status(403).json({ message: "Invalid token." });
   }
 };
-
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
 
 //---------------------------------------------------------------------------
 // נתיב אימות טוקן

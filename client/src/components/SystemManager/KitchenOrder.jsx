@@ -57,7 +57,7 @@ console.log();
   useEffect(() => {
     const fetchAllDishes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/inventoryAll', {
+        const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/inventoryAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ console.log();
              /* הוספת מנה לתפריט*/
     const handleAddDish = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/KitchenOrder/addDish', {
+      const response = await axios.post('http://hapnina-b1d08178cec4.herokuapp.com/KitchenOrder/addDish', {
         dish_name: newDish.dish_name,
         price: newDish.price,
         weight: newDish.weight,
@@ -121,7 +121,7 @@ console.log();
          /*     מחיקת מנה קיימת'     */
    const handleDeleteDish = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3001/KitchenOrder/deleteDish`, {
+      const response = await axios.delete(`http://hapnina-b1d08178cec4.herokuapp.com/KitchenOrder/deleteDish`, {
         data: {
           dish_name: dishToDelete, 
           user_id: orderSummary[0].user_id
@@ -153,7 +153,7 @@ console.log();
      try {
        const { dish_name, price, weight } = editDishData;
    
-       const response = await axios.put("http://localhost:3001/KitchenOrder/updateDish", {
+       const response = await axios.put("http://hapnina-b1d08178cec4.herokuapp.com/KitchenOrder/updateDish", {
          dish_name: dish_name,
          price: price,
          weight: weight,
@@ -543,7 +543,7 @@ const handleShowDeleteConfirmation = (id) => {
   
     try {
       // Send the PDF to the server
-      const response = await axios.post('http://localhost:3001/sendOrderToKitchen', formData, {
+      const response = await axios.post('http://hapnina-b1d08178cec4.herokuapp.com/sendOrderToKitchen', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -573,7 +573,7 @@ const handleShowDeleteConfirmation = (id) => {
     const orderHTML = generateCustomerOrderHTML();  // יצירת ה-HTML של ההזמנה
     setLoading(true)
     try {
-      const response = await axios.post('http://localhost:3001/sendOrderToCustomer', {
+      const response = await axios.post('http://hapnina-b1d08178cec4.herokuapp.com/sendOrderToCustomer', {
         customerEmail: email,
         orderHTML: orderHTML,
       });

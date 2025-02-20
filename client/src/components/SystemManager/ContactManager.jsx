@@ -18,7 +18,7 @@ const ContactManager = () => {
     // קבלת ההודעות מהשרת
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/getMessages', {
+        const response = await axios.get('http://hapnina-b1d08178cec4.herokuapp.com/getMessages', {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -38,7 +38,7 @@ const ContactManager = () => {
   const handleDelete = async (id) => {
     try {
       // קריאה למחיקת ההודעה
-      const response = await axios.delete(`http://localhost:3001/deleteMessage/${id}`, {
+      const response = await axios.delete(`http://hapnina-b1d08178cec4.herokuapp.com/deleteMessage/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }

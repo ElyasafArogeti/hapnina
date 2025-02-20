@@ -22,7 +22,7 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/UserManagement',{ headers: {  Authorization: `Bearer ${token}` }});
+        const response = await axios.get('http://hapnina-b1d08178cec4.herokuapp.com/UserManagement',{ headers: {  Authorization: `Bearer ${token}` }});
         const sortedOrders = response.data.reverse();
         setUsers(sortedOrders);
         setUsersForSearch(sortedOrders);
@@ -43,7 +43,7 @@ const UserManagement = () => {
   const handleSave = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3001/UserManagement/${editingUser.id}`, formData,{ headers: { Authorization: `Bearer ${token}` }} );  
+        `http://hapnina-b1d08178cec4.herokuapp.com/UserManagement/${editingUser.id}`, formData,{ headers: { Authorization: `Bearer ${token}` }} );  
       if (response.data.success) {
         setUsers(
           users.map((user) =>
@@ -75,7 +75,7 @@ const UserManagement = () => {
     const confirmed = window.confirm(`האם אתה בטוח שברצונך למחוק את הלקוח ${user.name}?`);
     if (confirmed) {
       try {
-        const response = await axios.delete(`http://localhost:3001/UserManagement/DeleteUser/${user.id}`, {
+        const response = await axios.delete(`http://hapnina-b1d08178cec4.herokuapp.com/UserManagement/DeleteUser/${user.id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }

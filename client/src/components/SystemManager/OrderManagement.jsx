@@ -58,7 +58,7 @@ const token = localStorage.getItem('authToken');
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/OrderManagement', { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get('http://hapnina-b1d08178cec4.herokuapp.com//OrderManagement', { headers: { Authorization: `Bearer ${token}` } });
         const sortedOrders = response.data.reverse(); // הופכים את המערך כך שההזמנה האחרונה בראש
         setOrders(sortedOrders);
         setOrdersForSearch(sortedOrders);  // שמירה על הגיבוי של ההזמנות
@@ -73,7 +73,7 @@ const token = localStorage.getItem('authToken');
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get('http://hapnina-b1d08178cec4.herokuapp.com/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
         setInventoryAll(response.data);
       } catch (error) {
         console.error(error);
@@ -110,7 +110,7 @@ const handleQuantityChange = (category , id, quantity) => {
   const OpenEditingOrder = async (order) => {// הזמנה של המשתמש הנבחר
     setFormData({ guest_count: order.guest_count });
     try {
-      const response = await axios.get(`http://localhost:3001/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`http://hapnina-b1d08178cec4.herokuapp.com/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
       const orderData = response.data;
       if (!orderData) {
         alert("הזמנה לא נמצאה");
@@ -215,7 +215,7 @@ const handleQuantityChange = (category , id, quantity) => {
 
     try {
              // קריאה לשרת כדי לעדכן את ההזמנה
-    const response = await axios.put(`http://localhost:3001/OrderManagement/UpdateOrder/${editingOrder[0].user_id}/${editingOrder[0].id}`,
+    const response = await axios.put(`http://hapnina-b1d08178cec4.herokuapp.com/OrderManagement/UpdateOrder/${editingOrder[0].user_id}/${editingOrder[0].id}`,
       {
         guest_count: guestCount,
         order_menu: selectedItems

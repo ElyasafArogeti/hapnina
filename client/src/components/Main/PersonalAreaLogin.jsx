@@ -51,7 +51,7 @@ const PersonalAreaLogin = () => {
       const token = localStorage.getItem("authToken");
       if (token) {
         try {
-          const response = await axios.post("http://localhost:3001/api/verifyToken", {}, {
+          const response = await axios.post("http://hapnina-b1d08178cec4.herokuapp.com/api/verifyToken", {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const { role } = response.data.user;
@@ -82,7 +82,7 @@ const PersonalAreaLogin = () => {
 
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/login", {
+      const response = await axios.post("http://hapnina-b1d08178cec4.herokuapp.com/api/login", {
         userName: userName,
         password: userPassword,
       });
@@ -93,7 +93,7 @@ const PersonalAreaLogin = () => {
       if (role === "manager") {
         navigate("/SystemManagerHome");
       } else {
-        const ordersResponse = await axios.get("http://localhost:3001/api/OrderPersonalArea", {
+        const ordersResponse = await axios.get("http://hapnina-b1d08178cec4.herokuapp.com/api/OrderPersonalArea", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const orders = ordersResponse.data;
@@ -118,7 +118,7 @@ const PersonalAreaLogin = () => {
     }
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/forgotPassword", { email });
+      const response = await axios.post("http://hapnina-b1d08178cec4.herokuapp.com/api/forgotPassword", { email });
       if (response.data.success) {
         setSnackMessage("קוד לשחזור סיסמה נשלח בהצלחה למייל שלך.");
         setSnackOpen(true);
@@ -142,7 +142,7 @@ const PersonalAreaLogin = () => {
     }
   setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/verifyCode", { email, verificationCode });
+      const response = await axios.post("http://hapnina-b1d08178cec4.herokuapp.com/api/verifyCode", { email, verificationCode });
       if (response.data.success) {
         setSnackMessage("קוד האימות אושר בהצלחה");
         setSnackOpen(true);
@@ -174,7 +174,7 @@ const PersonalAreaLogin = () => {
 
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/changePassword", { email, newPassword });
+      const response = await axios.post("http://hapnina-b1d08178cec4.herokuapp.com/api/changePassword", { email, newPassword });
       if (response.data.success) {
         setSnackMessage("הסיסמה שונתה בהצלחה.");
         setSnackOpen(true);

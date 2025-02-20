@@ -62,12 +62,12 @@ const SystemManagerHome = () => {
             yearlyOrdersRes,
             newRequestsRes
           ] = await Promise.all([
-            axios.get('http://localhost:3001/user-count', { headers }),
-            axios.get('http://localhost:3001/monthly-orders', { headers }),
-            axios.get('http://localhost:3001/weekly-events', { headers }),
-            axios.get('http://localhost:3001/events-pending', { headers }),
-            axios.get('http://localhost:3001/monthly-orders-summary', { headers }),
-            axios.get('http://localhost:3001/getMessages', { headers }),  // קריאה לפניות החדשות
+            axios.get('http://hapnina-b1d08178cec4.herokuapp.com/user-count', { headers }),
+            axios.get('http://hapnina-b1d08178cec4.herokuapp.com/monthly-orders', { headers }),
+            axios.get('http://hapnina-b1d08178cec4.herokuapp.com/weekly-events', { headers }),
+            axios.get('http://hapnina-b1d08178cec4.herokuapp.com/events-pending', { headers }),
+            axios.get('http://hapnina-b1d08178cec4.herokuapp.com/monthly-orders-summary', { headers }),
+            axios.get('http://hapnina-b1d08178cec4.herokuapp.com/getMessages', { headers }),  // קריאה לפניות החדשות
           ]);
           const unreadMessages = newRequestsRes.data.filter(message => !message.isRead);
 

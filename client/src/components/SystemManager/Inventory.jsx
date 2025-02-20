@@ -25,7 +25,7 @@ const Inventory = () => {
         const fetchInventoryAll = async () => {
             try {
               const token = localStorage.getItem("authToken");
-                const response = await fetch('http://localhost:3001/inventoryAll', {
+                const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -43,7 +43,7 @@ const Inventory = () => {
        const addDish = async () => {
         try {
           const token = localStorage.getItem("authToken");
-            const response = await fetch('http://localhost:3001/addNewDish', {
+            const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/addNewDish', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const Inventory = () => {
     const updateDish = async (id, updatedDish) => {
         try {
           const token = localStorage.getItem("authToken");
-            await fetch(`http://localhost:3001/updateDish/${id}`, {
+            await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/updateDish/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const Inventory = () => {
         if (window.confirm("האם אתה בטוח שברצונך למחוק את המנה?")) {
             try {
             const token = localStorage.getItem("authToken");
-            await fetch(`http://localhost:3001/deleteDish/${id}`, {
+            await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/${id}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:3001/hideDish/${id}`, {
+      const response = await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:3001/hideDish/${id}`, {
+      const response = await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

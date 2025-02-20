@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
 
         // בדיקת תוקף הטוקן מול השרת
         const response = await axios.post(
-          'http://localhost:3001/api/verifyToken',
+          'http://hapnina-b1d08178cec4.herokuapp.com/api/verifyToken',
           {},
           {
             headers: { Authorization: `Bearer ${token}` },

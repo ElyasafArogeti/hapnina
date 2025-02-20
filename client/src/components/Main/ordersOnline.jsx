@@ -88,7 +88,7 @@ console.log(imagesByCategory);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-                const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
+                const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
                 const data = await response.json();
                 setInventoryAll(data);
             } catch (error) {
@@ -109,7 +109,7 @@ const removeNonHebrew = (text) => {
     setLoading(true);
     const fetchImages = async () => {
       try {
-        const response = await axios('http://localhost:3001/getUploadedImages');
+        const response = await axios('http://hapnina-b1d08178cec4.herokuapp.com/getUploadedImages');
         setImagesByCategory(response.data);
       } catch (err) {
         console.error('Error fetching images by categories:', err);
@@ -261,7 +261,7 @@ const removeNonHebrew = (text) => {
     //--------------הוספת הזמנה למערכת מנהל ------------------------------------------------------------
    const addOrdersOnline = async () => {
      try {
-              const response = await fetch('http://localhost:3001/addOrdersOnline', {
+              const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',

@@ -179,23 +179,30 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
 
 
   //--------------בקשת כל הקטגוריות ------------------------------------------
-app.get("/inventoryAll" , async (req, res) => {
-  try {
-    const [firstCourses] = await connection.query("SELECT * FROM first_courses");
-    const [mainCourses] = await connection.query("SELECT * FROM main_courses");
-    const [salads] = await connection.query("SELECT * FROM salads");
-    const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
-    res.json({
-      first_courses: firstCourses,
-      main_courses: mainCourses,
-      salads: salads,
-      side_dishes: sideDishes,
-    });
-  } catch (err) {
-    console.error("Failed to fetch data from database:", err);
-    res.status(500).json("Error fetching data");
-  }
-});
+  app.get("/inventoryAll", async (req, res) => {
+    try {
+      const [firstCourses] = await connection.query("SELECT * FROM first_courses");
+      const [mainCourses] = await connection.query("SELECT * FROM main_courses");
+      const [salads] = await connection.query("SELECT * FROM salads");
+      const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
+  
+      console.log("firstCourses:", firstCourses);
+      console.log("mainCourses:", mainCourses);
+      console.log("salads:", salads);
+      console.log("sideDishes:", sideDishes);
+  
+      res.json({
+        first_courses: firstCourses,
+        main_courses: mainCourses,
+        salads: salads,
+        side_dishes: sideDishes,
+      });
+    } catch (err) {
+      console.error("Failed to fetch data from database:", err);
+      res.status(500).json("Error fetching data");
+    }
+  });
+  
 
 
 

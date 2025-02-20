@@ -63,14 +63,18 @@ const startServer = async () => {
   
    app.locals.db = connect;
    
-    
+
+   const [rows, fields] = await connect.execute('SELECT 1');
+   console.log('Database connection test query result:', rows);
+
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
     process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
   }
 
   const connection = app.locals.db;
-  console.log(connection);
+ 
+
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
 const formatDateForMySQL = (isoDate) => {
   const date = new Date(isoDate);
@@ -181,11 +185,13 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
   //--------------בקשת כל הקטגוריות ------------------------------------------
   app.get("/inventoryAll", async (req, res) => {
     try {
+     
       const [firstCourses] = await connection.query("SELECT * FROM first_courses");
       const [mainCourses] = await connection.query("SELECT * FROM main_courses");
       const [salads] = await connection.query("SELECT * FROM salads");
       const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
-  
+      
+      
       console.log("firstCourses:", firstCourses);
       console.log("mainCourses:", mainCourses);
       console.log("salads:", salads);

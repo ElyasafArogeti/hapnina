@@ -17,7 +17,8 @@ const fs = require('fs');
 const path = require('path');
 
 
-require('dotenv').config(); // בתחילת הקובץ
+require('dotenv').config(); // טוען את משתני הסביבה
+
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
 
 // רשימת המנהלים
@@ -39,13 +40,14 @@ const startServer = async () => {
 
   //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים ------------------------------
   const connection = await mysql.createConnection({
-    host: 'fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-    user: 'r90i0p0wtn8bn3w5',
-    password: 'vnxnzsdq6ac1576d',
-    database: 'fdv7i4oq4wce9a52',
-    port: 3306
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
   });
   
+
   connection.connect(err => {
     if (err) {
       console.error('Error connecting to the database:', err.stack);
@@ -1264,9 +1266,12 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
 
 
 //--------------------------------------------------------------------
-  app.listen(process.env.PORT, () => {
-  console.log(`Server started on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000; 
+
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
+
 
 };
 

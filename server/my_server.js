@@ -185,7 +185,7 @@ app.get("/inventoryAll" , async (req, res) => {
     const [mainCourses] = await connection.query("SELECT * FROM main_courses");
     const [salads] = await connection.query("SELECT * FROM salads");
     const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
-    res.send({
+    res.json({
       first_courses: firstCourses,
       main_courses: mainCourses,
       salads: salads,
@@ -193,7 +193,7 @@ app.get("/inventoryAll" , async (req, res) => {
     });
   } catch (err) {
     console.error("Failed to fetch data from database:", err);
-    res.status(500).send("Error fetching data");
+    res.status(500).json("Error fetching data");
   }
 });
 

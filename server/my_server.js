@@ -16,6 +16,14 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
 
+app.use(express.static(path.join(__dirname, "client/build")));
+
+// ניתוב כל נתיב שאינו API לקובץ index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
+
+
 
 require('dotenv').config(); // טוען את משתני הסביבה
 
@@ -82,6 +90,11 @@ const authenticateToken = (req, res, next) => {  // יצירת טוקן
     return res.status(403).json({ message: "Invalid token." });
   }
 };
+
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
 //---------------------------------------------------------------------------
 // נתיב אימות טוקן
 app.post("/api/verifyToken", authenticateToken , (req, res) => { // אם הטוקן תקין, יש לשלוח את המידע על המשתמש

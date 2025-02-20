@@ -67,6 +67,7 @@ const startServer = async () => {
     process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
   }
 
+  const connection = app.locals.db;
   
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
 const formatDateForMySQL = (isoDate) => {

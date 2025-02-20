@@ -88,7 +88,7 @@ console.log(imagesByCategory);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-                const response = await fetch('http://localhost:3001/inventoryAll');
+                const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
                 const data = await response.json();
                 setInventoryAll(data);
             } catch (error) {

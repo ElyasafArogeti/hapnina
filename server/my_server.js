@@ -52,7 +52,7 @@ const startServer = async () => {
   try {
     // התחברות למסד הנתונים דרך ה-URL בלבד
     const db_url = process.env.JAWSDB_WHITE_URL;
-    console.log(db_url);
+   console.log(db_url);
     if (!db_url) {
       throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
     }

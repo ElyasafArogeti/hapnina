@@ -39,22 +39,23 @@ const isManager = (userName) => {
 const startServer = async () => {
 
   //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים ------------------------------
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-  });
-  
-
-  connection.connect(err => {
-    if (err) {
-      console.error('Error connecting to the database:', err.stack);
-      return;
+  try {
+    // התחברות למסד הנתונים דרך ה-URL בלבד
+    const db_url = process.env.JAWSDB_WHITE_URL;
+    console.log(db_url);
+    if (!db_url) {
+      throw new Error("Missing database URL (JAWSDB_WHITE_URL )");
     }
-    console.log('Connected to the database!');
-  });
+    
+    const connection = await mysql.createConnection(db_url);
+    console.log("✅ Connected to the database!");
+  
+   app.locals.db = connection;
+
+  } catch (error) {
+    console.error("❌ Error connecting to the database:", error.message);
+    process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
+  }
 
   
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
@@ -1266,13 +1267,13 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
 
 
 //--------------------------------------------------------------------
-const PORT = process.env.PORT || 3000; 
-
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
-
 
 };
 
-startServer();
+// הפעלת השרת
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, async () => {
+  await startServer(); // מחכים שהחיבור למסד הנתונים יתבצע
+  console.log(`🚀 Server started on port ${PORT}`);
+});

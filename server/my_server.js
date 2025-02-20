@@ -52,23 +52,25 @@ const startServer = async () => {
   try {
     // התחברות למסד הנתונים דרך ה-URL בלבד
     const db_url = process.env.JAWSDB_WHITE_URL;
-   console.log(db_url);
+
+     console.log(db_url);
     if (!db_url) {
       throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
     }
     
-    const connection = await mysql.createConnection(db_url);
-    console.log("✅ Connected to the database!");
+    const connect = await mysql.createConnection(db_url);
+    console.log("✅ Connected to the database !");
   
-   app.locals.db = connection;
-
+   app.locals.db = connect;
+   
+    
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
     process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
   }
 
   const connection = app.locals.db;
-  
+  console.log(connection);
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
 const formatDateForMySQL = (isoDate) => {
   const date = new Date(isoDate);

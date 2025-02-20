@@ -16,10 +16,13 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
 
-app.use(express.static(path.join(__dirname, "client/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// כל בקשה שלא נמצאה בקבצים הסטטיים, תחזיר את קובץ ה-index.html של React
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 

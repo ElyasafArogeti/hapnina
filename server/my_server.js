@@ -38,7 +38,7 @@ const isManager = (userName) => {
 const startServer = async () => {
 
   //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים ------------------------------
-  const connection = mysql.createConnection({
+  const connection = await mysql.createConnection({
     host: 'fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
     user: 'r90i0p0wtn8bn3w5',
     password: 'vnxnzsdq6ac1576d',

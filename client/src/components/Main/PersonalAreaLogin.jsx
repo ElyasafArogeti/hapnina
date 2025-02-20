@@ -84,7 +84,7 @@ const PersonalAreaLogin = () => {
     try {
       const response = await axios.post("https://hapnina-b1d08178cec4.herokuapp.com/api/login", {
         userName: userName,
-        password: userPassword,s
+        password: userPassword,
       });
 
       const { token, role } = await response.data;

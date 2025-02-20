@@ -47,7 +47,7 @@ function EventCalendar() {
     setLoading(true); 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/orders_calendar', {
+      const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/orders_calendar', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
@@ -59,7 +59,7 @@ function EventCalendar() {
       const ordersData = await response.json();
 
       const userPromises = ordersData.map(async (order) => { // להביא שם בעל האירוע 
-        const userResponse = await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/user_calendar/${order.user_id}`, {
+        const userResponse = await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/user_calendar/${order.user_id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
@@ -112,7 +112,7 @@ function EventCalendar() {
       const token = localStorage.getItem("authToken");
      
     const [customerId, orderId] = userId.split('-'); 
-      const response = await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/user_calendar/${userId}`, {
+      const response = await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/user_calendar/${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -199,7 +199,7 @@ function EventCalendar() {
       const noteToSend = note.trim() === "" ? null : note;
   
       setNote(note); // עדכון הסטייט של ההערה החדשה
-      const response = await fetch(`http://hapnina-b1d08178cec4.herokuapp.com/save-note/${updatedOrder.id}/${noteToSend}`, {
+      const response = await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/save-note/${updatedOrder.id}/${noteToSend}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

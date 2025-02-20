@@ -73,7 +73,7 @@ const token = localStorage.getItem('authToken');
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get('http://hapnina-b1d08178cec4.herokuapp.com/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get('https://hapnina-b1d08178cec4.herokuapp.com/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
         setInventoryAll(response.data);
       } catch (error) {
         console.error(error);
@@ -110,7 +110,7 @@ const handleQuantityChange = (category , id, quantity) => {
   const OpenEditingOrder = async (order) => {// הזמנה של המשתמש הנבחר
     setFormData({ guest_count: order.guest_count });
     try {
-      const response = await axios.get(`http://hapnina-b1d08178cec4.herokuapp.com/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`https://hapnina-b1d08178cec4.herokuapp.com/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
       const orderData = response.data;
       if (!orderData) {
         alert("הזמנה לא נמצאה");
@@ -215,7 +215,7 @@ const handleQuantityChange = (category , id, quantity) => {
 
     try {
              // קריאה לשרת כדי לעדכן את ההזמנה
-    const response = await axios.put(`http://hapnina-b1d08178cec4.herokuapp.com/OrderManagement/UpdateOrder/${editingOrder[0].user_id}/${editingOrder[0].id}`,
+    const response = await axios.put(`https://hapnina-b1d08178cec4.herokuapp.com/OrderManagement/UpdateOrder/${editingOrder[0].user_id}/${editingOrder[0].id}`,
       {
         guest_count: guestCount,
         order_menu: selectedItems
@@ -248,7 +248,7 @@ const handleQuantityChange = (category , id, quantity) => {
   const handleDeleteOrder = async () => {
     try {
       if (orderToDelete) {
-        const response = await axios.delete(`http://localhost:3001/OrderManagement/DeleteOrder/${orderToDelete.user_id}`, {
+        const response = await axios.delete(`https://localhost:3001/OrderManagement/DeleteOrder/${orderToDelete.user_id}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,

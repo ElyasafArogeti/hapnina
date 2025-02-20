@@ -263,7 +263,7 @@ const removeNonHebrew = (text) => {
     //--------------הוספת הזמנה למערכת מנהל ------------------------------------------------------------
    const addOrdersOnline = async () => {
      try {
-              const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/addOrdersOnline', {
+              const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',

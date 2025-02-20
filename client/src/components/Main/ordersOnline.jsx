@@ -88,7 +88,9 @@ console.log(imagesByCategory);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-                const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
+                const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
+                console.log(response);
+                
                 const data = await response.json();
                 setInventoryAll(data);
             } catch (error) {
@@ -109,7 +111,7 @@ const removeNonHebrew = (text) => {
     setLoading(true);
     const fetchImages = async () => {
       try {
-        const response = await axios('http://hapnina-b1d08178cec4.herokuapp.com/getUploadedImages');
+        const response = await axios('https://hapnina-b1d08178cec4.herokuapp.com/getUploadedImages');
         setImagesByCategory(response.data);
       } catch (err) {
         console.error('Error fetching images by categories:', err);

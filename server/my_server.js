@@ -211,7 +211,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
   });
   
 
-  
+
 
 
             /*inventory   דף ניהול תפריט מורחב*/
@@ -1302,6 +1302,11 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  await startServer(); // מחכים שהחיבור למסד הנתונים יתבצע
-  console.log(`🚀 Server started on port ${PORT}`);
+  try {
+    await startServer(); // מחכים שהחיבור למסד הנתונים יתבצע
+    console.log(`🚀 Server started on port ${PORT}`);
+  } catch (error) {
+    console.error("❌ Failed to start the server:", error.message);
+    process.exit(1);
+  }
 });

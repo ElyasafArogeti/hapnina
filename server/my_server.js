@@ -53,26 +53,26 @@ const startServer = async () => {
     // התחברות למסד הנתונים דרך ה-URL בלבד
     const db_url = process.env.JAWSDB_WHITE_URL;
 
-     console.log(db_url);
+     console.log("MY URL -  ",db_url);
+
     if (!db_url) {
       throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
     }
     
-    const connect = await mysql.createConnection(db_url);
+    const connection = await mysql.createConnection(db_url);
+    console.log("האם המסד נתונים מחובר " ,connection);
+    
     console.log("✅ Connected to the database !");
   
-   app.locals.db = connect;
+   app.locals.db = connection;
    
 
-   const [rows, fields] = await connect.execute('SELECT 1');
-   console.log('Database connection test query result:', rows);
 
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
     process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
   }
 
-  const connection = app.locals.db;
  
 
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
@@ -185,7 +185,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
   //--------------בקשת כל הקטגוריות ------------------------------------------
   app.get("/inventoryAll", async (req, res) => {
     try {
-     console.log("nyserver 11");
+     console.log("my inventoryAll");
      
       const [firstCourses] = await connection.query("SELECT * FROM first_courses");
       const [mainCourses] = await connection.query("SELECT * FROM main_courses");
@@ -211,7 +211,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
   });
   
 
-
+  
 
 
             /*inventory   דף ניהול תפריט מורחב*/

@@ -50,18 +50,15 @@ const startServer = async () => {
 
   //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים ------------------------------
   try {
+    // התחברות למסד הנתונים דרך ה-URL בלבד
+    const db_url = process.env.JAWSDB_WHITE_URL;
 
-    const connect = await mysql.createConnection({
-      host: 'fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-      user: 'r90i0p0wtn8bn3w5',
-      password: 'vnxnzsdq6ac1576d',
-      database: 'fdv7i4oq4wce9',
-      port: 3306,
-      ssl: {
-        rejectUnauthorized: false
-      }
-    });
+     console.log(db_url);
+    if (!db_url) {
+      throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
+    }
     
+    const connect = await mysql.createConnection(db_url);
     console.log("✅ Connected to the database !");
   
    app.locals.db = connect;

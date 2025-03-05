@@ -26,7 +26,6 @@ app.get('*', (req, res) => {
 });
 
 
-res.setHeader('Content-Type', 'application/json');
 
 require('dotenv').config(); // טוען את משתני הסביבה
 
@@ -51,8 +50,6 @@ const startServer = async () => {
 
   //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים ------------------------------
   try {
-    console.log("ny server");
-    
     // התחברות למסד הנתונים דרך ה-URL בלבד
     const db_url = process.env.JAWSDB_WHITE_URL;
 
@@ -76,20 +73,7 @@ const startServer = async () => {
   }
 
   const connection = app.locals.db;
-
-
-  app.get("/test-db-connection", async (req, res) => {
-    try {
-      // ביצוע שאילתת בדיקה פשוטה למסד הנתונים
-      const [rows] = await connection.query('SELECT 1');
-      console.log("Database connection test successful:", rows);
-      res.status(200).json({ message: "Database connection is working!", data: rows });
-    } catch (err) {
-      console.error("Database connection test failed:", err);
-      res.status(500).json({ message: "Database connection test failed", error: err.message });
-    }
-  });
-  
+ 
 
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
 const formatDateForMySQL = (isoDate) => {
@@ -199,43 +183,32 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
 
 
   //--------------בקשת כל הקטגוריות ------------------------------------------
-app.get("/inventoryAll", async (req, res) => {
-  try {
-    // הודעה אם הבקשה התקבלה
-    console.log("Received request for /inventoryAll");
-
-    // ביצוע קריאה למסד הנתונים
-    const [firstCourses] = await connection.query("SELECT * FROM first_courses");
-    const [mainCourses] = await connection.query("SELECT * FROM main_courses");
-    const [salads] = await connection.query("SELECT * FROM salads");
-    const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
-
-    // הדפסת התוצאות במסוף
-    console.log("firstCourses:", firstCourses);
-    console.log("mainCourses:", mainCourses);
-    console.log("salads:", salads);
-    console.log("sideDishes:", sideDishes);
-
-    // החזרת התשובה לפרונט-אנד עם המידע
-    res.json({
-      status: "connected", // הוספת סטטוס של חיבור
-      message: "Database connected and data fetched successfully", // הודעת הצלחה
-      first_courses: firstCourses,
-      main_courses: mainCourses,
-      salads: salads,
-      side_dishes: sideDishes,
-    });
-
-  } catch (err) {
-    console.error("Failed to fetch data from database:", err);
-    res.status(500).json({
-      status: "error", // סטטוס שגיאה במקרה של בעיה
-      message: "Error fetching data", // הודעת שגיאה
-      error: err.message, // פירוט השגיאה
-    });
-  }
-});
-
+  app.get("/inventoryAll", async (req, res) => {
+    try {
+     console.log("nyserver 11");
+     
+      const [firstCourses] = await connection.query("SELECT * FROM first_courses");
+      const [mainCourses] = await connection.query("SELECT * FROM main_courses");
+      const [salads] = await connection.query("SELECT * FROM salads");
+      const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
+      
+      
+      console.log("firstCourses:", firstCourses);
+      console.log("mainCourses:", mainCourses);
+      console.log("salads:", salads);
+      console.log("sideDishes:", sideDishes);
+  
+      res.json({
+        first_courses: firstCourses,
+        main_courses: mainCourses,
+        salads: salads,
+        side_dishes: sideDishes,
+      });
+    } catch (err) {
+      console.error("Failed to fetch data from database:", err);
+      res.status(500).json("Error fetching data");
+    }
+  });
   
 
 

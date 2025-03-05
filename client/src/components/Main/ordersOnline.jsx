@@ -81,7 +81,7 @@ const OrdersOnline = () => {
        salads: [],
        side_dishes: [],
      });
-    
+console.log("sssssss");
 
    const [loading, setLoading] = useState(false); 
 
@@ -90,12 +90,12 @@ const OrdersOnline = () => {
         const fetchInventoryAll = async () => {
             try {
                console.log("www");
-              const response = await axios('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
-              console.log("Response received from server:", response); // לוג התשובה
+              const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
+             
                 console.log(response);
                 
-                setInventoryAll(response.data);
-            
+                const data = await response.json();
+                setInventoryAll(data);
             } catch (error) {
                 console.error('Failed to fetch inventory:', error);
             }
@@ -115,7 +115,6 @@ const removeNonHebrew = (text) => {
     const fetchImages = async () => {
       try {
         const response = await axios('https://hapnina-b1d08178cec4.herokuapp.com/getUploadedImages');
-        
         setImagesByCategory(response.data);
       } catch (err) {
         console.error('Error fetching images by categories:', err);

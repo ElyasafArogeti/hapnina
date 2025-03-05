@@ -15,7 +15,8 @@ import axios from 'axios';
 
 const OrdersOnline = () => {
     const Navigate = useNavigate();
-
+  console.log("clayent");
+  
     const [inventoryAll, setInventoryAll] = useState({//מאגר המנות
         first_courses: [],
         main_courses: [],
@@ -80,7 +81,7 @@ const OrdersOnline = () => {
        salads: [],
        side_dishes: [],
      });
-console.log(imagesByCategory);
+    
 
    const [loading, setLoading] = useState(false); 
 
@@ -88,8 +89,9 @@ console.log(imagesByCategory);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
+               console.log("www");
               const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
-              
+             
                 console.log(response);
                 
                 const data = await response.json();

@@ -185,6 +185,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
   //--------------בקשת כל הקטגוריות ------------------------------------------
   app.get("/inventoryAll", async (req, res) => {
     try {
+     console.log("nyserver 11");
      
       const [firstCourses] = await connection.query("SELECT * FROM first_courses");
       const [mainCourses] = await connection.query("SELECT * FROM main_courses");

@@ -12,5 +12,9 @@
   },
   "engines": {
     "node": "16.x"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "mysql2": "^3.12.0"
   }
 }

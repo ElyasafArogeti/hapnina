@@ -18,11 +18,6 @@ const path = require('path');
 
 app.use(express.static(path.join(__dirname, '../client/build')));
 
-
-
-const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
-
-
 const managers = [// רשימת המנהלים
   {
     email: "ely6600200@gmail.com",
@@ -33,35 +28,30 @@ const isManager = (userName) => {
   return managers.some((manager) => manager.userName === userName);
 };
 
+
 require('dotenv').config();
 
-const DB_USER = process.env.DB_USER;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_HOST = process.env.DB_HOST;
-const DB_PORT = process.env.DB_PORT;
-const DB_NAME = process.env.DB_NAME;
+const DB_URL = process.env.DB_URL;  // לא צריך לחלק את המשתנים
+const JWT_SECRET = process.env.JWT_SECRET; 
 
 let connection;
 
 const startServer = async () => {
   try {
-    // יצירת URL החיבור עם המשתנים שהגדרת
-    const db_url = `mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-    
-    if (!db_url) {
+    // שימוש ב-DB_URL מחוברת ישירות
+    if (!DB_URL) {
       throw new Error("Missing database URL");
     }
 
     // חיבור למסד הנתונים
-   connection = await mysql.createConnection(db_url);
+    connection = await mysql.createConnection(DB_URL);
     console.log("✅ ⭕ Connected to the database!");
     app.locals.db = connection;
 
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
-    process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
+    setTimeout(startServer, 5000); // מנסה להתחבר שוב אחרי 5 שניות במקרה של כשלון
   }
-
 
   const testConnection = async () => {
     try {
@@ -70,7 +60,9 @@ const startServer = async () => {
     } catch (err) {
       console.error('Error testing database connection:', err.message);
     }
-  };testConnection();
+  };
+  
+  testConnection();
 
 
 

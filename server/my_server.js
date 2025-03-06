@@ -15,27 +15,25 @@ const bcrypt = require("bcrypt");
 
 const fs = require('fs');
 const path = require('path');
+
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 
 
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
-// רשימת המנהלים
-const managers = [
+
+
+const managers = [// רשימת המנהלים
   {
     email: "ely6600200@gmail.com",
     userName: "אלי ארוגטי",
     password: bcrypt.hashSync("1234", 10), // סיסמה מוצפנת
-  },
-];
+  },];
 const isManager = (userName) => {
   return managers.some((manager) => manager.userName === userName);
 };
 
-
-
-
-const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
@@ -43,27 +41,41 @@ const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
 const DB_NAME = process.env.DB_NAME;
 
+let connection;
+
 const startServer = async () => {
   try {
-    const db_url = process.env.JAWSDB_WHITE_URL;
-
+    // יצירת URL החיבור עם המשתנים שהגדרת
+    const db_url = `mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+    
     if (!db_url) {
-      throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
+      throw new Error("Missing database URL");
     }
-    
-    const connection = await mysql.createConnection(db_url);
-    console.log("האם המסד נתונים מחובר " ,connection);
-    
-    console.log("✅ ⭕ Connected to the database !");
-    console.log("⛔ MY URL -  ",db_url);
-   app.locals.db = connection;
-   
+
+    // חיבור למסד הנתונים
+   connection = await mysql.createConnection(db_url);
+    console.log("✅ ⭕ Connected to the database!");
+    app.locals.db = connection;
+
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
     process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
   }
 
- 
+
+  const testConnection = async () => {
+    try {
+      const [rows, fields] = await app.locals.db.query('SELECT 1 + 1 AS solution');
+      console.log('Database connection successful: ', rows[0].solution); // צריך להחזיר 2
+    } catch (err) {
+      console.error('Error testing database connection:', err.message);
+    }
+  };testConnection();
+
+
+
+
+  
 
 //MySQL פונקציה להמרת התאריך לפורמט של ---------------------------------------------------
 const formatDateForMySQL = (isoDate) => {

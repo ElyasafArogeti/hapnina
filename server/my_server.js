@@ -15,22 +15,11 @@ const bcrypt = require("bcrypt");
 
 const fs = require('fs');
 const path = require('path');
-
-
-
 app.use(express.static(path.join(__dirname, '../client/build')));
 
-// כל בקשה שלא נמצאה בקבצים הסטטיים, תחזיר את קובץ ה-index.html של React
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
 
-
-
-require('dotenv').config(); // טוען את משתני הסביבה
 
 const JWT_SECRET = process.env.JWT_SECRET; // משיכת המפתח מקובץ .env
-
 // רשימת המנהלים
 const managers = [
   {
@@ -39,21 +28,24 @@ const managers = [
     password: bcrypt.hashSync("1234", 10), // סיסמה מוצפנת
   },
 ];
-
-
 const isManager = (userName) => {
   return managers.some((manager) => manager.userName === userName);
 };
 
 
+
+
+const mysql = require('mysql2/promise');
+
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_HOST = process.env.DB_HOST;
+const DB_PORT = process.env.DB_PORT;
+const DB_NAME = process.env.DB_NAME;
+
 const startServer = async () => {
-
-  //----------התחברות למסד נתונים של הרוקו------חיבור למוסד נתונים ------------------------------
   try {
-    // התחברות למסד הנתונים דרך ה-URL בלבד
     const db_url = process.env.JAWSDB_WHITE_URL;
-
-     console.log("MY URL -  ",db_url);
 
     if (!db_url) {
       throw new Error("Missing database URL (JAWSDB_WHITE_URL)");
@@ -62,12 +54,10 @@ const startServer = async () => {
     const connection = await mysql.createConnection(db_url);
     console.log("האם המסד נתונים מחובר " ,connection);
     
-    console.log("✅ Connected to the database !");
-  
+    console.log("✅ ⭕ Connected to the database !");
+    console.log("⛔ MY URL -  ",db_url);
    app.locals.db = connection;
    
-
-
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
     process.exit(1); // עוצר את השרת אם אין חיבור למסד הנתונים
@@ -1298,7 +1288,11 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
 
 };
 
-// הפעלת השרת
+
+// כל בקשה שלא נמצאה בקבצים הסטטיים, תחזיר את קובץ ה-index.html של React
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build', 'index.html'));});
+ 
+// הפעלת שרת
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {

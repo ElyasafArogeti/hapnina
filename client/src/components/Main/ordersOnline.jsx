@@ -15,7 +15,6 @@ import axios from 'axios';
 
 const OrdersOnline = () => {
     const Navigate = useNavigate();
-  console.log("clayent");
   
     const [inventoryAll, setInventoryAll] = useState({//מאגר המנות
         first_courses: [],
@@ -81,7 +80,7 @@ const OrdersOnline = () => {
        salads: [],
        side_dishes: [],
      });
-console.log("sssssss");
+
 
    const [loading, setLoading] = useState(false); 
 
@@ -91,9 +90,9 @@ console.log("sssssss");
             try {
                console.log("www");
               const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
-             
-                console.log(response);
-                
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
                 const data = await response.json();
                 setInventoryAll(data);
             } catch (error) {

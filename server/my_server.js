@@ -35,8 +35,8 @@ const isManager = (userName) => {
   return managers.some((manager) => manager.userName === userName);
 };
 
+require('dotenv').config(); // למעלה בתחילת הקובץ
 
-require('dotenv').config();
 
 // 🧠 חיבור למסד נתונים (MySQL דרך Railway)
 

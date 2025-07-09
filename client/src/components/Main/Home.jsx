@@ -117,8 +117,6 @@ const Home = () => {
           objectFit: "cover",
           width: "100%",
           height: "100%",
-
-          objectFit: "cover",
           borderRadius: "8px",
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
         }}      
@@ -210,7 +208,6 @@ const Home = () => {
         src="https://ari-events.co.il/wp-content/uploads/2023/11/hupa-ari-10.webp" // החלף בקישור לתמונה של עיצוב בר
         alt="עיצוב בר"
         style={{
-          objectFit: "cover",
           width: "100%",
           height: "auto",
           maxHeight:"500px",

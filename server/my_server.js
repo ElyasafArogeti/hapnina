@@ -31,8 +31,10 @@ const isManager = (userName) => {
 
 require('dotenv').config();
 
-const DB_URL = process.env.DB_URL;  // לא צריך לחלק את המשתנים
-const JWT_SECRET = process.env.JWT_SECRET; 
+// 🧠 חיבור למסד נתונים (MySQL דרך Railway)
+const DB_URL = process.env.DB_URL;
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 let connection;
 

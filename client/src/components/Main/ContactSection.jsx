@@ -19,7 +19,7 @@ const ContactSection = () => {
         borderRadius: "8px",
         overflow: "hidden",
          backgroundSize: "cover",
-        backgroundPosition: "center",
+      
         backgroundAttachment: "fixed"
       }}
     >

@@ -38,6 +38,7 @@ const isManager = (userName) => {
 require('dotenv').config();
 
 // 🧠 חיבור למסד נתונים (MySQL דרך Railway)
+
 const DB_URL = process.env.DB_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -1308,6 +1309,8 @@ app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build'
  
 // הפעלת שרת
 const PORT = process.env.PORT || 3000;
+
+
 
 app.listen(PORT, async () => {
   try {

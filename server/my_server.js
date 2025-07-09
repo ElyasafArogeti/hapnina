@@ -10,10 +10,10 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: ["https://hapnina.netlify.app", "https://cateringhapnina.netlify.app"], // שניהם
+  origin: "https://cateringhapnina.netlify.app", // כתובת הפרונט שלך
+ methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
-
 
 // app.use(cors()); // מאפשר הכל (לא מאובטח)
 

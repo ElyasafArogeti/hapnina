@@ -1,5 +1,5 @@
 const express = require("express");
-
+const cors = require("cors");
 const mysql = require("mysql2/promise");
 
 const nodemailer = require('nodemailer');
@@ -9,13 +9,11 @@ const moment = require('moment'); // לעבודה עם תאריכים
 const app = express();
 app.use(express.json());
 
-const cors = require("cors");
 app.use(cors({
-  origin: "https://cateringhapnina.netlify.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: "https://hapnina.netlify.app", // כתובת הפרונט שלך
+ methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
-
 
 // app.use(cors()); // מאפשר הכל (לא מאובטח)
 

@@ -8,7 +8,13 @@ const cron = require('node-cron');
 const moment = require('moment'); // לעבודה עם תאריכים
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+app.use(cors({
+  origin: "https://hapnina.netlify.app", // כתובת הפרונט שלך
+  credentials: true
+}));
+
+// app.use(cors()); // מאפשר הכל (לא מאובטח)
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -953,6 +959,8 @@ app.post('/contact', async (req, res) => {
     res.status(500).json({ message: 'שגיאה בשמירת ההודעה' });
   }
 });
+
+
 //------------- קבלת הודעות למנהל-------------------------------------------
 app.get('/getMessages',authenticateToken, async (req, res) => {
   try {

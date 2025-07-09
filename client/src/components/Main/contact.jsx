@@ -34,6 +34,7 @@ const Contact = () => {
       }
     } catch (error) {
       setSnackbarMessage('שגיאה בשליחת ההודעה. נסה שוב');
+      
       console.log(error);
       
       setSnackbarSeverity('error');

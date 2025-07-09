@@ -1,8 +1,8 @@
-import React from "react";
+
 import TextMove from "../Main/textMove";
 import NavbarHome from "../Main/NavbarHome";
-import { Typography, List, ListItem, ListItemText } from "@mui/material";
-import { Box, Button, Container, Card, CardContent } from "@mui/material";
+import { Typography, List,  ListItemText } from "@mui/material";
+import { Box, Button, Container, Card } from "@mui/material";
 
 import styles from "../../assets/stylesMain/home.module.css";
 import Grid2 from '@mui/material/Grid2';

@@ -946,6 +946,8 @@ app.get('/events-pending',authenticateToken, async (req, res) => {
        /*Contact , יצירת קשר עם המנהל  */
 //---------------------------------------------------------------------------
 app.post('/contact', async (req, res) => {
+  console.log("הגעתי לפנייה בהצלחה ");
+  
   const { fullName, phone, message } = req.body;
 
   if (!fullName || !phone || !message) {  // בדיקת אם כל השדות מלאים

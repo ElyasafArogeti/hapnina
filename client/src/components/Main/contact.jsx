@@ -33,7 +33,9 @@ const Contact = () => {
         setSnackbarSeverity('success');
       }
     } catch (error) {
-      setSnackbarMessage('שגיאה בשליחת ההודעה. נסה שוב.');
+      setSnackbarMessage('שגיאה בשליחת ההודעה. נסה שוב');
+      console.log(error);
+      
       setSnackbarSeverity('error');
     }
     setOpenSnackbar(true); // מציג את ה-Snackbar לאחר שליחה

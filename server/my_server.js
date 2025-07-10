@@ -24,6 +24,7 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
 
+console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 
 
 const managers = [// רשימת המנהלים
@@ -1317,6 +1318,7 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 // 🌐 כל שאר הבקשות (שהן לא API), שיחזרו את index.html
 app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build', 'index.html'));});
  
+
 app.listen(PORT, async () => {
   try {
     await startServer(); // מחכים שהחיבור למסד הנתונים יתבצע

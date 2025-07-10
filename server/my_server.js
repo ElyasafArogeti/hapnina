@@ -962,7 +962,7 @@ app.get('/events-pending',authenticateToken, async (req, res) => {
 
        /*Contact , יצירת קשר עם המנהל  */
 //---------------------------------------------------------------------------
-app.post('api/contact', async (req, res) => {
+app.post('/api/contact', async (req, res) => {
   console.log("הגעתי לפנייה ");
   
   const { fullName, phone, message } = req.body;

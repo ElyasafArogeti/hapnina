@@ -85,24 +85,27 @@ const OrdersOnline = () => {
    const [loading, setLoading] = useState(false); 
 
   //--------------------------------------------------------------------------
-    useEffect(() => {
-        const fetchInventoryAll = async () => {
-            try {
-               console.log("www");
-              const response = await fetch('https://web-production-aa784.up.railway.app/api/inventoryAll');
-              if (!response.ok) {
+ useEffect(() => {
+    const fetchInventoryAll = async () => {
+        try {
+            console.log("📡 שולח בקשת fetch ל-inventoryAll...");
+            const response = await fetch('https://web-production-aa784.up.railway.app/api/inventoryAll');
+            
+            if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-                const data = await response.json();
-                setInventoryAll(data);
-            } catch (error) {
-                console.error('Failed to fetch inventory:', error);
-            }
-        };
-        fetchInventoryAll();
-       
-        
-    }, []);
+
+            const data = await response.json();
+            console.log("✅ קיבלתי נתונים:", data);
+            setInventoryAll(data);
+        } catch (error) {
+            console.error('❌ שגיאה בשליפת המלאי:', error);
+        }
+    };
+
+    fetchInventoryAll();
+}, []);
+
 
     // פונקציה להורדת כל התוויים שאינם עבריים מהשם
 const removeNonHebrew = (text) => { 

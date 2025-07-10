@@ -49,6 +49,17 @@ const JWT_SECRET = process.env.JWT_SECRET;
 let connection;
 
 const startServer = async () => {
+
+  app.use((req, res, next) => {
+  console.log("📥 Incoming request:", req.method, req.url);
+  next();
+});
+
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
+
+
   try {
     // שימוש ב-DB_URL מחוברת ישירות
     if (!DB_URL) {

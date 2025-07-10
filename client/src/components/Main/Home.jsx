@@ -240,6 +240,8 @@ const Home = () => {
       חוויה בלתי נשכחת
     </Typography>
   </Box>
+
+
    <Box sx={{ 
         width: "100%",
         height: "50vh", // גובה של חצי דף
@@ -251,6 +253,7 @@ const Home = () => {
         color: "#333", 
       }}
     >
+      
       <Typography
         variant="h4"
         sx={{ fontFamily: "Arial, sans-serif", fontWeight: "bold" }}

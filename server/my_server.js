@@ -576,6 +576,10 @@ app.post('/online_orders/add_customer_order', authenticateToken , async (req, re
     res.status(500).send({ error: "שגיאה פנימית בשרת" });
   }
 });
+
+
+
+
 //-----------------מחיקת הזמנה מטבלת אונליין--------------------------------------------
 app.delete('/online_orders/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
@@ -958,8 +962,8 @@ app.get('/events-pending',authenticateToken, async (req, res) => {
 
        /*Contact , יצירת קשר עם המנהל  */
 //---------------------------------------------------------------------------
-app.post('/contact', async (req, res) => {
-  console.log("הגעתי לפנייה בהצלחה ");
+app.post('api/contact', async (req, res) => {
+  console.log("הגעתי לפנייה ");
   
   const { fullName, phone, message } = req.body;
 

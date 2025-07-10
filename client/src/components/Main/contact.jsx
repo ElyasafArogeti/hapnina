@@ -26,8 +26,9 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://web-production-aa784.up.railway.app/contact', formData);
+      const response = await axios.post('https://web-production-aa784.up.railway.app/api/contact', formData);
       if (response.status === 200) {
+    
         setFormData({ fullName: '', phone: '', message: '' });
         setSnackbarMessage('!ההודעה נשלחה בהצלחה');
         setSnackbarSeverity('success');

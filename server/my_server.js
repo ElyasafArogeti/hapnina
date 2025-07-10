@@ -24,7 +24,7 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
 
-app.use(express.static(path.join(__dirname, '../client/build')));
+
 
 const managers = [// רשימת המנהלים
   {
@@ -188,7 +188,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
 
 
   //--------------בקשת כל הקטגוריות ------------------------------------------
-  app.get("/inventoryAll", async (req, res) => {
+  app.get("/api/inventoryAll", async (req, res) => {
     try {
      console.log("my inventoryAll");
      
@@ -1308,14 +1308,15 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
 };
 
 
-// כל בקשה שלא נמצאה בקבצים הסטטיים, תחזיר את קובץ ה-index.html של React
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build', 'index.html'));});
- 
+
 // הפעלת שרת
 const PORT = process.env.PORT || 3000;
+// 🧱 קבצים סטטיים של React
+app.use(express.static(path.join(__dirname, '../client/build')));
 
-
-
+// 🌐 כל שאר הבקשות (שהן לא API), שיחזרו את index.html
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build', 'index.html'));});
+ 
 app.listen(PORT, async () => {
   try {
     await startServer(); // מחכים שהחיבור למסד הנתונים יתבצע

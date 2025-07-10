@@ -89,7 +89,7 @@ const OrdersOnline = () => {
         const fetchInventoryAll = async () => {
             try {
                console.log("www");
-              const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll');
+              const response = await fetch('https://web-production-aa784.up.railway.app/inventoryAll');
               if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

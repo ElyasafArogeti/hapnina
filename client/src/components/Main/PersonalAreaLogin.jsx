@@ -118,7 +118,10 @@ const PersonalAreaLogin = () => {
     }
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("https://hapnina-b1d08178cec4.herokuapp.com/api/forgotPassword", { email });
+
+      console.log("אניפה ");
+      
+      const response = await axios.post("http://localhost:3001/api/forgotPassword", { email });
       if (response.data.success) {
         setSnackMessage("קוד לשחזור סיסמה נשלח בהצלחה למייל שלך.");
         setSnackOpen(true);
@@ -126,9 +129,11 @@ const PersonalAreaLogin = () => {
       }
       else {
         setError("המייל אינו תקין. אנא נסה שוב.");
+      
+        
       }
     } catch (err) {
-      setError("בעיה בשליחת המייל. אנא נסה שוב.");
+      setError("בעיה בשליחת המייל. אנא נסה שוב.");  console.log(err);
     } finally {
       setLoading(false); // עצירת טעינה
     }

@@ -1,81 +1,69 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
-
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
-
 const moment = require('moment'); // לעבודה עם תאריכים
 const app = express();
 app.use(express.json());
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config(); // למעלה בתחילת הקובץ
 
 app.use(cors({
-  origin: ["https://hapnina.netlify.app", "https://cateringhapnina.netlify.app"],
+  origin: ["http://localhost:3000", "https://hapnina.netlify.app", "https://cateringhapnina.netlify.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
-
-// app.use(cors()); // מאפשר הכל (לא מאובטח)
-
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-
-const fs = require('fs');
-const path = require('path');
-
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 
 
-const managers = [// רשימת המנהלים
+const useRailwayDB = process.env.USE_LOCAL_DB === 'false'; // כאשר false → נשתמש בריילווי
+
+const DB_URL = useRailwayDB ? process.env.DB_URL : process.env.LOCAL_DB_URL;
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+console.log("🔌 חיבור למסד הנתונים:", DB_URL.includes('localhost') ? "לוקלי" : "Railway");
+
+let connection;
+
+
+    const managers = [// רשימת המנהלים
   {
     email: "ely6600200@gmail.com",
     userName: "אלי ארוגטי",
     password: bcrypt.hashSync("1234", 10), // סיסמה מוצפנת
   },];
-const isManager = (userName) => {
-  return managers.some((manager) => manager.userName === userName);
-};
-
-require('dotenv').config(); // למעלה בתחילת הקובץ
+ const isManager = (userName) => managers.some((m) => m.userName === userName);
 
 
-// 🧠 חיבור למסד נתונים (MySQL דרך Railway)
 
-const DB_URL = process.env.DB_URL;
-const JWT_SECRET = process.env.JWT_SECRET;
-
-
-let connection;
-
+ 
 const startServer = async () => {
 
-  app.use((req, res, next) => {
-  console.log("📥 Incoming request:", req.method, req.url);
-  next();
-});
-
-app.get("/ping", (req, res) => {
-  res.send("pong");
-});
-
-
   try {
-    // שימוש ב-DB_URL מחוברת ישירות
-    if (!DB_URL) {
-      throw new Error("Missing database URL");
-    }
-
-    // חיבור למסד הנתונים
-    connection = await mysql.createConnection(DB_URL);
+   connection = await mysql.createConnection(DB_URL);
     console.log("✅ ⭕ Connected to the database!");
     app.locals.db = connection;
 
+    // 🧪 בדיקה
+    const [rows] = await connection.query('SELECT 1 + 1 AS solution');
+    console.log("🔍 בדיקת חיבור למסד: ", rows[0].solution); // צריך להחזיר 2
+
+
+    if (!DB_URL) {
+      throw new Error("Missing database URL");
+    }
   } catch (error) {
     console.error("❌ Error connecting to the database:", error.message);
     setTimeout(startServer, 5000); // מנסה להתחבר שוב אחרי 5 שניות במקרה של כשלון
   }
 
+  
   const testConnection = async () => {
     try {
       const [rows, fields] = await app.locals.db.query('SELECT 1 + 1 AS solution');
@@ -209,11 +197,6 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
       const [salads] = await connection.query("SELECT * FROM salads");
       const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
       
-      
-      console.log("firstCourses:", firstCourses);
-      console.log("mainCourses:", mainCourses);
-      console.log("salads:", salads);
-      console.log("sideDishes:", sideDishes);
   
       res.json({
         first_courses: firstCourses,
@@ -234,7 +217,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
             /*inventory   דף ניהול תפריט מורחב*/
 
   //------- הוספת מנה חדשה----------------------------------------------
-  app.post("/addNewDish", authenticateToken , async (req, res) => {
+  app.post("/api/addNewDish", authenticateToken , async (req, res) => {
     const { dish_name, price, weight, category } = req.body;
     try {
       if (req.user.role !== "manager") {
@@ -251,7 +234,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
     }
   });
   //----- עדכון מנה--------------------------------------------------------
-  app.put("/updateDish/:id", authenticateToken ,async (req, res) => {
+  app.put("/api/updateDish/:id", authenticateToken ,async (req, res) => {
     const { id } = req.params;
     const { dish_name, price, weight, category } = req.body;
     try {
@@ -269,7 +252,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
     }
   });
   //----- מחיקת מנה--------------------------------------------------------
-  app.delete("/deleteDish/:id",authenticateToken , async (req, res) => {
+  app.delete("/api/deleteDish/:id",authenticateToken , async (req, res) => {
     const { id } = req.params;
     const { category } = req.body;
     try {
@@ -284,7 +267,7 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
     }
   });
   // ----------הסתר מנה ----------------------------------------------
-app.put('/hideDish/:id',authenticateToken , async (req, res) => {// טיפול בהסתרה והחזרת מנה למסד הנתונים
+app.put('/api/hideDish/:id',authenticateToken , async (req, res) => {// טיפול בהסתרה והחזרת מנה למסד הנתונים
   const { id } = req.params;
   const { hidden , category } = req.body;
   try {
@@ -318,7 +301,7 @@ app.put('/hideDish/:id',authenticateToken , async (req, res) => {// טיפול �
 
 
   //-------------סגירת הזמנה----------------------------------------------------------
-  app.post("/orders",authenticateToken , async (req, res) => {
+  app.post("/api/orders",authenticateToken , async (req, res) => {
     const { user_id, order_menu, guest_count, event_date, totalPrice } = req.body;
     try {
       const orderMenuString = JSON.stringify(order_menu);
@@ -333,7 +316,7 @@ app.put('/hideDish/:id',authenticateToken , async (req, res) => {// טיפול �
     }
   });
   //-----------------סגירת משתמש------------------------------------------
-  app.post("/users" ,authenticateToken , async (req, res) => {
+  app.post("/api/users" ,authenticateToken , async (req, res) => {
     const { user_id, eventOwner, guestCount, eventDate,password ,email} = req.body;
     try { 
       const role = "user";
@@ -363,7 +346,7 @@ app.put('/hideDish/:id',authenticateToken , async (req, res) => {// טיפול �
             /* Calender    דף לוח שנה אירועים     */
 
   //-----------------הבאת ההזמנות -------------------------------------
-  app.get("/orders_calendar", authenticateToken , async (req, res) => {
+  app.get("/api/orders_calendar", authenticateToken , async (req, res) => {
     try {
       const [orders] = await connection.query("SELECT * FROM orders");
       const formattedOrders = orders.map(order => {
@@ -382,7 +365,7 @@ app.put('/hideDish/:id',authenticateToken , async (req, res) => {// טיפול �
     }
   });  
  //-------------------------הצגת הזמנה לפי משתמש---------------------------------------
-app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
+app.get("/api/user_calendar/:id", authenticateToken , async (req, res) => {
   const { id } = req.params;
   try {  
     if (req.user.role !== "manager") {   
@@ -410,7 +393,7 @@ app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
   }
  });
  //------------------הוספת העררה-------------------------------------------------
- app.post('/save-note/:orderId/:notes', authenticateToken , async (req, res) => { 
+ app.post('/api/save-note/:orderId/:notes', authenticateToken , async (req, res) => { 
   const orderId = req.params.orderId;
   const note = req.params.notes;  // ההערה ששלח הלקוח
   // פרוק ה- orderId לשני חלקים
@@ -450,7 +433,7 @@ app.get("/user_calendar/:id", authenticateToken , async (req, res) => {
     
 
 //  ---------הזמנות אונליין הוספת הזמנה למאגר----------------------------
-app.post('/addOrdersOnline', async (req, res) => {
+app.post('/api/addOrdersOnline', async (req, res) => {
   try {
       const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, shippingDate , email , Password, event_location , address} = req.body;
         // הצפנת הסיסמה לפני ששולחים אותה למסד הנתונים
@@ -538,7 +521,7 @@ app.post('/addOrdersOnline', async (req, res) => {
       /*OnlineOrdersSystem   דף הזמנות קבלת אונליין צד מנהל   */
 
 //----------- לקבלת הזמנות אונליין למנהל------------------------------------------
-app.get("/online_orders",authenticateToken , async (req, res) => {
+app.get("/api/online_orders",authenticateToken , async (req, res) => {
   try {
     const [orders] = await connection.query("SELECT * FROM online_orders");
     res.json(orders);
@@ -547,8 +530,10 @@ app.get("/online_orders",authenticateToken , async (req, res) => {
     res.status(500).send("שגיאה בשליפת נתונים");
   }
 })
+
+
  //---------------------סגירת הזמהת לקוח למערכת--------------------------------------------------          
-app.post('/online_orders/add_customer_order', authenticateToken , async (req, res) => {
+app.post('/api/online_orders/add_customer_order', authenticateToken , async (req, res) => {
   const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice , email , password , event_location, address} = req.body;
 
   try {   // המרת התאריך לפורמט תואם MySQL
@@ -581,7 +566,7 @@ app.post('/online_orders/add_customer_order', authenticateToken , async (req, re
 
 
 //-----------------מחיקת הזמנה מטבלת אונליין--------------------------------------------
-app.delete('/online_orders/:id',authenticateToken, async (req, res) => {
+app.delete('/api/online_orders/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     const [result] = await connection.query(`DELETE FROM online_orders WHERE id = ?`, [id]);
@@ -601,7 +586,7 @@ app.delete('/online_orders/:id',authenticateToken, async (req, res) => {
              /* KitchenOrder  צד מנהל */
 
 //-----------KitchenOrder  תצוגת ההזמנה ועריכה- -----------------------------------------------------------------
-app.post('/KitchenOrder/addDish',authenticateToken, async (req, res) => {
+app.post('/api/KitchenOrder/addDish',authenticateToken, async (req, res) => {
   const { dish_name, price, weight, category, user_id } = req.body;
   const newDish = {
     dish_name: dish_name,
@@ -627,7 +612,7 @@ app.post('/KitchenOrder/addDish',authenticateToken, async (req, res) => {
   }
 });
 //-----------מחיקת פריט מהתפריט---------------------------------------
-app.delete('/KitchenOrder/deleteDish',authenticateToken, async (req, res) => {
+app.delete('/api/KitchenOrder/deleteDish',authenticateToken, async (req, res) => {
   const { dish_name , user_id } = req.body;
   try {
     const [orderResult] = await connection.query('SELECT order_menu FROM orders WHERE user_id = ?', [user_id]);
@@ -650,7 +635,7 @@ app.delete('/KitchenOrder/deleteDish',authenticateToken, async (req, res) => {
   }
 });
 //----------------עידכון מנה קיימת--------------------------------------------------
-app.put('/KitchenOrder/updateDish',authenticateToken, async (req, res) => {
+app.put('/api/KitchenOrder/updateDish',authenticateToken, async (req, res) => {
   const { dish_name, price, weight, user_id } = req.body;
   try {
     const [orderResult] = await connection.query('SELECT order_menu FROM orders WHERE user_id = ?', [user_id]); // שליפת המידע הקיים בתפריט
@@ -690,7 +675,7 @@ app.put('/KitchenOrder/updateDish',authenticateToken, async (req, res) => {
 
             /*UserManagement  ניהול משתמשים  */
 //------------------------------------------------------------------------------
-app.get('/UserManagement', authenticateToken, async  (req, res) => {
+app.get('/api/UserManagement', authenticateToken, async  (req, res) => {
   try {
     const [orders] = await connection.query("SELECT * FROM users");
     res.json(orders);
@@ -701,7 +686,7 @@ app.get('/UserManagement', authenticateToken, async  (req, res) => {
   }
 });
 // ---------עריכת משתמש---------------------------------
-app.put('/UserManagement/:id', authenticateToken, async (req, res) => {
+app.put('/api/UserManagement/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
   const eventDate = new Date(updatedData.event_date);
@@ -736,7 +721,7 @@ app.put('/UserManagement/:id', authenticateToken, async (req, res) => {
   }
 });
 //---------------מחיקת משתמש--------------------------------------------------
-app.delete('/UserManagement/DeleteUser/:userId', authenticateToken, async (req, res) => {
+app.delete('/api/UserManagement/DeleteUser/:userId', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   try {
     // חיפוש המשתמש בטבלת המשתמשים
@@ -760,7 +745,7 @@ app.delete('/UserManagement/DeleteUser/:userId', authenticateToken, async (req, 
 
               /* OrderManagement ניהול הזמנות */
 // ---------------ניהול ההזמנות----------------------------------------
-app.get('/OrderManagement',authenticateToken,  async (req, res) => {
+app.get('/api/OrderManagement',authenticateToken,  async (req, res) => {
   try {
     const [orders] = await connection.query(`
       SELECT 
@@ -785,7 +770,7 @@ app.get('/OrderManagement',authenticateToken,  async (req, res) => {
   }
 });
 //--------הבאת הזמנה מסויימת של לקוח------------------------------------------------------
-app.get('/OrderManagement/users/:id',authenticateToken, async (req, res) => {
+app.get('/api/OrderManagement/users/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.query( `SELECT * FROM orders WHERE user_id = ?`,[id]);
@@ -800,7 +785,7 @@ app.get('/OrderManagement/users/:id',authenticateToken, async (req, res) => {
 });
 //--------------עידכון ההזמנה והחישוב-----------------------------------------------------------
 // עדכון הזמנה על פי ID של הזמנה ולקוח
-app.put('/OrderManagement/UpdateOrder/:userId/:orderId',authenticateToken, async (req, res) => {
+app.put('/api/OrderManagement/UpdateOrder/:userId/:orderId',authenticateToken, async (req, res) => {
   const { userId , orderId } = req.params; // (ID לקוח והזמנה)
   const { guest_count , order_menu } = req.body; // הנתונים החדשים (כמות מוזמנים ותפריט)
   try {
@@ -825,7 +810,7 @@ app.put('/OrderManagement/UpdateOrder/:userId/:orderId',authenticateToken, async
   }
 });
 // ----------- מחיקת הזמנה ומחיקת משתמש -----------------------------------
-app.delete('/OrderManagement/DeleteOrder/:userId', authenticateToken,async (req, res) => {
+app.delete('/api/OrderManagement/DeleteOrder/:userId', authenticateToken,async (req, res) => {
   const { userId } = req.params;
   try {
     // מחיקת ההזמנה מתוך טבלת ההזמנות
@@ -851,7 +836,7 @@ app.delete('/OrderManagement/DeleteOrder/:userId', authenticateToken,async (req,
 
         /*SystemManagerHone  דף הבית המנהל */
 //-----------------------------------------------------------------------------
-      app.get('/monthly-orders-summary',authenticateToken, async (req, res) => {
+      app.get('/api/monthly-orders-summary',authenticateToken, async (req, res) => {
   try {
     const currentYear = new Date().getFullYear();
     // שאילתה: כמות הזמנות לכל חודש בשנה האחרונה
@@ -880,7 +865,7 @@ app.delete('/OrderManagement/DeleteOrder/:userId', authenticateToken,async (req,
   }
 });
 //------------שאילתת כמות משתמשים-----------------------------------------------------------------  
-app.get('/user-count',authenticateToken, async (req, res) => {
+app.get('/api/user-count',authenticateToken, async (req, res) => {
   try {
     const [results] = await connection.execute('SELECT COUNT(*) AS user_count FROM users');
     res.json(results[0]);
@@ -889,7 +874,7 @@ app.get('/user-count',authenticateToken, async (req, res) => {
   }
 });
 //-------------גרף אירועים לפי חודש -----------------------------------------------------------------------------
-app.get('/monthly-orders',authenticateToken, async (req, res) => {
+app.get('/api/monthly-orders',authenticateToken, async (req, res) => {
   try {
     const currentDate = new Date(); // התאריך הנוכחי
     const currentMonth = currentDate.getMonth(); // החודש הנוכחי (0-11)
@@ -917,7 +902,7 @@ app.get('/monthly-orders',authenticateToken, async (req, res) => {
   }
 });
 //----------- אירועים לפי שבוע-----------------------------------------------------------------------------
-app.get('/weekly-events',authenticateToken, async (req, res) => {
+app.get('/api/weekly-events',authenticateToken, async (req, res) => {
   try {   // קביעת התאריך העברי הנוכחי
     const todayHebrew = moment().locale('he'); // תאריך עברי נוכחי
     const startOfWeekHebrew = todayHebrew.clone().startOf('week'); // תחילת השבוע העברי
@@ -942,7 +927,7 @@ app.get('/weekly-events',authenticateToken, async (req, res) => {
   }
 });
 //-----------שאילתת כמות אירועים שלא אושרו--------------------------------------------------------
-app.get('/events-pending',authenticateToken, async (req, res) => {
+app.get('/api/events-pending',authenticateToken, async (req, res) => {
   try {
     const [results] = await connection.execute(`
       SELECT COUNT(*) AS count  FROM online_orders`);
@@ -983,7 +968,7 @@ app.post('/api/contact', async (req, res) => {
 
 
 //------------- קבלת הודעות למנהל-------------------------------------------
-app.get('/getMessages',authenticateToken, async (req, res) => {
+app.get('/api/getMessages',authenticateToken, async (req, res) => {
   try {
     const [messages] = await connection.execute('SELECT * FROM contact');
     res.json(messages);
@@ -992,7 +977,7 @@ app.get('/getMessages',authenticateToken, async (req, res) => {
   }
 });
 //------------------מחיקת ההודעות במנהל--------------------------------------------------
-app.delete('/deleteMessage/:id',authenticateToken, async (req, res) => {
+app.delete('/api/deleteMessage/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     await connection.execute('DELETE FROM contact WHERE id = ?', [id]);
@@ -1011,6 +996,8 @@ app.delete('/deleteMessage/:id',authenticateToken, async (req, res) => {
 // שלב 1: שליחת קוד אימות למייל
 app.post("/api/forgotPassword", async (req, res) => {
   const { email } = req.body;
+  console.log("שרת עובד בשליחת קוד אימות");
+  
   try { // חיפוש משתמש לפי המייל
     const [user] = await connection.execute("SELECT * FROM users WHERE email = ?", [email]);
      if (user.length === 0) {      // אם לא נמצא משתמש
@@ -1045,6 +1032,7 @@ app.post("/api/forgotPassword", async (req, res) => {
     console.error(err);  // הדפסת שגיאה לקונסול אם יש בעיות
     return res.status(500).json({ success: false, message: "שגיאה בתהליך." });
   }});
+
 //--------------------------------------------------------------------------------
 // שלב 2: אימות קוד לשחזור סיסמה
 app.post("/api/verifyCode", async (req, res) => {
@@ -1125,7 +1113,7 @@ const sendOrderEmailToCustomer = async (orderHTML, customerEmail) => {
   }
 };
 // פונקציה לשליחת הזמנה למייל של הלקוח
-app.post('/sendOrderToCustomer', (req, res) => {
+app.post('/api/sendOrderToCustomer', (req, res) => {
   const { customerEmail, orderHTML } = req.body; 
   sendOrderEmailToCustomer(orderHTML, customerEmail)
     .then(() => {
@@ -1147,7 +1135,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-app.post('/sendOrderToKitchen', upload.single('file'), (req, res) => {
+app.post('/api/sendOrderToKitchen', upload.single('file'), (req, res) => {
   const file = req.file;
   const recipient = req.body.recipient;
 
@@ -1194,9 +1182,8 @@ cloudinary.config({
     api_secret: '7ujnK9T1z-eHo69CcCYdbp5PUZE' // הכנס את ה-API Secret שלך
 });
 
-
-//---------Cloudinary-----הוספת תמונה -------------------------------------------------------------
-app.post('/uploadImage',authenticateToken, imageUpload.single('image'), async (req, res) => {
+//--------Cloudinary-----הוספת תמונה -------------------------------------------------------------
+app.post('/api/uploadImage',authenticateToken, imageUpload.single('image'), async (req, res) => {
   try {
     const file = req.file; // הקובץ שהועלה
     const name = req.body.name; // שם התמונה
@@ -1239,9 +1226,8 @@ app.post('/uploadImage',authenticateToken, imageUpload.single('image'), async (r
     res.status(500).json({ success: false, message: 'שגיאה בהעלאת התמונה' });
   }
 });
-
 //---------- להורדת כל התמונות שהועלו-------------------------------------------------
-app.get('/getUploadedImages', async (req, res) => {
+app.get('/api/getUploadedImages', async (req, res) => {
   try {
     // פונקציה לשאיבת תמונות לפי תיקיה
     const fetchImagesByFolder = async (folder) => {
@@ -1278,10 +1264,8 @@ app.get('/getUploadedImages', async (req, res) => {
     res.status(500).send("Error fetching images");
   }
 });
-
-
 // ----- מחיקת תמונה ספציפית ---------------------------------------------------------
-app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
+app.delete('/api/deleteImage/:public_id',authenticateToken, async (req, res) => {
   try {
     const { public_id } = req.params;  
     const result = await cloudinary.uploader.destroy(public_id); // מבצע את מחיקת התמונה
@@ -1299,47 +1283,29 @@ app.delete('/deleteImage/:public_id',authenticateToken, async (req, res) => {
   }
 });
 
+
+  // 🧱 קבצים סטטיים של React
+    app.use(express.static(path.join(__dirname, '../client/build')));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    });
+
+
+
+
 //------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//--------------------------------------------------------------------
-
 };
+startServer(); // הפעלה
+
+   // ✅ ואז מאזין
+    const PORT = process.env.PORT || 3001;
+ app.listen(PORT, () => {
+      console.log(`🚀 השרת רץ על פורט ${PORT}`);
+    });
 
 
 
-// הפעלת שרת
-const PORT = process.env.PORT || 3000;
-// 🧱 קבצים סטטיים של React
-app.use(express.static(path.join(__dirname, '../client/build')));
 
-// 🌐 כל שאר הבקשות (שהן לא API), שיחזרו את index.html
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build', 'index.html'));});
- 
 
-app.listen(PORT, async () => {
-  try {
-    await startServer(); // מחכים שהחיבור למסד הנתונים יתבצע
-    console.log(`🚀 Server started on port ${PORT}`);
-  } catch (error) {
-    console.error("❌ Failed to start the server:", error.message);
-    process.exit(1);
-  }
-});

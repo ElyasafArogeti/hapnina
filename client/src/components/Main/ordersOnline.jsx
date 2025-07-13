@@ -83,29 +83,29 @@ const OrdersOnline = () => {
 
 
    const [loading, setLoading] = useState(false); 
-
+      console.log("הכל טוב ");
   //--------------------------------------------------------------------------
- useEffect(() => {
-    const fetchInventoryAll = async () => {
-        try {
-            console.log("📡 שולח בקשת fetch ל-inventoryAll...");
-            const response = await fetch('https://web-production-aa784.up.railway.app/api/inventoryAll');
-            
-            if (!response.ok) {
+    useEffect(() => {
+    
+      
+        const fetchInventoryAll = async () => {
+            try {
+               console.log("www");
+              const response = await fetch('http://localhost:3001/api/inventoryAll');
+              if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+                const data = await response.json();
+                console.log(data);
+                
+                setInventoryAll(data);
+            } catch (error) {
+                console.error('Failed to fetch inventory:', error);
+            }
+        };
 
-            const data = await response.json();
-            console.log("✅ קיבלתי נתונים:", data);
-            setInventoryAll(data);
-        } catch (error) {
-            console.error('❌ שגיאה בשליפת המלאי:', error);
-        }
-    };
-
-    fetchInventoryAll();
-}, []);
-
+        fetchInventoryAll();
+    }, []);
 
     // פונקציה להורדת כל התוויים שאינם עבריים מהשם
 const removeNonHebrew = (text) => { 
@@ -116,7 +116,7 @@ const removeNonHebrew = (text) => {
     setLoading(true);
     const fetchImages = async () => {
       try {
-        const response = await axios('https://hapnina-b1d08178cec4.herokuapp.com/getUploadedImages');
+        const response = await axios('http://localhost:3001/api/getUploadedImages');
         setImagesByCategory(response.data);
       } catch (err) {
         console.error('Error fetching images by categories:', err);
@@ -268,7 +268,7 @@ const removeNonHebrew = (text) => {
     //--------------הוספת הזמנה למערכת מנהל ------------------------------------------------------------
    const addOrdersOnline = async () => {
      try {
-              const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/addOrdersOnline', {
+              const response = await fetch('http://localhost:3001/api/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -467,8 +467,6 @@ return (
   <div>
     <NavbarHome/>
 
-
-    
 {onlineOrderMain && (
     <div className="online-order-container">
       <div className="order-header">
@@ -485,7 +483,6 @@ return (
           <LinearProgress />
         </Box>
       )} 
-
 
                {/* להודעת שגיאה */}
              <Snackbar
@@ -834,7 +831,7 @@ return (
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             error={Boolean(errors.address)}
-            helperText={errors.address}
+            helperText={errors.address}v
             required
           />
          </Grid>

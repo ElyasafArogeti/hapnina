@@ -22,6 +22,15 @@ import ImageUploadManager from './components/SystemManager/ImageUploadManager';
 import TextMove from './components/Main/textMove';
 import ProtectedRoute from './components/ProtectedRoute'; 
 import MainCourse from './components/Main/MainCourse';
+//-------------------------------------------------------
+import OffersSection from './components/Main/Offers/OffersSection';
+import WeddingOffer from './components/Main/Offers/WeddingOffer';
+import BritOffer from './components/Main/Offers/BritOffer';
+import EngagementOffer from './components/Main/Offers/EngagementOffer';
+import BarMitzvahOffer from './components/Main/Offers/BarMitzvahOffer';
+
+import BarMitzvahOrder from './components/Main/OrdersOffer/BarMitzvahOrder'
+
 
 function App() {
   return (
@@ -37,7 +46,18 @@ function App() {
           <Route path='/Contact' element={<Contact />} />
           <Route path='/textMove' element={<TextMove />} />
           <Route path='/MainCourse' element={<MainCourse />} />
-        
+
+
+<Route path='/OffersSection' element={<OffersSection />} />
+<Route path='/BarMitzvahOffer' element={<BarMitzvahOffer />} />
+<Route path='/WeddingOffer' element={<WeddingOffer />} />
+<Route path='/BritOffer' element={<BritOffer />} />
+<Route path='/EngagementOffer' element={<EngagementOffer />} />
+
+
+      <Route path='/BarMitzvahOrder' element={<BarMitzvahOrder />} />   
+
+         
 
          
           <Route path='/OrderDetails' element={<OrderDetails />} />

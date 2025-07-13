@@ -1138,13 +1138,13 @@ const transporter = nodemailer.createTransport({
 app.post('/api/sendOrderToKitchen', upload.single('file'), (req, res) => {
   const file = req.file;
   const recipient = req.body.recipient;
-
+ const message = req.body.message || ''; // המלל במייל של המטבח
  
   const mailOptions = {
     from: 'hpnina6600200@gmail.com',
     to: recipient,
     subject: 'סיכום הזמנה למטבח',
-    text: 'הזמנה מצורפת כקובץ PDF.',
+    text: `הזמנה מצורפת כקובץ PDF.\n\nהערת מנהל:\n${message}`,
     attachments: [
       {
         filename: file.originalname,

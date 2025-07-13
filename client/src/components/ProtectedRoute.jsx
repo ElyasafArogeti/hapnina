@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
 
         // בדיקת תוקף הטוקן מול השרת
         const response = await axios.post(
-          'http://localhost:3000/api/verifyToken',
+          'http://localhost:3001/api/verifyToken',
           {},
           {
             headers: { Authorization: `Bearer ${token}` },

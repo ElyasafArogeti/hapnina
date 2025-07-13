@@ -11,45 +11,135 @@ import ContactSection from "./ContactSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import imgApnina from "../../assets/imgs/img3.jpeg";
 
+import OffersSection from "../Main/Offers/OffersSection";
+import { motion } from "framer-motion";
+const fadeInVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1, // דיליי בין כל תמונה
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  }),
+};
+
+const images = [
+  // כאן תכניס כתובות של תמונות (תמונות אוכל)
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157503/manager_images/salads/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA%20%D7%97%D7%A6%D7%99%D7%9C%20%D7%A4%D7%A7%D7%A0%D7%98%D7%99.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157676/manager_images/main_courses/%D7%A9%D7%99%D7%A4%D7%95%D7%93%D7%99%20%D7%A7%D7%91%D7%91%20%D7%9E%D7%96%D7%A8%D7%97%D7%99.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157436/manager_images/main_courses/%D7%A9%D7%A0%D7%99%D7%A6%D7%9C%20%D7%A2%D7%95%D7%A3.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0131_ugknys.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0142_i0jf67.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0135_i0cvwo.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0127_fg3nao.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0115_jsponj.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0142_i0jf67.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411432/IMG-20250713-WA0147_xasixd.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411433/IMG-20250713-WA0144_behs5i.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0146_csvwdl.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0140_hlcl56.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0141_edsu2v.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157676/manager_images/main_courses/%D7%A9%D7%99%D7%A4%D7%95%D7%93%D7%99%20%D7%A7%D7%91%D7%91%20%D7%9E%D7%96%D7%A8%D7%97%D7%99.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0129_vrhw3n.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411442/IMG-20250713-WA0094_z5u8r2.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411744/IMG-20250713-WA0133_qjb810.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411743/IMG-20250713-WA0130_vys8t0.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411746/IMG-20250713-WA0113_ron68y.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411746/IMG-20250713-WA0108_noob7d.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0123_oqu4hr.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0117_tdbquh.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0118_lnqp6n.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0129_vrhw3n.jpg",
+ 
+  // תוסיף כמה שאתה רוצה
+];
+
 const Home = () => {
   return (
     <Box className={styles.mainHome}>
       <NavbarHome/><br/><br/><br/><br/>
        <TextMove/> 
 
-       <Box
+ <Box
   sx={{
     width: "100%",
-    height: { xs: "450px", md: "500px" },
+    height: { xs: "50vh", md: "100vh" }, // חצי מסך במובייל, מלא בדסקטופ
     overflow: "hidden",
     position: "relative",
   }}
 >
-  <img 
-    src="https://res.cloudinary.com/dhkegagjk/image/upload/v1738236849/manager_images/general_photos/%D7%AA%D7%9E%D7%95%D7%A0%D7%AA%20%D7%A8%D7%A7%D7%A2%201.jpg" 
-    alt="" 
-    style={{ 
-      width: "100%", 
-      height: "100%", 
-      objectFit: "cover" 
-    }} 
-  />
-  <Typography
-    variant="h3"  
-    sx={{
+  {/* הווידאו */}
+  <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+    style={{
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
       position: "absolute",
-      top: "10%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      color: "#FFF",
-      textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
-      textAlign: "center",
-      fontSize: { xs: "1.5rem", md: "2.5rem" },
+      top: 0,
+      left: 0,
     }}
   >
-    {/* טקסט כאן */}
-  </Typography>
+    <source
+      src="https://res.cloudinary.com/dhkegagjk/video/upload/q_auto,f_auto/v1752406326/%D7%A1%D7%A8%D7%98%D7%95%D7%9F_%D7%93%D7%A3_%D7%94%D7%91%D7%99%D7%AA_dbzqoz.mp4"
+      type="video/mp4"
+    />
+    Your browser does not support the video tag.
+  </video>
+
+  {/* שכבת כהות */}
+  <Box
+    sx={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      zIndex: 1,
+    }}
+  />
+
+  {/* טקסט במרכז */}
+  <Box
+    sx={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      zIndex: 2,
+      textAlign: "center",
+    }}
+  >
+    <Typography
+      variant="h3"
+      sx={{
+        color: "#FFF",
+        textShadow: "2px 2px 6px rgba(0,0,0,0.9)",
+        fontSize: { xs: "1.4rem", md: "3rem" },
+      }}
+    >
+    
+    </Typography>
+  </Box>
 </Box>
+
+
+
+<OffersSection />
+
+
+
+
+
 
 
 {/* כרטיס קייטרינג */}
@@ -126,7 +216,6 @@ const Home = () => {
   </Grid2>
 </Container>
  <Box>
-
 
 
 
@@ -230,7 +319,7 @@ const Home = () => {
     sx={{
       width: "100%",
       minHeight: "500px",
-      backgroundImage: "url('https://laraevents.co.il/wp-content/uploads/2022/07/%D7%90%D7%99%D7%9A-%D7%9C%D7%91%D7%97%D7%95%D7%A8-%D7%90%D7%95%D7%9C%D7%9D-%D7%90%D7%99%D7%A8%D7%95%D7%A2%D7%99%D7%9D-1.jpg')",
+      backgroundImage: "url('https://res.cloudinary.com/dhkegagjk/image/upload/v1752410371/IMG-20250713-WA0106_oenesp.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundAttachment: "fixed"
@@ -272,9 +361,53 @@ const Home = () => {
         ⭐️ תכנון האירוע המושלם מתחיל כאן ⭐️
       </Typography>
     </Box>
- 
 </Box>
 
+
+
+<Box sx={{ py: 6, px: { xs: 2, md: 6 }, backgroundColor: "#f9f9f9" }}>
+  <Typography
+    variant="h4"
+    textAlign="center"
+    fontWeight="bold"
+    mb={4}
+    sx={{ color: "#444" }}
+  >
+    🍽️ גלריית הטעמים שלנו
+  </Typography>
+
+  <Grid2 container spacing={3} justifyContent="center">
+    {images.map((img, index) => (
+      <Grid2 size={{ xs: 6, sm: 3 }} item key={index}>
+        <motion.div
+          custom={index}
+          variants={fadeInVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          <Box
+            component="img"
+            src={img}
+            alt={`gallery-img-${index}`}
+            sx={{
+              objectFit: "cover",
+              boxShadow: 3,
+              width: "100%",
+              height: "auto",
+              borderRadius: 2,
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: 6,
+              },
+            }}
+          />
+        </motion.div>
+      </Grid2>
+    ))}
+  </Grid2>
+</Box>
 
 
 

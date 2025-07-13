@@ -36,7 +36,7 @@ const NewOrders = () => {
         const fetchInventoryAll = async () => {
             try {
                 const token = localStorage.getItem("authToken");
-                const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll', {
+                const response = await fetch('http://localhost:3001/api/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -165,7 +165,7 @@ const NewOrders = () => {
        };       
        try {
         const token = localStorage.getItem("authToken");
-           const userResponse = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/users', {
+           const userResponse = await fetch('http://localhost:3001/api/users', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json' ,
@@ -182,7 +182,7 @@ const NewOrders = () => {
                user_id: userId ,               // השתמש ב-id שנוצר, לא בטלפון
                ...orderSummary               // שאר פרטי ההזמנה
            };
-           const orderResponse = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/orders', {
+           const orderResponse = await fetch('http://localhost:3001/api/orders', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json', 

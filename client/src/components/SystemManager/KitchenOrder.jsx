@@ -31,6 +31,8 @@ const KitchenOrder = () => {
 
   const [loading, setLoading] = useState(false);
 
+const [kitchenMessage, setKitchenMessage] = useState('');
+
   const [newDish, setNewDish] = useState({ // מנה החדשה
     dish_name: "",
     price: "",
@@ -57,7 +59,7 @@ console.log();
   useEffect(() => {
     const fetchAllDishes = async () => {
       try {
-        const response = await fetch('http://hapnina-b1d08178cec4.herokuapp.com/inventoryAll', {
+        const response = await fetch('http://localhost:3001/api/inventoryAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +87,7 @@ console.log();
              /* הוספת מנה לתפריט*/
     const handleAddDish = async () => {
     try {
-      const response = await axios.post('https://hapnina-b1d08178cec4.herokuapp.com/KitchenOrder/addDish', {
+      const response = await axios.post('http://localhost:3001/api/KitchenOrder/addDish', {
         dish_name: newDish.dish_name,
         price: newDish.price,
         weight: newDish.weight,
@@ -121,7 +123,7 @@ console.log();
          /*     מחיקת מנה קיימת'     */
    const handleDeleteDish = async () => {
     try {
-      const response = await axios.delete(`https://hapnina-b1d08178cec4.herokuapp.com/KitchenOrder/deleteDish`, {
+      const response = await axios.delete(`http://localhost:3001/api/KitchenOrder/deleteDish`, {
         data: {
           dish_name: dishToDelete, 
           user_id: orderSummary[0].user_id
@@ -153,7 +155,7 @@ console.log();
      try {
        const { dish_name, price, weight } = editDishData;
    
-       const response = await axios.put("https://hapnina-b1d08178cec4.herokuapp.com/KitchenOrder/updateDish", {
+       const response = await axios.put("http://localhost:3001/api/KitchenOrder/updateDish", {
          dish_name: dish_name,
          price: price,
          weight: weight,
@@ -455,7 +457,7 @@ const handleShowDeleteConfirmation = (id) => {
 </p>
 
         <p class="phone">לפרטים נוספים, חייגו: <strong>054-6600-200</strong></p>
-        <a href="https://hapnina-b1d08178cec4.herokuapp.com/PersonalAreaLogin" class="button-link">
+        <a href="http://localhost:3001/api/PersonalAreaLogin" class="button-link">
           לכניסה לאזור האישי שלכם לחצו כאן
         </a>
       </div>
@@ -540,10 +542,11 @@ const handleShowDeleteConfirmation = (id) => {
     const formData = new FormData();
     formData.append('file', pdfBlob, `${name}_Order_Kitchen.pdf`);
     formData.append('recipient', 'elyasaf852@gmail.com'); 
+    formData.append('message', kitchenMessage); // מלל בטקסט 
   
     try {
-      // Send the PDF to the server
-      const response = await axios.post('https://hapnina-b1d08178cec4.herokuapp.com/sendOrderToKitchen', formData, {
+
+      const response = await axios.post('http://localhost:3001/api/sendOrderToKitchen', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -573,7 +576,7 @@ const handleShowDeleteConfirmation = (id) => {
     const orderHTML = generateCustomerOrderHTML();  // יצירת ה-HTML של ההזמנה
     setLoading(true)
     try {
-      const response = await axios.post('https://hapnina-b1d08178cec4.herokuapp.com/sendOrderToCustomer', {
+      const response = await axios.post('http://localhost:3001/api/sendOrderToCustomer', {
         customerEmail: email,
         orderHTML: orderHTML,
       });
@@ -656,6 +659,7 @@ const handleShowDeleteConfirmation = (id) => {
         <p>מספר פלאפון: <FaPhoneSquareAlt/> {phoneNumber}</p>
         <p>סה"כ מחיר: ₪ {totalPrice || 'לא זמין'}</p>  
         </div>
+
     {/* הוספת מנה מודול*/}
  {editAddDish && (
 <div className="add-dish">
@@ -761,6 +765,14 @@ const handleShowDeleteConfirmation = (id) => {
         <br />
         <div className="kitchen-order-actions">
         <button className="kitchen-order-action-button" onClick={() => handleSendOrderToKitchenEmail()} title='שליחה למטבח'><BiLogoGmail />  מייל למטבח</button>
+        <textarea
+              placeholder="הזן הערה למשלוח למטבח"
+              value={kitchenMessage}
+              onChange={(e) => setKitchenMessage(e.target.value)}
+              rows={4}
+              style={{ width: '100px', marginBottom: '2px', padding: '2px', fontSize: '16px' ,height:'50px'}}
+            />
+
         <button className="kitchen-order-action-button" onClick={() => handleShareWhatsApp()}title='שליחה בוואצאפ למטבח'><BsWhatsapp /> שלח וואצאפ</button>
         <button className="kitchen-order-action-button" onClick={() => handleCreatePDF(true)} title='הורד סיכום למטבח'><BsFiletypePdf /> הורד סיכום מטבח</button>
         </div>

@@ -4,10 +4,9 @@ import '../../assets/stylesManager/Inventory.css';
 
 import { BiShekel } from "react-icons/bi";
 import { Box, Typography, Button, Modal, TextField, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
-import { IoArrowBackSharp } from "react-icons/io5";
 import { MdAssignmentAdd } from "react-icons/md";
 import Grid from '@mui/material/Grid2';
-import { fontSize } from '@mui/system';
+
 const Inventory = () => {
     const [inventoryAll, setInventoryAll] = useState({
         first_courses: [],
@@ -25,7 +24,7 @@ const Inventory = () => {
         const fetchInventoryAll = async () => {
             try {
               const token = localStorage.getItem("authToken");
-                const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/inventoryAll', {
+                const response = await fetch('http://localhost:3001/api/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -43,7 +42,7 @@ const Inventory = () => {
        const addDish = async () => {
         try {
           const token = localStorage.getItem("authToken");
-            const response = await fetch('https://hapnina-b1d08178cec4.herokuapp.com/addNewDish', {
+            const response = await fetch('http://localhost:3001/api/addNewDish', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +65,7 @@ const Inventory = () => {
     const updateDish = async (id, updatedDish) => {
         try {
           const token = localStorage.getItem("authToken");
-            await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/updateDish/${id}`, {
+            await fetch(`http://localhost:3001/api/updateDish/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +88,7 @@ const Inventory = () => {
         if (window.confirm("האם אתה בטוח שברצונך למחוק את המנה?")) {
             try {
             const token = localStorage.getItem("authToken");
-            await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/${id}`, {
+            await fetch(`http://localhost:3001/api/${id}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
@@ -135,7 +134,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/hideDish/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -173,7 +172,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`https://hapnina-b1d08178cec4.herokuapp.com/hideDish/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

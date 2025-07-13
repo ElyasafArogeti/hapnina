@@ -37,7 +37,7 @@ useEffect(() => {
   const fetchImages = async () => {
    
     try {
-      const response = await axios.get('https://hapnina-b1d08178cec4.herokuapp.com/getUploadedImages',{
+      const response = await axios.get('http://localhost:3001/api/getUploadedImages',{
         headers: {
           Authorization: `Bearer ${token}`,
       },
@@ -79,7 +79,7 @@ useEffect(() => {
     formData.append('category', category);
   
     try {
-      const response = await axios.post('https://hapnina-b1d08178cec4.herokuapp.com/uploadImage', formData, {
+      const response = await axios.post('http://localhost:3001/api/uploadImage', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data' ,
            Authorization: `Bearer ${token}`,
@@ -121,7 +121,7 @@ useEffect(() => {
       // ודא שה- public_id עבר encoding
       const encodedPublicId = encodeURIComponent(public_id);  // מזהה התמונה (כולל השם המלא, כל התוים שכוללים רווחים)
   
-      const response = await axios.delete(`https://hapnina-b1d08178cec4.herokuapp.com/deleteImage/${encodedPublicId}`, {
+      const response = await axios.delete(`http://localhost:3001/api/deleteImage/${encodedPublicId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
@@ -159,7 +159,7 @@ useEffect(() => {
     }
   
     try {
-      const response = await axios.put(`https://hapnina-b1d08178cec4.herokuapp.com/updateImage/${editingImage.public_id}`, { name: imageName });
+      const response = await axios.put(`http://localhost:3001/api/updateImage/${editingImage.public_id}`, { name: imageName });
       const updatedImage = { ...editingImage, name: imageName };
       setUploadedImages(uploadedImages.map((img) => (img.public_id === updatedImage.public_id ? updatedImage : img)));
       setOpenDialog(false);

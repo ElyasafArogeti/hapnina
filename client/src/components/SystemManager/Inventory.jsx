@@ -88,7 +88,7 @@ const Inventory = () => {
         if (window.confirm("האם אתה בטוח שברצונך למחוק את המנה?")) {
             try {
             const token = localStorage.getItem("authToken");
-            await fetch(`http://localhost:3001/api/${id}`, {
+            await fetch(`http://localhost:3001/api/deleteDish/${id}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',

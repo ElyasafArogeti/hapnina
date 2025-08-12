@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import NavbarHome from "./NavbarHome";
 import axios from "axios";
 import { Visibility, VisibilityOff } from "@mui/icons-material"; // אייקונים לעין
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import Divider from '@mui/material/Divider';
+
 const PersonalAreaLogin = () => {
   const navigate = useNavigate();
 
@@ -33,6 +36,16 @@ const PersonalAreaLogin = () => {
   });
 
   const [loading, setLoading] = useState(false); // מצב טעינה
+
+
+  //-------------------------------------------------
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
+const [registerEmail, setRegisterEmail] = useState("");
+const [registerPassword, setRegisterPassword] = useState("");
+const [registerPasswordError, setRegisterPasswordError] = useState("");
+const [registerEmailError, setRegisterEmailError] = useState("");
+
+
 
   useEffect(() => { // כל פעם שעובר שלב, נמחק את השגיאות הקודמות
     setErrors({
@@ -139,6 +152,40 @@ const PersonalAreaLogin = () => {
     }
   };
 
+const handleRegisterUser = async () => {
+  setRegisterEmailError("");
+  setRegisterPasswordError("");
+
+  if (!registerEmail) {
+    setRegisterEmailError("נא להכניס מייל");
+    return;
+  }
+  if (!registerPassword) {
+    setRegisterPasswordError("נא להכניס סיסמה");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const response = await axios.post("http://localhost:3001/api/registerPersonalArea", {
+      email: registerEmail,
+      password: registerPassword,
+    });
+
+    if (response.data.success) {
+      setSnackMessage("ההרשמה בוצעה בהצלחה! כעת תוכל להיכנס");
+      setSnackOpen(true);
+      setOpenRegisterModal(false);
+    } else {
+      setRegisterEmailError("המייל כבר קיים במערכת או שגיאה אחרת.");
+    }
+  } catch (err) {
+    setRegisterEmailError("שגיאה בהרשמה, נסה שוב.");
+  } finally {
+    setLoading(false);
+  }
+};
+
   const handleVerifyCode = async () => {
     setErrors({ verificationCode: '' });
     if (!verificationCode) {
@@ -235,7 +282,10 @@ const PersonalAreaLogin = () => {
               <Typography variant="h5" textAlign="center" mb={3} fontWeight="bold">
                 כניסה לאזור אישי
               </Typography>
-
+            <Typography variant="body2" textAlign="center" mb={3} color="gray">
+                      שימו לב: משתמש חדש שביצע הזמנה דרך האתר נדרש להירשם.
+            </Typography>         
+              <Divider variant="middle" sx={{ borderColor: '#ccc', mb: 4 }} />
               <TextField
                 label="שם משתמש"
                 fullWidth
@@ -272,6 +322,16 @@ const PersonalAreaLogin = () => {
               >
                 שכחתי סיסמה ?
               </Typography>
+<Typography
+  variant="h6"
+  textAlign="center"
+  mb={3}
+  fontWeight="bold"
+  sx={{ cursor: "pointer", color: "blue", fontSize: '15px' }}
+  onClick={() => setOpenRegisterModal(true)}
+>
+  אין לך עדיין סיסמה? הירשם כאן
+</Typography>
 
               <Button
                 variant="contained"
@@ -384,6 +444,37 @@ const PersonalAreaLogin = () => {
           )}
 
 
+<Dialog open={openRegisterModal} onClose={() => setOpenRegisterModal(false)}>
+  <DialogTitle>הרשמה לאזור האישי</DialogTitle>
+  <DialogContent>
+    <TextField
+      label="כתובת מייל"
+      fullWidth
+      variant="outlined"
+      value={registerEmail}
+      error={Boolean(registerEmailError)}
+      helperText={registerEmailError}
+      onChange={(e) => setRegisterEmail(e.target.value)}
+      sx={{ mb: 2, mt: 1 }}
+    />
+    <TextField
+      label="סיסמה חדשה"
+      type="password"
+      fullWidth
+      variant="outlined"
+      value={registerPassword}
+      error={Boolean(registerPasswordError)}
+      helperText={registerPasswordError}
+      onChange={(e) => setRegisterPassword(e.target.value)}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenRegisterModal(false)}>ביטול</Button>
+    <Button onClick={handleRegisterUser} variant="contained" color="primary">
+      הירשם
+    </Button>
+  </DialogActions>
+</Dialog>
 
 
 

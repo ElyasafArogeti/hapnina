@@ -42,19 +42,24 @@ const OnlineOrdersSystem = () => {
         console.error("ההזמנה לא נמצאה");
         return;
       }
-      const orderData = {
-        orderId: orderToClose.id,
-        userName: orderToClose.user_name,
-        userPhone: orderToClose.userPhone,
-        guestCount: orderToClose.guest_count,
-        eventDate: orderToClose.event_date,
-        orderMenu: orderToClose.order_menu,
-        totalPrice: orderToClose.total_price,
-        email: orderToClose.email,
-        password: orderToClose.password , 
-        event_location: orderToClose.event_location,
-        address: orderToClose.address
-      };
+ const orderData = {
+  orderId: orderToClose.id,
+  userName: orderToClose.user_name,
+  userPhone: orderToClose.userPhone,
+  guestCount: orderToClose.guest_count,
+  eventDate: orderToClose.event_date,
+  orderMenu: orderToClose.order_menu,
+  totalPrice: orderToClose.total_price,
+  email: orderToClose.email,
+  event_location: orderToClose.event_location,
+  address: orderToClose.address,
+  shippingCost: orderToClose.shipping_cost,
+  serviceCost: orderToClose.service_cost,
+  toolsType: orderToClose.tools_type,
+  eventType: orderToClose.event_type
+};
+
+
 
       const response = await fetch('http://localhost:3001/api/online_orders/add_customer_order', {
         method: 'POST',
@@ -136,8 +141,13 @@ const OnlineOrdersSystem = () => {
               <h2 className="order-user-name">{order.user_name}</h2>
               <p className="order-user-phone">מספר טלפון: {order.userPhone}</p>
               <p className="order-guest-count">מספר אורחים: {order.guest_count}</p>
+              <p className="order-guest-count"> סוג אירוע: {order.event_type}</p>
+              <p className="order-guest-count"> סה״כ: {order.total_price}</p>
               <p className="order-guest-count"> אזור ההזמנה: {order.event_location}</p>
               <p className="order-guest-count"> כתובת ההזמנה: {order.address}</p>
+              <p className="order-guest-count">  עלות משלוח לא סופי: {order.shipping_cost > 0 ? order.shipping_cost: 'ללא'}</p>
+              <p className="order-guest-count"> בחר בשרות שלנו: {order.service_cost > 0 ? order.service_cost: 'ללא'}</p>
+              <p className="order-guest-count"> בחר בכלים : {order.tools_type && order.tools_type.trim() !== '' ? order.tools_type : 'ללא'}</p> 
               <p className="order-title">תאריך ביצוע ההזמנה: {new Date(order.event_date).toLocaleDateString()}</p>      
               <p className="order-guest-count"> לקוח שלח בתאריך: {new Date(order.shipping_date).toLocaleDateString()}</p>
               <div className="online-order-actions-container">

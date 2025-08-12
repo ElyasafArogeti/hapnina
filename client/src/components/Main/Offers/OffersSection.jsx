@@ -8,7 +8,7 @@ const OffersSection = () => {
   return (
     <Container sx={{ py: 6 }}>
       <Typography variant="h4" textAlign="center" fontWeight="bold" gutterBottom>
-       הצעות מחיר לאירועים 
+         חבילות לאירועים 
       </Typography>
       <Grid size={{ xs: 12, sm:4 }} container spacing={1}>
 

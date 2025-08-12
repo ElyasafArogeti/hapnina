@@ -6,7 +6,7 @@ import NavbarHome from './NavbarHome';
 import Footer from './Footer';
 import Grid from '@mui/material/Grid2'; 
 import axios from 'axios';
-
+import TextMove from './textMove';
 const Contact = () => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -52,37 +52,73 @@ const Contact = () => {
       {/* תפריט ניווט */}
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br /> <br /> <br /><br />
-
+      <TextMove />
       {/* כותרת ראשית */}
-      <Box sx={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden' }}>
-        <Box
-          component="img"
-          src="https://www.soferet-milim.com/wp-content/uploads/2022/04/Cover-1.jpg"
-          alt="רקע יוקרתי"
-          sx={{
-            width: '100%',
-            height: '400px',
-            objectFit: 'cover',
-            filter: 'brightness(40%)',
-          }}
-        />
-        <Typography
-          variant="h3"
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontWeight: 'bold',
-            fontSize: '3.5rem',
-            color: 'white',
-            textShadow: '0px 4px 8px rgba(0,0,0,0.7)',
-            textAlign: 'center',
-          }}
-        >
-          צור קשר
-        </Typography>
-      </Box>
+ <Box
+  sx={{
+    position: "relative",
+    width: "100%",
+    height: "400px",
+    overflow: "hidden",
+  }}
+>
+  {/* תמונת רקע */}
+  <Box
+    component="img"
+    src="https://www.soferet-milim.com/wp-content/uploads/2022/04/Cover-1.jpg"
+    alt="אולם האירועים הפנינה"
+    sx={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      filter: "brightness(40%)",
+      backgroundPosition: "center",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      zIndex: 1,
+    }}
+  />
+
+  {/* טקסט עם אנימציה */}
+  <Typography
+    variant="h3"
+    sx={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      fontWeight: "bold",
+      fontSize: "3.5rem",
+      color: "white",
+      textShadow: "0px 4px 8px rgba(0,0,0,0.7)",
+      textAlign: "center",
+      zIndex: 2,
+      opacity: 0, // מתחיל מוסתר
+      animation: "fadeInUp 1.8s ease-out forwards",
+    }}
+  >
+   צור קשר
+  </Typography>
+
+  {/* אנימציית fadeInUp */}
+  <style>
+    {`
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 30%);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+      }
+    `}
+  </style>
+</Box>
+
 
       {/* תוכן הדף */}
       <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
@@ -112,13 +148,13 @@ const Contact = () => {
               <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>
                 <Phone sx={{ fontSize: 32, color: '#0072e3' }} />
                 <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
-                  054-660-0200
+                  054-6600-200
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>
                 <Email sx={{ fontSize: 32, color: '#0072e3' }} />
                 <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
-                  Ely6600200@gmail.com
+                 hpnina6600200@gmail.com
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>

@@ -10,36 +10,77 @@ import { BsWhatsapp, BsTelephoneOutbound } from 'react-icons/bs';
 
 const About = () => {
   return (
-    <Box sx={{ backgroundColor: '#f9f9f9', width: '100%' }}>
+    <Box sx={{ backgroundColor: '#f9f9f9', width: '100%',direction: 'rtl'}}>
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br/> <br/> <br/><br/>
     <TextMove/>
       <Container disableGutters={true} maxWidth={false} sx={{ padding: 0 }}>
         {/* כותרת על תמונה */}
-        <Box sx={{ position: 'relative', width: '100%', maxHeight: '500px', overflow: 'hidden' }}>
-          <Box
-            component="img"
-            src="https://www.acosta.co.il/wp-content/uploads/2022/10/%D7%90%D7%95%D7%9C%D7%9D-%D7%90%D7%99%D7%A8%D7%95%D7%A2%D7%99%D7%9D-%D7%99%D7%95%D7%A7%D7%A8%D7%AA%D7%99.webp"
-            alt="אולם האירועים הפנינה"
-            sx={{
-              width: '100%',
-              minHeight: '500px',      
-              maxHeight: '550px',
-              objectFit: 'cover',
-              backgroundPosition: 'center',  filter: 'brightness(50%)', 
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            }}
-          />
-          <Typography variant="h3" component="h1"
-            sx={{
-              position: 'absolute', top: '50%', left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontWeight: 'bold', fontSize: '5rem',color: "#FFD700",  textAlign: 'center',     
-              textShadow: '2px 2px 4px black',zIndex: 1000,
-            }} >
-            הסיפור שלנו
-          </Typography>
-        </Box>
+   <Box
+  sx={{
+    position: "relative",
+    width: "100%",
+    height: "400px",
+    overflow: "hidden",
+  }}
+>
+  {/* תמונת רקע */}
+  <Box
+    component="img"
+    src="https://www.acosta.co.il/wp-content/uploads/2022/10/%D7%90%D7%95%D7%9C%D7%9D-%D7%90%D7%99%D7%A8%D7%95%D7%A2%D7%99%D7%9D-%D7%99%D7%95%D7%A7%D7%A8%D7%AA%D7%99.webp"
+    alt="אולם האירועים הפנינה"
+    sx={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      filter: "brightness(40%)",
+      backgroundPosition: "center",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      zIndex: 1,
+    }}
+  />
+
+  {/* טקסט עם אנימציה */}
+  <Typography
+    variant="h3"
+    sx={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      fontWeight: "bold",
+      fontSize: "3.5rem",
+      color: "white",
+      textShadow: "0px 4px 8px rgba(0,0,0,0.7)",
+      textAlign: "center",
+      zIndex: 2,
+      opacity: 0, // מתחיל מוסתר
+      animation: "fadeInUp 1.8s ease-out forwards",
+    }}
+  >
+    הסיפור שלנו
+  </Typography>
+
+  {/* אנימציית fadeInUp */}
+  <style>
+    {`
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 30%);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+      }
+    `}
+  </style>
+</Box>
+
 
 
 
@@ -59,7 +100,7 @@ const About = () => {
 
           {/* טקסט בצד ימין */}
           <Grid size={{ xs: 12, sm: 6 }} md={6}>
-            <p style={{ fontSize: '15px', textAlign: 'right', paddingRight: '1.5rem'}}> ❕ הסיפור שלנו</p>
+            <p style={{ fontSize: '15px', textAlign: 'right', paddingRight: '1.5rem'}}>  הסיפור שלנו ❕ </p>
             <Typography
               variant="h1"
               sx={{
@@ -69,23 +110,31 @@ const About = () => {
                 textAlign: 'right',
               }}
             >
-              ? אז מי אנחנו
+              אז מי אנחנו ?
             </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                textAlign: 'right',
-                paddingRight: '1.5rem',  
-                fontFamily: 'Arial, sans-serif',
-                margin: "20px 0",
-                fontSize: '16px',
-                lineHeight: 1,
-                color: '#555',
-              }}
-            >
-        "ברוכים הבאים לאולם לקייטרינג ואולם אירועים "הפנינה <br/>הפנינה נולד מתוך חזון להעניק חוויית אירוח יוקרתית ומרהיבה<br />
-              .במשך שנים רבות האירוח הפך לאומנות, ואנו שמחים להיות חלק מרגעי השמחה של לקוחותינו
-            </Typography>
+          <Typography
+  variant="body1"
+  sx={{
+    textAlign: 'right',
+    paddingRight: '1.5rem',
+    fontFamily: 'Arial, sans-serif',
+    margin: '20px 0',
+    fontSize: {
+      xs: '15px',
+      sm: '16px',
+    },
+    lineHeight: 1.8,
+    color: '#555',
+  }}
+>
+  ברוכים הבאים לקייטרינג <strong>"הפנינה"</strong> 🌟<br />
+  קייטרינג הפנינה נולד מתוך חזון להעניק חוויית אירוח יוקרתית, מרגשת ובלתי נשכחת.<br />
+  עם שנים של ניסיון, מקצועיות ואהבה אמיתית לאוכל – הפכנו את ההגשה לאמנות, ואת הטעם לחוויה. <br />
+  אנו מתמחים ביצירת תפריטים עשירים, טריים וכשרים למהדרין, בהתאמה אישית לאירועים מכל סוג וגודל.<br />
+  צוות השפים, המלצרים והמפיקים שלנו כאן כדי ללוות אתכם – מהרגע הראשון ועד הקינוח האחרון.<br />
+  נשמח לקחת חלק ברגעים החשובים שלכם, ולהפוך כל אירוע לחגיגה של טעמים, יופי וסטייל.
+</Typography>
+
           </Grid>
 
            {/* תמונה בצד שמאל */}
@@ -131,7 +180,7 @@ const About = () => {
                 textAlign: 'right'   
               }}
             >
-              !! ההיסטורייה שלנו
+              ההיסטורייה שלנו !! 
             </Typography>
             <Typography
               variant="body1"
@@ -146,7 +195,7 @@ const About = () => {
                 color: '#555',
               }}
             >
-              קייטרינג ואולמי הפנינה קיים למעלה מ-15 שנה, הבישול הביתי באיכות מרבית והמטבח הנקי
+              קייטרינג הפנינה קיים למעלה מ-15 שנה, הבישול הביתי באיכות מרבית והמטבח הנקי
               חומרי הגלם האיכותיים והטריים הביאו את שמם הטוב למרחוק<br/><br/> בקייטרינג לא מתפשרים על
               כשרות ולכן הכשרות שלנו היא למהדרין בדץ יורד דעה הרב מחפוד <br/><br/> המשגיח נמצא כל יום
               מפתיחה ועד סגירה והוא אחראי שכל חומרי הגלם יהיו כשרים למהדרין,וכן שהבישול
@@ -182,7 +231,7 @@ const About = () => {
              <BsTelephoneOutbound size={20} />
                 </IconButton>
                 <IconButton
-                  href="https://wa.me/+972546600200"
+                  href="https://wa.me/+972548520195"
                   target="_blank"
                   sx={{
                     backgroundColor: '#25D366',

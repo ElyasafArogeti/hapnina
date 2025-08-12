@@ -91,7 +91,10 @@ function EventCalendar() {
           order_menu: order.order_menu,
           notes: order.notes,
           event_location: order.event_location,
-          address: order.address
+          address: order.address,
+          shippingCost: order.shipping_cost,
+           serviceCost: order.service_cost,
+            toolsType: order.tools_type    
         };
       });
       
@@ -138,7 +141,11 @@ function EventCalendar() {
                 totalPrice: selectedOrder.totalPrice,
                 email: data.email,
                 event_location: selectedOrder.event_location,
-                address : selectedOrder.address
+                address : selectedOrder.address,
+                shippingCost: selectedOrder.shipping_cost,   // עלות משלוח
+                serviceCost: selectedOrder.service_cost,     // עלות שירות
+                toolsType: selectedOrder.tools_type    ,
+                eventType: selectedOrder.event_type
               }
             });
           } else {

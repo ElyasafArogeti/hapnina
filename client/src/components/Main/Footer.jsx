@@ -41,7 +41,7 @@ const Footer = () => {
       </Box>
         <br/><br/>
         <Typography variant="body1" sx={{ fontSize: '1rem', marginBottom: '1rem' }}>
-          אלום אירועים הפנינה רחוב מפעל השס 1 ביתר עלית 
+           קייטרינג הפנינה מושב עין צורים  
         </Typography>
 
         {/* אייקונים לרשתות חברתיות */}
@@ -51,10 +51,10 @@ const Footer = () => {
               href="https://ul.waze.com/ul?preview_venue_id=23003453.230165602.328234&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location"
               target="_blank"  sx={{ color: '#fff', margin: '0 0.5rem' }}aria-label="Instagram" > <FaWaze /> 
             </IconButton>
-            <IconButton href="tel:+972546600200" target="_blank"  sx={{ color: '#fff', margin: '0 0.5rem' }}aria-label="Instagram">
+            <IconButton href="tel:+972548520195" target="_blank"  sx={{ color: '#fff', margin: '0 0.5rem' }}aria-label="Instagram">
               <BsTelephoneOutbound />
             </IconButton>
-            <IconButton href="https://wa.me/+972546600200" target="_blank" sx={{ color: '#fff', margin: '0 0.5rem' }}aria-label="Instagram">
+            <IconButton href="https://wa.me/+972548520195" target="_blank" sx={{ color: '#fff', margin: '0 0.5rem' }}aria-label="Instagram">
             <WhatsAppIcon/>
             </IconButton>
  
@@ -71,7 +71,7 @@ const Footer = () => {
             color: 'rgba(255, 255, 255, 0.26)',
           }}
         >
-         אולמי הפנינה בעם  © {new Date().getFullYear()}
+         קייטרינג הפנינה בעם  © {new Date().getFullYear()}
         </Typography>
       </Container>
     </Box>

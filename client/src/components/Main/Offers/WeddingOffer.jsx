@@ -54,29 +54,29 @@ const WeddingOffer = () => {
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
          
             <Typography variant="h5" fontWeight="bold" fontSize="1.6rem">
-              תפריט חתונה
+       אירועי יוקרה - חתונות / דינרים
             </Typography>
           </Box>
 
         <Typography variant="h6" gutterBottom fontSize="1.2rem">
-                    רק ₪60 למנה
+                  תפריט עשיר ויוקרתי , הצעת מחיר במקום 
                   </Typography>
         
-                  <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem" }}>
-                    5 סלטים טריים ✔<br />
-                    2 מנות פתיחה ✔<br />
-                    3 מנות עיקריות לבחירה ✔<br />
-                    קינוח אישי מפנק ✔
-                  </Typography>
+                        <Typography   variant="body1" sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}  >
+                   8 סוגי סלטים לבחירה ✔      <br />
+                   3  מנות ראשונות לבחירה ✔       <br />
+                  3 מנות עיקריות לבחירה ✔<br />
+                  3 תוספות לבחירה ✔ <br />
+                </Typography>
 
           <Box textAlign="center">
             <Button
               variant="contained"
               color="error"
-              onClick={() => navigate("/wedding-details")}
+              onClick={() => navigate("/OrdersOnline")}
               sx={{ borderRadius: 8, px: 4, py: 1, fontWeight: "bold" }}
             >
-              לפרטים נוספים
+            לתפריט הצעת מחיר במקום 
             </Button>
           </Box>
         </Box>

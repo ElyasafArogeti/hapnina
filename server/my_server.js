@@ -113,7 +113,34 @@ app.post("/api/verifyToken", authenticateToken , (req, res) => { // אם הטו�
     user: req.user,   // שולחים את המידע שהופק מהטוקן
   });
 });
-  //---------- נתיב התחברות-----------------------------------------------------------------
+
+
+  //--------------בקשת כל הקטגוריות ------------------------------------------
+  app.get("/api/inventoryAll", async (req, res) => {
+    try {
+     
+      const [firstCourses] = await connection.query("SELECT * FROM first_courses");
+      const [mainCourses] = await connection.query("SELECT * FROM main_courses");
+      const [salads] = await connection.query("SELECT * FROM salads");
+      const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
+      
+  
+      res.json({
+        first_courses: firstCourses,
+        main_courses: mainCourses,
+        salads: salads,
+        side_dishes: sideDishes,
+      });
+    } catch (err) {
+      console.error("Failed to fetch data from database:", err);
+      res.status(500).json("Error fetching data");
+    }
+  });
+  
+
+
+
+//-----------התחברות אזור אישי----------------------------------------------------------------
 app.post("/api/login", async (req, res) => {
   const { userName, password } = req.body;
   if (!userName || !password) {
@@ -159,8 +186,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-
-
 //------------נתיב לשליפת הזמנות לפי משתמש --------------------------------------------------------------------
 app.get("/api/OrderPersonalArea", async (req, res) => {
 
@@ -186,30 +211,43 @@ app.get("/api/OrderPersonalArea", async (req, res) => {
   }
 });
 
+//--------------------רישום לאתר אזור אישי --------------------------------------------------------------------
+// רישום סיסמה לאזור האישי
+app.post("/api/registerPersonalArea", async (req, res) => {
+  const { email, password } = req.body;
 
-  //--------------בקשת כל הקטגוריות ------------------------------------------
-  app.get("/api/inventoryAll", async (req, res) => {
-    try {
-     console.log("my inventoryAll");
-     
-      const [firstCourses] = await connection.query("SELECT * FROM first_courses");
-      const [mainCourses] = await connection.query("SELECT * FROM main_courses");
-      const [salads] = await connection.query("SELECT * FROM salads");
-      const [sideDishes] = await connection.query("SELECT * FROM side_dishes");
-      
-  
-      res.json({
-        first_courses: firstCourses,
-        main_courses: mainCourses,
-        salads: salads,
-        side_dishes: sideDishes,
-      });
-    } catch (err) {
-      console.error("Failed to fetch data from database:", err);
-      res.status(500).json("Error fetching data");
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: "יש למלא מייל וסיסמה." });
+  }
+
+  try {
+    const [rows] = await connection.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, error: "משתמש לא נמצא במערכת." });
     }
-  });
-  
+
+    // יצירת hash של הסיסמה
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // עדכון הסיסמה המוצפנת במסד
+    await connection.query(
+      "UPDATE users SET password = ? WHERE email = ?",
+      [hashedPassword, email]
+    );
+
+    return res.status(200).json({ success: true, message: "ההרשמה בוצעה בהצלחה!" });
+
+  } catch (err) {
+    console.error("Error during registerPersonalArea:", err);
+    res.status(500).json({ success: false, error: "שגיאת שרת. אנא נסה שוב מאוחר יותר." });
+  }
+});
+
 
 
 
@@ -430,89 +468,104 @@ app.get("/api/user_calendar/:id", authenticateToken , async (req, res) => {
 
 
        /*OrdersOnline   דף הזמנות אונליין  צד לקוח  */
-    
-
-//  ---------הזמנות אונליין הוספת הזמנה למאגר----------------------------
+  
+//  --------- סגירת הזמנה למערכת----------------------------
 app.post('/api/addOrdersOnline', async (req, res) => {
   try {
-      const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, shippingDate , email , Password, event_location , address} = req.body;
-        // הצפנת הסיסמה לפני ששולחים אותה למסד הנתונים
-      const saltRounds = 10; // מספר סיבובי ההצפנה, יותר סיבובים מבטיחים הצפנה חזקה יותר
-      const hashedPassword = await bcrypt.hash(Password, saltRounds);
+    const {
+      userName, userPhone, guestCount, eventDate, orderMenu,
+      totalPrice, shippingDate, email, event_location, address,
+      shippingCost, serviceCost, toolsType,eventType
+    } = req.body;
 
-      const [result] = await connection.query(`
-          INSERT INTO online_orders (user_name, userPhone, guest_count, event_date, order_menu, total_price, shipping_date, email , password, event_location, address)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [userName, userPhone, guestCount, eventDate, JSON.stringify(orderMenu), totalPrice, shippingDate, email, hashedPassword,event_location, address]);
-    
-  // קריאת תבנית ה-HTML ממערכת הקבצים
-  const templatePath = path.join(__dirname, 'templates', 'orderEmailTemplate.html');
+    await connection.query(`
+      INSERT INTO online_orders (
+        user_name, userPhone, guest_count, event_date,
+        order_menu, total_price,shipping_date, email,
+        event_location, address, shipping_cost, service_cost, tools_type, event_type
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      userName, userPhone, guestCount, eventDate,
+      JSON.stringify(orderMenu), totalPrice, shippingDate, email,
+      event_location, address, shippingCost, serviceCost, toolsType,eventType
+    ]);
 
-   let emailTemplate = fs.readFileSync(templatePath, 'utf8'); 
+    // שולח מיילים ברקע
+    (async () => {
+      try {
+        const templatePath = path.join(__dirname, 'templates', 'orderEmailTemplate.html');
+        let emailTemplate = fs.readFileSync(templatePath, 'utf8');
 
-         // יצירת תוכן פרטי ההזמנה להחלפה בתבנית ה-HTML
-    const orderMenuContent = Object.keys(orderMenu).map((category) => {
-      return `
-        <h4 style="font-size: 22px; text-align: center;">${category === 'salads' ? 'סלטים' :
-        category === 'first_courses' ? 'מנות ראשונות' :
-        category === 'main_courses' ? 'מנות עיקריות' : 'תוספות'}</h4>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>שם המנה</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${orderMenu[category].map((item) => {
-              return `
-                <tr>
-                  <td>${item.dish_name}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      `;
-    }).join('');
-    emailTemplate = emailTemplate.replace('{{orderMenuContent}}', orderMenuContent);
- emailTemplate = emailTemplate.replace('{{userName}}', userName);
- emailTemplate = emailTemplate.replace('{{eventDate}}', eventDate);
-  emailTemplate = emailTemplate.replace('{{guestCount}}', guestCount);
-    emailTemplate = emailTemplate.replace('{{totalPrice}}', totalPrice);
-   
-   
+        const orderMenuContent = Object.keys(orderMenu).map((category) => {
+          return `
+            <h4 style="font-size: 22px; text-align: center;">${category === 'salads' ? 'סלטים' :
+          category === 'first_courses' ? 'מנות ראשונות' :
+          category === 'main_courses' ? 'מנות עיקריות' : 'תוספות'}</h4>
+            <table class="table">
+              <thead><tr><th>שם המנה</th></tr></thead>
+              <tbody>
+                ${orderMenu[category].map((item) => `
+                  <tr><td>${item.dish_name}</td></tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        }).join('');
 
-    // שליחת המייל ללקוח
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'hpnina6600200@gmail.com',  // כתובת המייל שלך
-        pass: 'ycxt oeyj ojha xvyt',   // סיסמא של המייל שלך
-      },
-    });
+        emailTemplate = emailTemplate
+          .replace('{{orderMenuContent}}', orderMenuContent)
+          .replace('{{userName}}', userName)
+          .replace('{{eventDate}}', eventDate)
+          .replace('{{guestCount}}', guestCount)
+          .replace('{{totalPrice}}', totalPrice)
+          .replace('{{shippingCost}}', shippingCost)
+          .replace('{{serviceCost}}', serviceCost)
+          .replace('{{toolsType}}', toolsType);
 
-    const mailOptions = {
-      from: 'hpnina6600200@gmail.com',  // כתובת המייל ששולחת
-      to: email,       // המייל של המשתמש
-      subject: 'הזמנתך התקבלה בהצלחה',
-      html: emailTemplate,  // התוכן ה-HTML שיצרנו
-    };
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'hpnina6600200@gmail.com',
+            pass: 'ycxt oeyj ojha xvyt',
+          },
+        });
 
-    // שליחת המייל
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.error('שגיאה בשליחת המייל', err);
-        return res.status(500).json({ success: false, message: 'בעיה בשליחת המייל.' });
+        await transporter.sendMail({
+          from: 'hpnina6600200@gmail.com',
+          to: email,
+          subject: 'הזמנתך התקבלה בהצלחה',
+          html: emailTemplate,
+        });
+
+        await transporter.sendMail({
+          from: 'hpnina6600200@gmail.com',
+          to: 'elyasaf852@gmail.com',
+          subject: 'התקבלה הזמנה חדשה באתר',
+          html: `
+            <h2>התקבלה הזמנה חדשה באתר</h2>
+            <p>שם הלקוח: ${userName}</p>
+            <p>טלפון: ${userPhone}</p>
+            <p>תאריך האירוע: ${eventDate}</p>
+            <p>סכום כולל: ₪${totalPrice}</p>
+          `
+        });
+
+        console.log('המיילים נשלחו בהצלחה');
+
+      } catch (mailErr) {
+        console.error('שגיאה בשליחת המיילים:', mailErr);
       }
-      console.log('הודעה נשלחה: ' + info.response);
-    });
-      
-        res.status(201).json({ message: 'נשלח בהצלחה' });
+    })();
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    res.status(200).json({ message: 'נשלח בהצלחה'});
+
   } catch (err) {
-      console.error('שגיאה בשליחה הזמנות אונליין', err);
-      return res.status(500).json({ error: 'בעיה בשליחת אונליין' });
+    console.error('שגיאה בשליחה הזמנות אונליין', err);
+    res.status(500).json({ error: 'בעיה בשליחת ההזמנה או המיילים' });
   }
 });
+
 
          
 
@@ -530,11 +583,13 @@ app.get("/api/online_orders",authenticateToken , async (req, res) => {
     res.status(500).send("שגיאה בשליפת נתונים");
   }
 })
-
-
- //---------------------סגירת הזמהת לקוח למערכת--------------------------------------------------          
+ //---------------------סגירת הזמהת מנהל למערכת--------------------------------------------------          
 app.post('/api/online_orders/add_customer_order', authenticateToken , async (req, res) => {
-  const { userName, userPhone, guestCount, eventDate, orderMenu, totalPrice , email , password , event_location, address} = req.body;
+ const { 
+  userName, userPhone, guestCount, eventDate, orderMenu, totalPrice, email, password, event_location, address,  
+  shippingCost, serviceCost, toolsType ,eventType
+} = req.body;
+
 
   try {   // המרת התאריך לפורמט תואם MySQL
     const formattedEventDate = formatDateForMySQL(eventDate);
@@ -551,20 +606,19 @@ app.post('/api/online_orders/add_customer_order', authenticateToken , async (req
       userId = existingUser[0].id; // אם המשתמש קיים, ניקח את המזהה שלו
     }
     // הוספת ההזמנה לאחר יצירת או עדכון המשתמש
-    await connection.query(
-      `INSERT INTO orders (user_id, order_menu, guest_count, event_date, totalPrice ,event_location, address) VALUES ( ? ,?, ?, ?, ?, ? ,?)`,
-      [userId, orderMenu, guestCount, formattedEventDate, totalPrice, event_location ,address]
-    );
+   await connection.query(
+  `INSERT INTO orders 
+  (user_id, order_menu, guest_count, event_date, totalPrice,event_type, event_location, address, shipping_cost, service_cost, tools_type) 
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  [userId, orderMenu, guestCount, formattedEventDate, totalPrice,eventType, event_location, address, shippingCost, serviceCost, toolsType]
+);
+
     res.status(200).send({ message: 'ההזמנה והמשתמש הוספו בהצלחה!' });
   } catch (error) {
     console.error("שגיאה בסגירת ההזמנה והוספת המשתמש:", error);
     res.status(500).send({ error: "שגיאה פנימית בשרת" });
   }
 });
-
-
-
-
 //-----------------מחיקת הזמנה מטבלת אונליין--------------------------------------------
 app.delete('/api/online_orders/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
@@ -580,6 +634,8 @@ app.delete('/api/online_orders/:id',authenticateToken, async (req, res) => {
     res.status(500).send({ error: "שגיאה פנימית בשרת" });
   }
 });
+
+
 
 
 
@@ -666,6 +722,60 @@ app.put('/api/KitchenOrder/updateDish',authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'שגיאה בשרת בעת עדכון המנה בתפריט' });
   }
 });
+
+// עדכון פרטים כלליים של ההזמנה לפי user_id
+app.put('/api/KitchenOrder/updateOrderDetails', authenticateToken, async (req, res) => {
+  const { user_id, shippingCost, serviceCost, toolsType, totalPrice } = req.body;
+   console.log(user_id);
+
+  try {
+    // בדיקה שהמשתמש קיים
+    const [orderResult] = await connection.query('SELECT * FROM orders WHERE user_id = ?', [user_id]);
+    if (orderResult.length === 0) {
+      return res.status(404).json({ message: 'הזמנה לא נמצאה עבור המשתמש הזה' });
+    }
+
+    // בניית שאילתה דינמית רק עם הערכים שנשלחו
+    const fieldsToUpdate = [];
+    const values = [];
+
+    if (shippingCost !== undefined) {
+      fieldsToUpdate.push('shipping_cost = ?');
+      values.push(shippingCost);
+    }
+
+    if (serviceCost !== undefined) {
+      fieldsToUpdate.push('service_cost = ?');
+      values.push(serviceCost);
+    }
+
+    if (toolsType !== undefined) {
+      fieldsToUpdate.push('tools_type = ?');
+      values.push(toolsType);
+    }
+
+    if (totalPrice !== undefined) {
+      fieldsToUpdate.push('totalPrice = ?'); // נשאר כמו שהיה כי זה כבר תואם
+      values.push(totalPrice);
+    }
+
+    if (fieldsToUpdate.length === 0) {
+      return res.status(400).json({ message: 'לא נשלחו שדות לעדכון' });
+    }
+
+    // ביצוע העדכון
+    const query = `UPDATE orders SET ${fieldsToUpdate.join(', ')} WHERE user_id = ?`;
+    values.push(user_id);
+    await connection.query(query, values);
+
+    res.status(200).json({ message: 'ההזמנה עודכנה בהצלחה' });
+  } catch (error) {
+    console.error('שגיאה בעת עדכון ההזמנה:', error);
+    res.status(500).json({ message: 'שגיאה בשרת בעת עדכון ההזמנה' });
+  }
+});
+
+
 
 
 
@@ -756,6 +866,9 @@ app.get('/api/OrderManagement',authenticateToken,  async (req, res) => {
         orders.totalPrice,   
         orders.event_location,
         orders.address,
+        orders.shipping_cost,
+        orders.service_cost,
+        orders.tools_type,
         users.name AS owner_name, 
         users.phone AS owner_phone , -- הוספת שדה טלפון של בעל ההזמנה
         users.email AS owner_email -- הוספת שדה דוא"ל של בעל ההזמנה
@@ -769,6 +882,10 @@ app.get('/api/OrderManagement',authenticateToken,  async (req, res) => {
     res.status(500).send("שגיאה בשליפת נתונים");
   }
 });
+
+
+
+
 //--------הבאת הזמנה מסויימת של לקוח------------------------------------------------------
 app.get('/api/OrderManagement/users/:id',authenticateToken, async (req, res) => {
   const { id } = req.params;
@@ -910,8 +1027,6 @@ app.get('/api/weekly-events',authenticateToken, async (req, res) => {
     // המרת תחילת וסיום השבוע העברי לתאריכים גרגוריאניים
     const startOfWeekGrigorian = startOfWeekHebrew.format('YYYY-MM-DD'); // תאריך גרגוריאני של תחילת השבוע
     const endOfWeekGrigorian = endOfWeekHebrew.format('YYYY-MM-DD'); // תאריך גרגוריאני של סוף השבוע
-    console.log('Start of Week Gregorian:', startOfWeekGrigorian);
-    console.log('End of Week Gregorian:', endOfWeekGrigorian);
     // ביצוע שאילתה להחזרת אירועים מהשבוע הנוכחי
     const [results] = await connection.execute(`
       SELECT u.name AS name, u.phone, e.event_date
@@ -1249,7 +1364,6 @@ app.get('/api/getUploadedImages', async (req, res) => {
     const mainCourses = await fetchImagesByFolder("manager_images/main_courses");
     const salads = await fetchImagesByFolder("manager_images/salads");
     const sideDishes = await fetchImagesByFolder("manager_images/side_dishes");
-    console.log("wwww");
     
     // החזרת תוצאות
     res.send({

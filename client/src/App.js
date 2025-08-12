@@ -29,7 +29,8 @@ import BritOffer from './components/Main/Offers/BritOffer';
 import EngagementOffer from './components/Main/Offers/EngagementOffer';
 import BarMitzvahOffer from './components/Main/Offers/BarMitzvahOffer';
 
-import BarMitzvahOrder from './components/Main/OrdersOffer/BarMitzvahOrder'
+import GenericOrder from './components/Main/OrdersOffer/GenericOrder'
+import FAQAccordion from './components/Main/FAQAccordion';
 
 
 function App() {
@@ -46,7 +47,8 @@ function App() {
           <Route path='/Contact' element={<Contact />} />
           <Route path='/textMove' element={<TextMove />} />
           <Route path='/MainCourse' element={<MainCourse />} />
-
+          <Route path='/FAQAccordion' element={<FAQAccordion />} />
+        
 
 <Route path='/OffersSection' element={<OffersSection />} />
 <Route path='/BarMitzvahOffer' element={<BarMitzvahOffer />} />
@@ -55,7 +57,8 @@ function App() {
 <Route path='/EngagementOffer' element={<EngagementOffer />} />
 
 
-      <Route path='/BarMitzvahOrder' element={<BarMitzvahOrder />} />   
+<Route path="/GenericOrder" element={<GenericOrder />} />
+
 
          
 

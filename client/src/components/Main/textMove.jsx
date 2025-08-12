@@ -1,48 +1,67 @@
-import React from 'react'
-import { Box, Typography} from '@mui/material';
-const textMove = () => {
+import React from "react";
+import { Box, Typography } from "@mui/material";
+
+const TextMarquee = () => {
   return (
-    <div>
-          {/* שלשלת מילים עם אנימציה */}
-          <Box
+    <Box
+      sx={{
+        width: "100%",
+        backgroundColor: "#000",
+        padding: "10px 0",
+        overflow: "hidden",
+        position: "relative",
+        direction: "ltr",
+      }}
+    >
+      <Box
         sx={{
-          width: "100%",  backgroundColor: "#333", padding: "10px 0",
-          display: "flex",justifyContent: "center", alignItems: "center",
+          display: "inline-flex",
+          animation: "marquee 30s linear infinite",
           color: "#fff",
-          fontSize: "1.2rem", overflow: "hidden", 
-          whiteSpace: "nowrap",
-          "@keyframes marquee": {
-            "0%": {
-              transform: "translateX(-100%)", // התחלה משמאל
-            },
-            "100%": {
-              transform: "translateX(100%)", // סיום בימין
-            },
+          fontSize: { xs: "0.9rem", md: "1.2rem" },
+          fontWeight: 600,
+          "& > *": {
+            marginRight: "60px",
+            whiteSpace: "nowrap",
+            letterSpacing: "0.5px",
+            fontSize: { xs: "0.95rem", md: "1.3rem" },
           },
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            animation: "marquee 25s linear infinite",
-          }}
-        >
-          <Typography sx={{ marginRight: 5 }}>
-             מבצעי השבוע: קייטרינג 10% הנחה קייטרינג הפנינה 
-          </Typography>
-          <Typography sx={{ marginRight: 5 }}>
-            ⭐️ קנה שני ברים וקבל בר שלישי חינם ⭐️
-          </Typography>
-          <Typography sx={{ marginRight: 5 }}>
-            חבילות עיצוב לאירועים מיוחדים במחירים אטרקטיביים
-          </Typography>
-          <Typography sx={{ marginRight: 5 }}>
-          קייטרינג הפנינה במבצע פתיחה מושלם 
-          </Typography>
-        </Box>
-      </Box>
-    </div>
-  )
-}
+        <Typography>🎉 מבצעים מיוחדים בהזמנה אירוע  🎉</Typography>
+         <Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+        <Typography>הקייטרינג בהכשר למהדרין יורה דעה הרב מחפוד</Typography>
+       <Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+        <Typography>⭐️ בהזמנת אירוע אפשרות לטעימות ⭐️</Typography>
+      <Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |  </Typography>
+        <Typography>💎 אפשרות להפקת אירוע מושלם כולל: כלי פורצלן ,מלצרים ,עיצובי שולחן 💎</Typography>
+<Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+        <Typography>🍽️ ייחודי : בוחרים מהתפריט ומקבלים הצעת מחיר במקום  🍽️</Typography>
+<Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
 
-export default textMove;
+        {/* שכפול לרצף רציף */}
+        <Typography>🎉 מבצעים מיוחדים בהזמנה אירוע  🎉</Typography>
+<Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+  <Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+        <Typography>הקייטרינג בהכשר למהדרין יורה דעה הרב מחפוד</Typography>
+<Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+        <Typography>⭐️ בהזמנת אירוע אפשרות לטעימות ⭐️</Typography>
+<Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+          <Typography>💎 אפשרות להפקת אירוע מושלם כולל : כלי פורצלן ,מלצרים ,עיצובי שולחן 💎</Typography>
+<Typography  sx={{ color: "#888",  width: "50px",  textAlign: "center", marginLeft: "10px", }} > |    </Typography>
+       <Typography>🍽️ ייחודי : בוחרים מהתפריט ומקבלים הצעת מחיר במקום  🍽️</Typography>
+      </Box>
+
+      <style>
+        {`
+          @keyframes marquee {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+          }
+        `}
+      </style>
+    </Box>
+  );
+};
+
+export default TextMarquee;

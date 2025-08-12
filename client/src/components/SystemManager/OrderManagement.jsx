@@ -7,7 +7,6 @@ import NavbarAll from './NavbarAll';
 
 
 import DescriptionIcon from '@mui/icons-material/Description';
-import EditIcon from '@mui/icons-material/Edit';
 
 
 import { FaSearch } from 'react-icons/fa';  // אייקון חיפוש
@@ -318,6 +317,10 @@ const editOrderDetails = (order) => {
       email: order.owner_email, 
       event_location: order.event_location, 
       address: order.address, 
+      shippingCost: order.shipping_cost,
+      serviceCost: order.service_cost,
+      toolsType: order.tools_type,
+      eventType: order.event_type
     }
   });
 };

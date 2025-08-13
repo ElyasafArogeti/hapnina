@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from '../api';
 import {
   Box,
   Typography,
@@ -144,7 +145,7 @@ const validateFinalForm = () => {// בדיקת הלקוח
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/inventoryAll");
+        const res = await apiFetch("/api/inventoryAll");
         if (!res.ok) throw new Error("Network Error");
         const data = await res.json();
         setMenuData(data);
@@ -222,7 +223,7 @@ const validateSelectionLimits = () => {
     setSending(true);
 
     try {
-      const response = await fetch("http://localhost:3001/api/addOrdersOnline", {
+      const response = await apiFetch("/api/addOrdersOnline", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

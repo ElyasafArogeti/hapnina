@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo ,useRef } from 'react';
+import { apiFetch } from '../api'; 
 import '../../assets/stylesMain/OrdersOnline.css';
 import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
@@ -121,7 +122,7 @@ const formSectionRef = useRef(null);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-              const response = await fetch('http://localhost:3001/api/inventoryAll');
+                 const response = await apiFetch('/api/inventoryAll');
               if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -144,7 +145,7 @@ const removeNonHebrew = (text) => {
     setLoading(true);
     const fetchImages = async () => {
       try {
-        const response = await axios('http://localhost:3001/api/getUploadedImages');
+        const response = await apiFetch('/api/getUploadedImages');
         setImagesByCategory(response.data);
       } catch (err) {
         console.error('Error fetching images by categories:', err);
@@ -324,7 +325,7 @@ const removeNonHebrew = (text) => {
    const addOrdersOnline = async () => {
      try {
         setLoading(true);
-              const response = await fetch('http://localhost:3001/api/addOrdersOnline', {
+              const response = await apiFetch('/api/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',

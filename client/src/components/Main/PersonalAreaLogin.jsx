@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axiosInstance from '../axiosInstance'; 
 import { Box, Button, Typography, TextField, Snackbar,InputAdornment, IconButton, Alert, CircularProgress } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import NavbarHome from "./NavbarHome";
@@ -64,7 +65,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
       const token = localStorage.getItem("authToken");
       if (token) {
         try {
-          const response = await axios.post("http://localhost:3001/api/verifyToken", {}, {
+          const response = await axiosInstance.post("/api/verifyToken", {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const { role } = response.data.user;
@@ -95,7 +96,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
 
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/login", {
+      const response = await axiosInstance.post("/api/login", {
         userName: userName,
         password: userPassword,
       });
@@ -106,7 +107,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
       if (role === "manager") {
         navigate("/SystemManagerHome");
       } else {
-        const ordersResponse = await axios.get("http://localhost:3001/api/OrderPersonalArea", {
+        const ordersResponse = await axiosInstance.get("/api/OrderPersonalArea", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const orders = ordersResponse.data;
@@ -134,7 +135,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
 
       console.log("אניפה ");
       
-      const response = await axios.post("http://localhost:3001/api/forgotPassword", { email });
+      const response = await axiosInstance.post("/api/forgotPassword", { email });
       if (response.data.success) {
         setSnackMessage("קוד לשחזור סיסמה נשלח בהצלחה למייל שלך.");
         setSnackOpen(true);
@@ -167,7 +168,7 @@ const handleRegisterUser = async () => {
 
   setLoading(true);
   try {
-    const response = await axios.post("http://localhost:3001/api/registerPersonalArea", {
+    const response = await axiosInstance.post("/api/registerPersonalArea", {
       email: registerEmail,
       password: registerPassword,
     });
@@ -194,7 +195,7 @@ const handleRegisterUser = async () => {
     }
   setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/verifyCode", { email, verificationCode });
+      const response = await axiosInstance.post("/api/verifyCode", { email, verificationCode });
       if (response.data.success) {
         setSnackMessage("קוד האימות אושר בהצלחה");
         setSnackOpen(true);
@@ -226,7 +227,7 @@ const handleRegisterUser = async () => {
 
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axios.post("http://localhost:3001/api/changePassword", { email, newPassword });
+      const response = await axiosInstance.post("/api/changePassword", { email, newPassword });
       if (response.data.success) {
         setSnackMessage("הסיסמה שונתה בהצלחה.");
         setSnackOpen(true);

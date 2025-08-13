@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axiosInstance from '../axiosInstance'; 
 import { Container, Box, Typography, TextField, Button, IconButton, Snackbar, Alert } from '@mui/material';
 import { Email, Phone, LocationOn } from '@mui/icons-material';
 import { BsWhatsapp, BsTelephoneOutbound } from 'react-icons/bs';
@@ -26,7 +27,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3001/api/contact', formData);
+     const response = await axiosInstance.post('/api/contact', formData);
       if (response.status === 200) {
     
         setFormData({ fullName: '', phone: '', message: '' });

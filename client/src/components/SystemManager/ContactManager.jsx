@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axiosInstance from '../axiosInstance'; 
 import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, IconButton, Snackbar, Alert, Badge } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -18,7 +19,7 @@ const ContactManager = () => {
     // קבלת ההודעות מהשרת
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/getMessages', {
+        const response = await axiosInstance.get('/api/getMessages', {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -38,7 +39,7 @@ const ContactManager = () => {
   const handleDelete = async (id) => {
     try {
       // קריאה למחיקת ההודעה
-      const response = await axios.delete(`http://localhost:3001/api/deleteMessage/${id}`, {
+      const response = await axiosInstance.delete(`/api/deleteMessage/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }

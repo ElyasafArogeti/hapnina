@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { apiFetch } from '../api';
 import { Box, LinearProgress, Snackbar, Alert } from "@mui/material";
 import './EngagementOrder.css'; // נניח שיש קובץ CSS
 
@@ -13,7 +14,7 @@ const EngagementOrder = () => {
   useEffect(() => {
     const fetchInventoryAll = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/inventoryAll");
+        const response = await apiFetch("/api/inventoryAll");
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setInventoryAll(data);

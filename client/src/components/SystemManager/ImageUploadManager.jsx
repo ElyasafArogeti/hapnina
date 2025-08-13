@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axiosInstance from '../axiosInstance'; 
 import { Button, TextField, Typography, CircularProgress, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Box, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -37,7 +38,7 @@ useEffect(() => {
   const fetchImages = async () => {
    
     try {
-      const response = await axios.get('http://localhost:3001/api/getUploadedImages',{
+      const response = await axiosInstance.get('/api/getUploadedImages',{
         headers: {
           Authorization: `Bearer ${token}`,
       },
@@ -79,7 +80,7 @@ useEffect(() => {
     formData.append('category', category);
   
     try {
-      const response = await axios.post('http://localhost:3001/api/uploadImage', formData, {
+      const response = await axiosInstance.post('/api/uploadImage', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data' ,
            Authorization: `Bearer ${token}`,
@@ -121,7 +122,7 @@ useEffect(() => {
       // ודא שה- public_id עבר encoding
       const encodedPublicId = encodeURIComponent(public_id);  // מזהה התמונה (כולל השם המלא, כל התוים שכוללים רווחים)
   
-      const response = await axios.delete(`http://localhost:3001/api/deleteImage/${encodedPublicId}`, {
+      const response = await axiosInstance.delete(`/api/deleteImage/${encodedPublicId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
@@ -159,7 +160,7 @@ useEffect(() => {
     }
   
     try {
-      const response = await axios.put(`http://localhost:3001/api/updateImage/${editingImage.public_id}`, { name: imageName });
+      const response = await axiosInstance.put(`/api/updateImage/${editingImage.public_id}`, { name: imageName });
       const updatedImage = { ...editingImage, name: imageName };
       setUploadedImages(uploadedImages.map((img) => (img.public_id === updatedImage.public_id ? updatedImage : img)));
       setOpenDialog(false);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../api';
 import '../../assets/stylesManager/Calendar.css';
 import NavbarAll from './NavbarAll';
 import { useNavigate } from 'react-router-dom';
@@ -47,7 +48,7 @@ function EventCalendar() {
     setLoading(true); 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch('http://localhost:3001/api/orders_calendar', {
+      const response = await apiFetch('/api/orders_calendar', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
@@ -59,7 +60,7 @@ function EventCalendar() {
       const ordersData = await response.json();
 
       const userPromises = ordersData.map(async (order) => { // להביא שם בעל האירוע 
-        const userResponse = await fetch(`http://localhost:3001/api/user_calendar/${order.user_id}`, {
+        const userResponse = await apiFetch(`/api/user_calendar/${order.user_id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
@@ -115,7 +116,7 @@ function EventCalendar() {
       const token = localStorage.getItem("authToken");
      
     const [customerId, orderId] = userId.split('-'); 
-      const response = await fetch(`http://localhost:3001/api/user_calendar/${userId}`, {
+      const response = await apiFetch(`/api/user_calendar/${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -206,7 +207,7 @@ function EventCalendar() {
       const noteToSend = note.trim() === "" ? null : note;
   
       setNote(note); // עדכון הסטייט של ההערה החדשה
-      const response = await fetch(`http://localhost:3001/api/save-note/${updatedOrder.id}/${noteToSend}`, {
+      const response = await apiFetch(`/api/save-note/${updatedOrder.id}/${noteToSend}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

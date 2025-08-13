@@ -165,7 +165,7 @@ const NewOrders = () => {
        };       
        try {
         const token = localStorage.getItem("authToken");
-           const userResponse = await apiFetch('/api/users', {
+           const userData = await apiFetch('/api/users', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json' ,
@@ -173,16 +173,14 @@ const NewOrders = () => {
                },
                body: JSON.stringify(users)
            });   
-           if (!userResponse.ok) {
-               throw new Error("שגיאה בהכנסת משתמש");
-           }
-           const userData = await userResponse.json();      // השגת נתוני המשתמש שנוסף
+        
+          // השגת נתוני המשתמש שנוסף
            const userId = userData.id;              // קבלת ה-id של המשתמש החדש
            const updatedOrderSummary = {
                user_id: userId ,               // השתמש ב-id שנוצר, לא בטלפון
                ...orderSummary               // שאר פרטי ההזמנה
            };
-           const orderResponse = await apiFetch('/api/orders', {
+         await apiFetch('/api/orders', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json', 
@@ -190,9 +188,7 @@ const NewOrders = () => {
                },
                body: JSON.stringify(updatedOrderSummary)
            });   
-              if (!orderResponse.ok) {
-               throw new Error("שגיאה בהכנסת הזמנה");
-           }   
+                
            alert("ההזמנה נשלחה בהצלחה");
            setOrderDisplay(true); 
          } catch (error) {

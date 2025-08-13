@@ -64,7 +64,7 @@ export default function FAQAccordion() {
   <Typography
     variant="h3"
     sx={{
-      textAlign: 'right',
+      textAlign: 'center',
       px: 2,
       fontWeight: 'bold',
       letterSpacing: '0.5px',

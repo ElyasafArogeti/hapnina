@@ -65,10 +65,10 @@ const [registerEmailError, setRegisterEmailError] = useState("");
       const token = localStorage.getItem("authToken");
       if (token) {
         try {
-          const response = await axiosInstance.post("/api/verifyToken", {}, {
+          const data = await axiosInstance.post("/api/verifyToken", {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          const { role } = response.data.user;
+          const { role } = data.user;
 
           if (role === "manager") {
             navigate("/SystemManagerHome");
@@ -96,21 +96,21 @@ const [registerEmailError, setRegisterEmailError] = useState("");
 
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axiosInstance.post("/api/login", {
+      const data = await axiosInstance.post("/api/login", {
         userName: userName,
         password: userPassword,
       });
 
-      const { token, role } = await response.data;
+      const { token, role } = await data;
       localStorage.setItem("authToken", token);
 
       if (role === "manager") {
         navigate("/SystemManagerHome");
       } else {
-        const ordersResponse = await axiosInstance.get("/api/OrderPersonalArea", {
+        const data = await axiosInstance.get("/api/OrderPersonalArea", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const orders = ordersResponse.data;
+        const orders = data;
         console.log(orders);
         
        navigate("/PersonalArea", { state: { orders, userName } });
@@ -135,17 +135,11 @@ const [registerEmailError, setRegisterEmailError] = useState("");
 
       console.log("אניפה ");
       
-      const response = await axiosInstance.post("/api/forgotPassword", { email });
-      if (response.data.success) {
+      const data = await axiosInstance.post("/api/forgotPassword", { email });
         setSnackMessage("קוד לשחזור סיסמה נשלח בהצלחה למייל שלך.");
         setSnackOpen(true);
         setStep(3);
-      }
-      else {
-        setError("המייל אינו תקין. אנא נסה שוב.");
-      
-        
-      }
+    
     } catch (err) {
       setError("בעיה בשליחת המייל. אנא נסה שוב.");  console.log(err);
     } finally {
@@ -168,18 +162,16 @@ const handleRegisterUser = async () => {
 
   setLoading(true);
   try {
-    const response = await axiosInstance.post("/api/registerPersonalArea", {
+    const data = await axiosInstance.post("/api/registerPersonalArea", {
       email: registerEmail,
       password: registerPassword,
     });
 
-    if (response.data.success) {
+ 
       setSnackMessage("ההרשמה בוצעה בהצלחה! כעת תוכל להיכנס");
       setSnackOpen(true);
       setOpenRegisterModal(false);
-    } else {
-      setRegisterEmailError("המייל כבר קיים במערכת או שגיאה אחרת.");
-    }
+   
   } catch (err) {
     setRegisterEmailError("שגיאה בהרשמה, נסה שוב.");
   } finally {
@@ -195,14 +187,8 @@ const handleRegisterUser = async () => {
     }
   setLoading(true); // הפעלת טעינה
     try {
-      const response = await axiosInstance.post("/api/verifyCode", { email, verificationCode });
-      if (response.data.success) {
-        setSnackMessage("קוד האימות אושר בהצלחה");
-        setSnackOpen(true);
-        setStep(4);  
-      } else {
-        setError("קוד אימות לא תקין.");
-      }
+      const data = await axiosInstance.post("/api/verifyCode", { email, verificationCode });
+    
     } catch (err) {
        setError("קוד אימות לא תקין.");
     } finally {
@@ -227,14 +213,10 @@ const handleRegisterUser = async () => {
 
     setLoading(true); // הפעלת טעינה
     try {
-      const response = await axiosInstance.post("/api/changePassword", { email, newPassword });
-      if (response.data.success) {
+      const data = await axiosInstance.post("/api/changePassword", { email, newPassword });
         setSnackMessage("הסיסמה שונתה בהצלחה.");
         setSnackOpen(true);
         setStep(1);
-      }else {
-        setError("שגיאה בשינוי הסיסמה.");
-      }
     } catch (err) {
       setError("שגיאה בשינוי הסיסמה.");
     } finally {

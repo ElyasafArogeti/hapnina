@@ -27,13 +27,12 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-     const response = await axiosInstance.post('/api/contact', formData);
-      if (response.status === 200) {
+     const data = await axiosInstance.post('/api/contact', formData);
     
         setFormData({ fullName: '', phone: '', message: '' });
         setSnackbarMessage('!ההודעה נשלחה בהצלחה');
         setSnackbarSeverity('success');
-      }
+      
     } catch (error) {
       setSnackbarMessage('שגיאה בשליחת ההודעה. נסה שוב');
       

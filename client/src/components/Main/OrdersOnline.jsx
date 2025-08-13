@@ -122,11 +122,7 @@ const formSectionRef = useRef(null);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-                 const response = await apiFetch('/api/inventoryAll');
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-                const data = await response.json();
+                 const data = await apiFetch('/api/inventoryAll');
                 setInventoryAll(data);
             } catch (error) {
                 console.error('Failed to fetch inventory:', error);
@@ -145,8 +141,8 @@ const removeNonHebrew = (text) => {
     setLoading(true);
     const fetchImages = async () => {
       try {
-        const response = await apiFetch('/api/getUploadedImages');
-        setImagesByCategory(response.data);
+        const data = await apiFetch('/api/getUploadedImages');
+        setImagesByCategory(data);
       } catch (err) {
         console.error('Error fetching images by categories:', err);
 
@@ -325,7 +321,7 @@ const removeNonHebrew = (text) => {
    const addOrdersOnline = async () => {
      try {
         setLoading(true);
-              const response = await apiFetch('/api/addOrdersOnline', {
+              const data = await apiFetch('/api/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -347,10 +343,7 @@ const removeNonHebrew = (text) => {
                       eventType: "תפריט כללי"
                   }),
               });
-              const data = await response.json();
-              if (data.message === 'נשלח בהצלחה') {
-                  setSendingToManger("true");
-              }
+             
           } catch (error) {
               console.error('שגיאה בשמירת ההזמנה:', error);
               alert("אירעה שגיאה בשמירת ההזמנה.");

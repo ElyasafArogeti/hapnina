@@ -24,12 +24,12 @@ const Inventory = () => {
         const fetchInventoryAll = async () => {
             try {
               const token = localStorage.getItem("authToken");
-                const response = await apiFetch('/api/inventoryAll', {
+                const data = await apiFetch('/api/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                const data = await response.json();
+             
                 setInventoryAll(data);                           
             } catch (error) {
                 console.error('Failed to fetch inventory:', error);
@@ -42,7 +42,7 @@ const Inventory = () => {
        const addDish = async () => {
         try {
           const token = localStorage.getItem("authToken");
-            const response = await apiFetch('/api/addNewDish', {
+            const data = await apiFetch('/api/addNewDish', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,9 +50,8 @@ const Inventory = () => {
                 },
                 body: JSON.stringify({ ...newDish, category: selectedCategory }),
             });
-            const newDishItem = await response.json();
             setInventoryAll({// הפעלת פרטים חדשים לראייה 
-                ...inventoryAll, [selectedCategory]: [...inventoryAll[selectedCategory], newDishItem]
+                ...inventoryAll, [selectedCategory]: [...inventoryAll[selectedCategory], data]
             });
             setNewDish({ dish_name: "", price: "", weight: "" }); // איפוס השדות
             setNewDishModal(false); // סגירת המודאל

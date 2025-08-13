@@ -37,12 +37,11 @@ const NewOrders = () => {
         const fetchInventoryAll = async () => {
             try {
                 const token = localStorage.getItem("authToken");
-                const response = await apiFetch('/api/inventoryAll', {
+                const data = await apiFetch('/api/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                const data = await response.json();
                 setInventoryAll(data);
             } catch (error) {
                 console.error('Failed to fetch inventory:', error);

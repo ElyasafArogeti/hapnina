@@ -4,7 +4,7 @@ import About from './components/Main/about';
 import PersonalAreaLogin from './components/Main/PersonalAreaLogin';
 import PersonalArea from './components/Main/PersonalArea';
 import LoginManager from './components/Main/LoginManager';
-import OrdersOnline from './components/Main/OrdersOnline_TEMP.jsx';
+import OrdersOnline from './components/Main/OrdersOnline.jsx';
 import Gallery from './components/Main/Gallery';
 import Contact from './components/Main/contact';
 import SystemManagerHome from './components/SystemManager/SystemManagerHome';

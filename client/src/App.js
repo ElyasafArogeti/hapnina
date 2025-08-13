@@ -55,16 +55,9 @@ function App() {
 <Route path='/WeddingOffer' element={<WeddingOffer />} />
 <Route path='/BritOffer' element={<BritOffer />} />
 <Route path='/EngagementOffer' element={<EngagementOffer />} />
-
-
-<Route path="/GenericOrder" element={<GenericOrder />} />
-
-
-         
-
-         
-          <Route path='/OrderDetails' element={<OrderDetails />} />
-          <Route path='/OrdersOnline' element={<OrdersOnline />} />
+<Route path="/GenericOrder" element={<GenericOrder />} />   
+<Route path='/OrderDetails' element={<OrderDetails />} />
+<Route path='/OrdersOnline' element={<OrdersOnline />} />
     
 
           

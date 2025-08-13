@@ -100,10 +100,10 @@ const [loading, setLoading] = useState(false);
 
 
 const [shippingCost, setShippingCost] = useState(0); // דמי משלוח
-// const [toolCost, setToolCost] = useState(0); // דמי כלי
+
 
 const [serviceCost, setServiceCost] = useState(0);// דמי שירות מלצרים 
-// const [selectedServiceType, setSelectedServiceType] = useState("none");
+
 
 const [deliveryRegion, setDeliveryRegion] = useState('');//אזור משלוח
 const [toolsType, setToolsType] = useState("ללא"); // ברירת מחדל: ללא צורך בכלים

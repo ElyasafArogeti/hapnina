@@ -145,9 +145,7 @@ const validateFinalForm = () => {// בדיקת הלקוח
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await apiFetch("/api/inventoryAll");
-        if (!res.ok) throw new Error("Network Error");
-        const data = await res.json();
+        const data = await apiFetch("/api/inventoryAll");
         setMenuData(data);
       } catch (err) {
         setErrorMessage("שגיאה בטעינת המנות");

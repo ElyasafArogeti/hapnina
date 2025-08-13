@@ -24,10 +24,15 @@ console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 const useRailwayDB = process.env.USE_LOCAL_DB === 'false'; // כאשר false → נשתמש בריילווי
 
 const DB_URL = useRailwayDB ? process.env.DB_URL : process.env.LOCAL_DB_URL;
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
-console.log("🔌 חיבור למסד הנתונים:", DB_URL.includes('localhost') ? "לוקלי" : "Railway");
+if (!DB_URL) {
+  console.error("❌ שגיאה: לא הוגדר DB_URL או LOCAL_DB_URL לפי USE_LOCAL_DB");
+  process.exit(1); // עוצר את הריצה כדי שלא תמשיך בלי חיבור DB
+}
+
+console.log("🔌 חיבור למסד הנתונים:", DB_URL?.includes('localhost') ? "לוקלי" : "Railway");
+
 
 let connection;
 

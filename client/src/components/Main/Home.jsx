@@ -219,7 +219,7 @@ const Home = () => {
           <p style={{ width: "50px", height: "2px", backgroundColor: "#333" }}></p>  
         </Box>
         <Typography variant="h4" gutterBottom  fontWeight={"bold"}>
-    קייטרינג אונליין הצעת מחיר לאירוע שלכם
+         הצעת מחיר לאירוע שלכם
        </Typography>
        <Typography variant="body1" sx={{ textAlign: "center", marginBottom: 2 }}>
         .האתר שלנו מציע שירות הזמנות אונליין מהיר ונוח, המאפשר לך להזמין את הקייטרינג המושלם לאירוע שלך בכמה קליקים בלבד. עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית

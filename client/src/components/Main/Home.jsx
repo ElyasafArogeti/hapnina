@@ -485,7 +485,7 @@ const Home = () => {
     <Grid2 size={{ xs: 12, sm: 6 }} md={6} order={{ md: 2 }}>
       <img
         src="https://res.cloudinary.com/dhkegagjk/image/upload/v1755027385/pexels-elina-sazonova-1838607_wj6n0u.jpg"
-        alt="עיצוב בר"
+        alt="תמונת אירוע"
         style={{
           width: "100%",
         

@@ -5,6 +5,7 @@ import NavbarAll from './NavbarAll';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import { FaSearch } from 'react-icons/fa'; 
 import  {People} from '@mui/icons-material';
+import axiosInstance from '../axiosInstance';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [usersForSearch, setUsersForSearch] = useState([]);
@@ -22,7 +23,7 @@ const UserManagement = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/UserManagement',{ headers: {  Authorization: `Bearer ${token}` }});
+        const response = await axiosInstance.get('/api/UserManagement',{ headers: {  Authorization: `Bearer ${token}` }});
         const sortedOrders = response.data.reverse();
         setUsers(sortedOrders);
         setUsersForSearch(sortedOrders);
@@ -42,8 +43,8 @@ const UserManagement = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:3001/api/UserManagement/${editingUser.id}`, formData,{ headers: { Authorization: `Bearer ${token}` }} );  
+      const response = await axiosInstance.put(
+        `/api/UserManagement/${editingUser.id}`, formData,{ headers: { Authorization: `Bearer ${token}` }} );  
       if (response.data.success) {
         setUsers(
           users.map((user) =>
@@ -75,7 +76,7 @@ const UserManagement = () => {
     const confirmed = window.confirm(`האם אתה בטוח שברצונך למחוק את הלקוח ${user.name}?`);
     if (confirmed) {
       try {
-        const response = await axios.delete(`http://localhost:3001/api/UserManagement/DeleteUser/${user.id}`, {
+        const response = await axiosInstance.delete(`/api/UserManagement/DeleteUser/${user.id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }

@@ -18,6 +18,8 @@ import { MdPeopleAlt } from "react-icons/md";
 import { Snackbar, Alert } from '@mui/material';
 
 import { CircularProgress } from '@mui/material';
+import { apiFetch } from '../api';
+import axiosInstance from '../axiosInstance';
 
 const KitchenOrder = () => {
   const location = useLocation();
@@ -79,7 +81,7 @@ const [editValue, setEditValue] = useState('');
   useEffect(() => {
     const fetchAllDishes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/inventoryAll', {
+        const response = await apiFetch('/api/inventoryAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -117,7 +119,7 @@ const [editValue, setEditValue] = useState('');
   payload[editField] = editField === 'toolsType' ? editValue : Number(editValue);
 
   try {
-  const response =  await axios.put( `http://localhost:3001/api/KitchenOrder/updateOrderDetails`, payload,
+  const response =  await axiosInstance.put( `/api/KitchenOrder/updateOrderDetails`, payload,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
@@ -147,7 +149,7 @@ const [editValue, setEditValue] = useState('');
              /* הוספת מנה לתפריט*/
     const handleAddDish = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/api/KitchenOrder/addDish', {
+      const response = await axiosInstance.post('/api/KitchenOrder/addDish', {
         dish_name: newDish.dish_name,
         price: newDish.price,
         weight: newDish.weight,
@@ -181,7 +183,7 @@ const [editValue, setEditValue] = useState('');
          /*     מחיקת מנה קיימת'     */
    const handleDeleteDish = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3001/api/KitchenOrder/deleteDish`, {
+      const response = await axiosInstance.delete(`/api/KitchenOrder/deleteDish`, {
         data: {
           dish_name: dishToDelete, 
           user_id: orderSummary[0].user_id
@@ -211,7 +213,7 @@ const [editValue, setEditValue] = useState('');
      try {
        const { dish_name, price, weight } = editDishData;
    
-       const response = await axios.put("http://localhost:3001/api/KitchenOrder/updateDish", {
+       const response = await axiosInstance.put("/api/KitchenOrder/updateDish", {
          dish_name: dish_name,
          price: price,
          weight: weight,
@@ -620,7 +622,7 @@ let content = `
   
     try {
 
-      const response = await axios.post('http://localhost:3001/api/sendOrderToKitchen', formData, {
+      const response = await axiosInstance.post('/api/sendOrderToKitchen', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -650,7 +652,7 @@ let content = `
     const orderHTML = generateCustomerOrderHTML();  // יצירת ה-HTML של ההזמנה
     setLoading(true)
     try {
-      const response = await axios.post('http://localhost:3001/api/sendOrderToCustomer', {
+      const response = await axiosInstance.post('/api/sendOrderToCustomer', {
         customerEmail: email,
         orderHTML: orderHTML,
       });

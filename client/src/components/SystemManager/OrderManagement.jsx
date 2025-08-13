@@ -20,6 +20,7 @@ import Button from '@mui/material/Button';
 
 import { Snackbar, Alert } from '@mui/material';
 import  {ShoppingCart} from '@mui/icons-material';
+import axiosInstance from '../axiosInstance';
 const OrderManagement = () => {
   const navigate = useNavigate();
 
@@ -57,7 +58,7 @@ const token = localStorage.getItem('authToken');
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/OrderManagement', { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axiosInstance.get('/api/OrderManagement', { headers: { Authorization: `Bearer ${token}` } });
         const sortedOrders = response.data.reverse(); // הופכים את המערך כך שההזמנה האחרונה בראש
         setOrders(sortedOrders);
         setOrdersForSearch(sortedOrders);  // שמירה על הגיבוי של ההזמנות
@@ -72,7 +73,7 @@ const token = localStorage.getItem('authToken');
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axiosInstance.get('/api/InventoryAll', { headers: { Authorization: `Bearer ${token}` } });
         setInventoryAll(response.data);
       } catch (error) {
         console.error(error);
@@ -109,7 +110,7 @@ const handleQuantityChange = (category , id, quantity) => {
   const OpenEditingOrder = async (order) => {// הזמנה של המשתמש הנבחר
     setFormData({ guest_count: order.guest_count });
     try {
-      const response = await axios.get(`http://localhost:3001/api/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axiosInstance.get(`/api/OrderManagement/users/${order.user_id}`, { headers: { Authorization: `Bearer ${token}` } });
       const orderData = response.data;
       if (!orderData) {
         alert("הזמנה לא נמצאה");
@@ -214,7 +215,7 @@ const handleQuantityChange = (category , id, quantity) => {
 
     try {
              // קריאה לשרת כדי לעדכן את ההזמנה
-    const response = await axios.put(`http://localhost:3001/api/OrderManagement/UpdateOrder/${editingOrder[0].user_id}/${editingOrder[0].id}`,
+    const response = await axiosInstance.put(`/api/OrderManagement/UpdateOrder/${editingOrder[0].user_id}/${editingOrder[0].id}`,
       {
         guest_count: guestCount,
         order_menu: selectedItems

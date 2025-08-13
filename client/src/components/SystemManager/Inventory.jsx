@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NavbarAll from './NavbarAll';
 import '../../assets/stylesManager/Inventory.css';
-
+import { apiFetch } from '../api';
 import { BiShekel } from "react-icons/bi";
 import { Box, Typography, Button, Modal, TextField, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { MdAssignmentAdd } from "react-icons/md";
@@ -24,7 +24,7 @@ const Inventory = () => {
         const fetchInventoryAll = async () => {
             try {
               const token = localStorage.getItem("authToken");
-                const response = await fetch('http://localhost:3001/api/inventoryAll', {
+                const response = await apiFetch('/api/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -42,7 +42,7 @@ const Inventory = () => {
        const addDish = async () => {
         try {
           const token = localStorage.getItem("authToken");
-            const response = await fetch('http://localhost:3001/api/addNewDish', {
+            const response = await apiFetch('/api/addNewDish', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const Inventory = () => {
     const updateDish = async (id, updatedDish) => {
         try {
           const token = localStorage.getItem("authToken");
-            await fetch(`http://localhost:3001/api/updateDish/${id}`, {
+            await apiFetch(`/api/updateDish/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ const Inventory = () => {
         if (window.confirm("האם אתה בטוח שברצונך למחוק את המנה?")) {
             try {
             const token = localStorage.getItem("authToken");
-            await fetch(`http://localhost:3001/api/deleteDish/${id}`, {
+            await apiFetch(`/api/deleteDish/${id}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:3001/api/hideDish/${id}`, {
+      const response = await apiFetch(`/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:3001/api/hideDish/${id}`, {
+      const response = await apiFetch(`/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

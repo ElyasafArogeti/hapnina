@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ const ProtectedRoute = ({ children }) => {
         }
 
         // בדיקת תוקף הטוקן מול השרת
-        const response = await axios.post(
-          'http://localhost:3001/api/verifyToken',
+        const response = await axiosInstance.post(
+          '/api/verifyToken',
           {},
           {
             headers: { Authorization: `Bearer ${token}` },

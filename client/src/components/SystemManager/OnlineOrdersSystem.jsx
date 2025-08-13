@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavbarAll from "./NavbarAll";
 import '../../assets/stylesManager/OnlineOrdersSystem.css';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 
 const OnlineOrdersSystem = () => {
@@ -16,7 +17,7 @@ const OnlineOrdersSystem = () => {
       const fetchOrdersOnline = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch('http://localhost:3001/api/online_orders', {
+      const response = await apiFetch('/api/online_orders', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
@@ -61,7 +62,7 @@ const OnlineOrdersSystem = () => {
 
 
 
-      const response = await fetch('http://localhost:3001/api/online_orders/add_customer_order', {
+      const response = await apiFetch('/api/online_orders/add_customer_order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ const OnlineOrdersSystem = () => {
       });
       if (response.ok) {
         // שליחה נוספת לשרת למחיקת ההזמנה מטבלת אונליין
-        const deleteResponse = await fetch(`http://localhost:3001/api/online_orders/${orderId}`, {
+        const deleteResponse = await apiFetch(`/api/online_orders/${orderId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -101,7 +102,7 @@ const OnlineOrdersSystem = () => {
     }
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:3001/api/online_orders/${orderId}`, {
+      const response = await apiFetch(`/api/online_orders/${orderId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

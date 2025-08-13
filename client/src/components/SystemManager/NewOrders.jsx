@@ -3,6 +3,7 @@ import '../../assets/stylesManager/NewOrders.css';
 import NavbarAll from './NavbarAll';
 
 import { ImExit } from "react-icons/im";
+import { apiFetch } from '../api';
 
 const NewOrders = () => {
     const [inventoryAll, setInventoryAll] = useState({//מאגר המנות
@@ -36,7 +37,7 @@ const NewOrders = () => {
         const fetchInventoryAll = async () => {
             try {
                 const token = localStorage.getItem("authToken");
-                const response = await fetch('http://localhost:3001/api/inventoryAll', {
+                const response = await apiFetch('/api/inventoryAll', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -165,7 +166,7 @@ const NewOrders = () => {
        };       
        try {
         const token = localStorage.getItem("authToken");
-           const userResponse = await fetch('http://localhost:3001/api/users', {
+           const userResponse = await apiFetch('/api/users', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json' ,
@@ -182,7 +183,7 @@ const NewOrders = () => {
                user_id: userId ,               // השתמש ב-id שנוצר, לא בטלפון
                ...orderSummary               // שאר פרטי ההזמנה
            };
-           const orderResponse = await fetch('http://localhost:3001/api/orders', {
+           const orderResponse = await apiFetch('/api/orders', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json', 

@@ -14,6 +14,7 @@ import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
 
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../axiosInstance';
 const SystemManagerHome = () => {
   const navigate = useNavigate(); // יצירת פונקציה לנווט
   const [userCount, setUserCount] = useState(0); // כמות משתמשים
@@ -62,12 +63,12 @@ const SystemManagerHome = () => {
             yearlyOrdersRes,
             newRequestsRes
           ] = await Promise.all([
-            axios.get('http://localhost:3001/api/user-count', { headers }),
-            axios.get('http://localhost:3001/api/monthly-orders', { headers }),
-            axios.get('http://localhost:3001/api/weekly-events', { headers }),
-            axios.get('http://localhost:3001/api/events-pending', { headers }),
-            axios.get('http://localhost:3001/api/monthly-orders-summary', { headers }),
-            axios.get('http://localhost:3001/api/getMessages', { headers }),  // קריאה לפניות החדשות
+            axiosInstance.get('/api/user-count', { headers }),
+            axiosInstance.get('/api/monthly-orders', { headers }),
+            axiosInstance.get('/api/weekly-events', { headers }),
+            axiosInstance.get('/api/events-pending', { headers }),
+            axiosInstance.get('/api/monthly-orders-summary', { headers }),
+            axiosInstance.get('/api/getMessages', { headers }),  // קריאה לפניות החדשות
           ]);
           const unreadMessages = newRequestsRes.data.filter(message => !message.isRead);
 

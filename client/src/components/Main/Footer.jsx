@@ -71,7 +71,7 @@ const Footer = () => {
             color: 'rgba(255, 255, 255, 0.26)',
           }}
         >
-         קייטרינג הפנינה בעם  © {new Date().getFullYear()}
+         קייטרינג הפנינה בעמ  © {new Date().getFullYear()}
         </Typography>
       </Container>
     </Box>

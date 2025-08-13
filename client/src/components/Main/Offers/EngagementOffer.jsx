@@ -10,7 +10,7 @@ const EngagementOffer = () => {
   const handleClick = () => {
   navigate("/GenericOrder", {
   state: {
-    eventName: " הזכרות  ",
+    eventName: " אזכרות  ",
     pricePerDish: 60,
     selectionLimits: {
       salads: 5,
@@ -100,7 +100,7 @@ const EngagementOffer = () => {
         <Box sx={{ position: "relative", zIndex: 2, maxWidth: 320 }}>
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
             <Typography variant="h5" fontWeight="bold" fontSize="1.6rem">
-              תפריט הזכרות 
+              תפריט אזכרות 
             </Typography>
           </Box>
 
@@ -123,7 +123,7 @@ const EngagementOffer = () => {
               onClick={handleClick}
               sx={{ borderRadius: 8, px: 4, py: 1, fontWeight: "bold" }}
             >
-             להזמנת תפריט להזכרות 
+             להזמנת תפריט לאזכרות 
             </Button>
           </Box>
         </Box>

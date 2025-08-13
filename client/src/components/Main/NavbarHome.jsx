@@ -160,7 +160,7 @@ const handleNavigateToRentals = () => { //הזכרות
     {label: "תפריט כללי עשיר", to: "/OrdersOnline"},
     { label: "תפריט לבר מצווה", onClick: handleNavigateToBarMitzvah },
     { label: "תפריט לברית",  onClick: handleNavigateToBrit },
-    { label: "תפריט להזכרות",  onClick: handleNavigateToRentals },
+    { label: "תפריט לאזכרות",  onClick: handleNavigateToRentals },
   ];
 
   return (

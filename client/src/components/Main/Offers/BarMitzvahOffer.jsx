@@ -98,7 +98,7 @@ const BarMitzvahOffer = () => {
       >
         <Box sx={{ position: "relative", zIndex: 2, maxWidth: 320 }}>
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-            <CelebrationIcon sx={{ fontSize: 40, color: "#ffeb3b", mr: 1 }} />
+          
             <Typography variant="h5" fontWeight="bold" fontSize="1.6rem">
               בר מצווה
             </Typography>

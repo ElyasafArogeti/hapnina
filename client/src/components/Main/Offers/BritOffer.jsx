@@ -97,7 +97,7 @@ const BritOffer = () => {
       >
         <Box sx={{ position: "relative", zIndex: 2, maxWidth: 420 }}>
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-            <CelebrationIcon sx={{ fontSize: 40, color: "#ffeb3b", mr: 1 }} />
+          
             <Typography variant="h5" fontWeight="bold" fontSize="1.6rem">
               ברית מילה
             </Typography>

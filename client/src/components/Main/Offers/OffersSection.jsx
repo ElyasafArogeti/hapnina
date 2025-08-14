@@ -11,9 +11,9 @@ const OffersSection = () => {
          חבילות לאירועים 
       </Typography>
       <Grid size={{ xs: 12, sm:4 }} container spacing={1}>
-
-        <Grid size={{ xs: 12, sm: 6 }}  lg={3}><BarMitzvahOffer /></Grid>
         <Grid size={{ xs: 12, sm: 6 }} lg={3}><WeddingOffer /></Grid>
+        <Grid size={{ xs: 12, sm: 6 }}  lg={3}><BarMitzvahOffer /></Grid>
+        
         <Grid size={{ xs: 12, sm:6 }} lg={3}><EngagementOffer /></Grid>
         <Grid size={{ xs: 12, sm: 6 }} lg={3}><BritOffer /></Grid>
       </Grid>

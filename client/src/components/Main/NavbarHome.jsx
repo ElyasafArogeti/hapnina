@@ -123,7 +123,7 @@ const handleNavigateToBrit = () => {//ברית
 const handleNavigateToRentals = () => { //הזכרות
   navigate("/GenericOrder", {
     state: {
-      eventName: "הזכרות",
+      eventName: "אזכרות",
       pricePerDish: 50,
       selectionLimits: {
         salads: 4,

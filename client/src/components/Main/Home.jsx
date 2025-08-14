@@ -204,56 +204,101 @@ const Home = () => {
       <Card
         sx={{
           boxShadow: 3,
-          padding: 7, p: { xs: 2, md: 7 }, 
-          height: 'auto',
+          p: { xs: 2, md: 7 },
+          height: "auto",
           borderRadius: 4,
           textAlign: "center",
           backgroundColor: "#fff",
-          
         }}
       >
-        <Typography variant="overline" display="block" fontWeight={"bold"} gutterBottom>
+        <Typography
+          variant="overline"
+          display="block"
+          fontWeight="bold"
+          gutterBottom
+          fontSize={{ xs: "0.75rem", md: "inherit" }}
+        >
           CATERING
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <p style={{ width: "50px", height: "2px", backgroundColor: "#333" }}></p>  
+
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
+          <Box
+            sx={{
+              width: "40px",
+              height: "2px",
+              backgroundColor: "#333",
+            }}
+          />
         </Box>
-        <Typography variant="h4" gutterBottom  fontWeight={"bold"}>
-         הצעת מחיר לאירוע שלכם
-       </Typography>
-       <Typography variant="body1" sx={{ textAlign: "center", marginBottom: 2 }}>
-        .האתר שלנו מציע שירות הזמנות אונליין מהיר ונוח, המאפשר לך להזמין את הקייטרינג המושלם לאירוע שלך בכמה קליקים בלבד. עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
-       </Typography>
-       <Typography variant="h6" gutterBottom textAlign={"center"} fontWeight={"bold"}>
-         !! הצעת מחיר דרך האתר 
-       </Typography>
-        <Typography variant="h6" gutterBottom textAlign={"center"} fontWeight={"bold"}>
+
+        <Typography
+          variant="h5"
+          gutterBottom
+          fontWeight="bold"
+          fontSize={{ xs: "1.25rem", md: "2rem" }}
+        >
+          הצעת מחיר לאירוע שלכם
+        </Typography>
+
+        <Typography
+          variant="body2"
+          sx={{
+            textAlign: "center",
+            mb: 2,
+            fontSize: { xs: "0.9rem", md: "1rem" },
+          }}
+        >
+          .האתר שלנו מציע שירות הזמנות אונליין מהיר ונוח, המאפשר לך להזמין את הקייטרינג המושלם לאירוע שלך בכמה קליקים בלבד. עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
+        </Typography>
+
+        <Typography
+          variant="subtitle1"
+          gutterBottom
+          fontWeight="bold"
+          textAlign="center"
+          fontSize={{ xs: "1rem", md: "1.25rem" }}
+        >
+          !! הצעת מחיר דרך האתר
+        </Typography>
+
+        <Typography
+          variant="subtitle1"
+          gutterBottom
+          fontWeight="bold"
+          textAlign="center"
+          fontSize={{ xs: "1rem", md: "1.25rem" }}
+        >
           :סוגי האירועים שלנו
         </Typography>
-        <List>
+
+        <List dense sx={{ textAlign: "center" }}>
           <ListItemText primary="✔ חתונות" />
-          <ListItemText primary="✔  אירוסין" />
+          <ListItemText primary="✔ אירוסין" />
           <ListItemText primary="✔ בר/בת מצווה" />
           <ListItemText primary="✔ כנסים ואירועי תרבות" />
         </List>
-        {/* כפתור מיוחד */}
+
+        {/* כפתור */}
         <Button
           variant="contained"
           color="success"
           endIcon={<ArrowBackIcon />}
           sx={{
-            marginTop: 3,
-            paddingX: 4,
-            paddingY: 1.5,
-            fontSize: "1rem",
+            mt: 3,
+            px: { xs: 3, md: 4 },
+            py: { xs: 1, md: 1.5 },
+            fontSize: { xs: "0.9rem", md: "1rem" },
             fontWeight: "bold",
             borderRadius: 8,
-          }}   href="/ordersOnline" // קישור לדף תפריטים
+          }}
+          href="/ordersOnline"
         >
           <Typography variant="button">להצעת מחיר בתפריט</Typography>
         </Button>
       </Card>
     </Grid2>
+
+    {/* תמונה */}
     <Grid2 size={{ xs: 12, sm: 6 }} md={1} order={{ md: 1 }}>
     <img
         src='https://res.cloudinary.com/dhkegagjk/image/upload/v1752410371/IMG-20250713-WA0099_vqvudj.jpg'
@@ -267,9 +312,9 @@ const Home = () => {
         }}      
       /> 
     </Grid2>
-
   </Grid2>
 </Container>
+
 
 <OffersSection />
 
@@ -330,7 +375,7 @@ const Home = () => {
         fontWeight: "bold",
         textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
         mb: 2,
-        fontSize: { xs: "1.8rem", md: "3rem" },
+        fontSize: { xs: "1.8rem", md: "2rem" },
       }}
     >
       ברוכים הבאים לקייטרינג הפנינה
@@ -654,38 +699,47 @@ const Home = () => {
 
   <Grid2 container spacing={3} justifyContent="center">
     {images.map((img, index) => (
-      <Grid2 size={{ xs: 6, sm:3}}  key={index}>
-        <motion.div
-          custom={index}
-          variants={fadeInVariant}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          style={{ width: "100%" }}
-        >
-          <Box
-            component="img"
-            src={img}
-            alt={`gallery-img-${index}`}
-            sx={{ 
-               overflow: "hidden",
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-              borderRadius: 3,
-              boxShadow: 2,
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.05)",
-                boxShadow: 6,
-              },
-            }}
-          />
-        </motion.div>
+      <Grid2 size={{ xs: 6, sm: 3 }} key={index}>
+        <Box
+          component="img"
+          src={img}
+          alt={`gallery-img-${index}`}
+          loading="lazy"
+          className="fade-in"
+          sx={{
+            width: "100%",
+            height: "auto",
+            objectFit: "cover",
+            borderRadius: 3,
+            boxShadow: 2,
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05)",
+              boxShadow: 6,
+            },
+          }}
+        />
       </Grid2>
     ))}
   </Grid2>
+
+  {/* CSS אנימציה */}
+  <style>
+    {`
+      .fade-in {
+        opacity: 0;
+        animation: fadeInSmooth 1.5s ease-in-out forwards;
+      }
+
+      @keyframes fadeInSmooth {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+    `}
+  </style>
 </Box>
+
+
 
 
 

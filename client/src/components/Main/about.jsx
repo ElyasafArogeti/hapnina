@@ -27,7 +27,7 @@ const About = () => {
   {/* תמונת רקע */}
   <Box
     component="img"
-    src="https://www.acosta.co.il/wp-content/uploads/2022/10/%D7%90%D7%95%D7%9C%D7%9D-%D7%90%D7%99%D7%A8%D7%95%D7%A2%D7%99%D7%9D-%D7%99%D7%95%D7%A7%D7%A8%D7%AA%D7%99.webp"
+    src="https://res.cloudinary.com/dhkegagjk/image/upload/v1755207429/%D7%94%D7%A1%D7%99%D7%A4%D7%95%D7%A8_m6vugz.webp"
     alt="אולם האירועים הפנינה"
     sx={{
       position: "absolute",
@@ -140,7 +140,7 @@ const About = () => {
            {/* תמונה בצד שמאל */}
           <Grid size={{ xs: 12, sm: 6 }} md={6}>
             <img
-              src="https://www.tarin.co.il/wp-content/uploads/2023/08/LIRO0553_800x533.jpg"
+              src="https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0115_jsponj.jpg"
               alt="logo"
               style={{ width: '95%', borderRadius: '10px' , boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
             />

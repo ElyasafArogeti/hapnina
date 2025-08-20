@@ -133,7 +133,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
     setLoading(true); // הפעלת טעינה
     try {
 
-      console.log("אניפה ");
+     
       
       const data = await axiosInstance.post("/api/forgotPassword", { email });
         setSnackMessage("קוד לשחזור סיסמה נשלח בהצלחה למייל שלך.");

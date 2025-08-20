@@ -1,9 +1,8 @@
-// src/api.js
-
-const baseURL = process.env.NODE_ENV === 'development'
+const baseURL = process.env.NODE_ENV === 'production'
   ? 'http://localhost:3001'
-  : 'https://web-production-aa784.up.railway.app'; // כתובת הפריסה שלך ב-Railway
+  : 'https://web-production-aa784.up.railway.app';
 
+  //אם רוצה מקומי אז שנה ל 'development'
 export const apiFetch = async (endpoint, options = {}) => {
   const response = await fetch(`${baseURL}${endpoint}`, {
     ...options,

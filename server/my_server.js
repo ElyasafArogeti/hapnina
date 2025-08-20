@@ -21,7 +21,7 @@ app.use(cors({
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 
 
-const useLocalDB = process.env.USE_LOCAL_DB === 'false'; 
+const useLocalDB = process.env.USE_LOCAL_DB === 'true'; // שרת רלוואי כ- נכון מקומי - לא נכון
 
 const DB_URL = useLocalDB ? process.env.LOCAL_DB_URL : process.env.DB_URL;
 

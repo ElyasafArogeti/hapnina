@@ -208,7 +208,7 @@ const Home = () => {
           gutterBottom
           fontSize={{ xs: "0.75rem", md: "inherit" }}
         >
-          CATERING
+          הזמנות אונליין
         </Typography>
 
         <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
@@ -238,7 +238,7 @@ const Home = () => {
             fontSize: { xs: "0.9rem", md: "1rem" },
           }}
         >
-          .האתר שלנו מציע שירות הזמנות אונליין מהיר ונוח, המאפשר לך להזמין את הקייטרינג המושלם לאירוע שלך בכמה קליקים בלבד. עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
+          .האתר שלנו מציע שירות הזמנות אונליין מהיר ונוח,  עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
         </Typography>
 
         <Typography
@@ -251,21 +251,13 @@ const Home = () => {
           !! הצעת מחיר דרך האתר
         </Typography>
 
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          fontWeight="bold"
-          textAlign="center"
-          fontSize={{ xs: "1rem", md: "1.25rem" }}
-        >
-          :סוגי האירועים שלנו
-        </Typography>
 
         <List dense sx={{ textAlign: "center" }}>
-          <ListItemText primary="✔ חתונות" />
-          <ListItemText primary="✔ אירוסין" />
+          <ListItemText primary="✔ ברית מילה" />
+          <ListItemText primary="✔ אירוסין / חינה" />
           <ListItemText primary="✔ בר/בת מצווה" />
           <ListItemText primary="✔ כנסים ואירועי תרבות" />
+          <ListItemText primary="✔  חתונות" />
         </List>
 
         {/* כפתור */}

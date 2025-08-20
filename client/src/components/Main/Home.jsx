@@ -21,18 +21,8 @@ import imgApnina from "../../assets/imgs/img3.jpeg";
 
 import OffersSection from "../Main/Offers/OffersSection";
 import { motion } from "framer-motion";
-const fadeInVariant = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1, // דיליי בין כל תמונה
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  }),
-};
+
+
 
 const images = [
   // כאן תכניס כתובות של תמונות (תמונות אוכל)

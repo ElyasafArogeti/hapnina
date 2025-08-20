@@ -21,9 +21,10 @@ app.use(cors({
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 
 
-const useRailwayDB = process.env.USE_LOCAL_DB === 'false'; // כאשר false → נשתמש בריילווי
+const useLocalDB = process.env.USE_LOCAL_DB === 'false'; 
 
-const DB_URL = useRailwayDB ? process.env.DB_URL : process.env.LOCAL_DB_URL;
+const DB_URL = useLocalDB ? process.env.LOCAL_DB_URL : process.env.DB_URL;
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!DB_URL) {

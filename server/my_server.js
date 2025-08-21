@@ -110,6 +110,7 @@ const authenticateToken = (req, res, next) => {
     console.log("❌ טוקן לא תקני:", token);
     return res.status(400).json({ message: "טוקן לא תקני." });
   }
+console.log("🔐 Token received:", token);
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -120,7 +121,6 @@ const authenticateToken = (req, res, next) => {
     return res.status(403).json({ message: "טוקן שגוי או פג תוקף." });
   }
 };
-console.log("🔐 Token received:", token);
 
 
 //---------------------------------------------------------------------------

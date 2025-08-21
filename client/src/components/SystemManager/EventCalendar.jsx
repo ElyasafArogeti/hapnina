@@ -48,28 +48,20 @@ function EventCalendar() {
     setLoading(true); 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await apiFetch('/api/orders_calendar', {
+      const ordersData = await apiFetch('/api/orders_calendar', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
         }
       });
-      if (!response.ok) {
-        throw new Error('שגיאה ברשת');
-      }
-      const ordersData = await response.json();
 
       const userPromises = ordersData.map(async (order) => { // להביא שם בעל האירוע 
-        const userResponse = await apiFetch(`/api/user_calendar/${order.user_id}`, {
+        const userData = await apiFetch(`/api/user_calendar/${order.user_id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
           }
         });
-        if (!userResponse.ok) {
-          throw new Error('שגיאה בעת הבאת פרטי המשתמש');
-        }
-        const userData = await userResponse.json();
         return {
           ...order,
           user_name: userData.user_name, // הוספת שם המשתמש להזמנה
@@ -116,18 +108,12 @@ function EventCalendar() {
       const token = localStorage.getItem("authToken");
      
     const [customerId, orderId] = userId.split('-'); 
-      const response = await apiFetch(`/api/user_calendar/${userId}`, {
+      const data = await apiFetch(`/api/user_calendar/${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
-  
-      if (!response.ok) {
-        throw new Error('שגיאה ברשת');
-      }
-
-      const data = await response.json();
 
       if (data.orders_user && data.orders_user.length > 0) {
         const selectedOrder = data.orders_user.find(order => order.id === parseInt(orderId));
@@ -207,7 +193,7 @@ function EventCalendar() {
       const noteToSend = note.trim() === "" ? null : note;
   
       setNote(note); // עדכון הסטייט של ההערה החדשה
-      const response = await apiFetch(`/api/save-note/${updatedOrder.id}/${noteToSend}`, {
+      await apiFetch(`/api/save-note/${updatedOrder.id}/${noteToSend}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -215,10 +201,7 @@ function EventCalendar() {
         },
       });
       
-      if (!response.ok) {
-        throw new Error('שגיאה ברשת');
-      }
-      
+     
       // עדכון רשימת ההזמנות אם הבקשה הצליחה
       setOrders((prevOrders) => {
         return prevOrders.map(order => {

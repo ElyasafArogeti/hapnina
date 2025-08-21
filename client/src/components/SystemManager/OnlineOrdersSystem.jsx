@@ -17,13 +17,13 @@ const OnlineOrdersSystem = () => {
       const fetchOrdersOnline = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await apiFetch('/api/online_orders', {
+      const data = await apiFetch('/api/online_orders', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // הוספת הטוקן לכותרת 
           }
       });
-      const data = await response.json();
+     
       setOrdersOnline(data.reverse());
     } catch (error) {
       console.error("שגיאה בהבאת הזמנות:", error);
@@ -34,65 +34,59 @@ const OnlineOrdersSystem = () => {
 
 
   // סגירת ההזמנה
-  const handleAddCustomerOrder = async (orderId) => {
-    try {
-      const token = localStorage.getItem("authToken");
+const handleAddCustomerOrder = async (orderId) => {
+  try {
+    const token = localStorage.getItem("authToken");
 
-      const orderToClose = ordersOnline.find(order => order.id === orderId);      
-      if (!orderToClose) {
-        console.error("ההזמנה לא נמצאה");
-        return;
+    const orderToClose = ordersOnline.find(order => order.id === orderId);
+    if (!orderToClose) {
+      console.error("ההזמנה לא נמצאה");
+      return;
+    }
+
+    const orderData = {
+      orderId: orderToClose.id,
+      userName: orderToClose.user_name,
+      userPhone: orderToClose.userPhone,
+      guestCount: orderToClose.guest_count,
+      eventDate: orderToClose.event_date,
+      orderMenu: orderToClose.order_menu,
+      totalPrice: orderToClose.total_price,
+      email: orderToClose.email,
+      event_location: orderToClose.event_location,
+      address: orderToClose.address,
+      shippingCost: orderToClose.shipping_cost,
+      serviceCost: orderToClose.service_cost,
+      toolsType: orderToClose.tools_type,
+      eventType: orderToClose.event_type
+    };
+
+    // שליחת ההזמנה לקוח
+    await apiFetch('/api/online_orders/add_customer_order', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    // מחיקת ההזמנה מטבלת אונליין לאחר הצלחה
+    await apiFetch(`/api/online_orders/${orderId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
       }
- const orderData = {
-  orderId: orderToClose.id,
-  userName: orderToClose.user_name,
-  userPhone: orderToClose.userPhone,
-  guestCount: orderToClose.guest_count,
-  eventDate: orderToClose.event_date,
-  orderMenu: orderToClose.order_menu,
-  totalPrice: orderToClose.total_price,
-  email: orderToClose.email,
-  event_location: orderToClose.event_location,
-  address: orderToClose.address,
-  shippingCost: orderToClose.shipping_cost,
-  serviceCost: orderToClose.service_cost,
-  toolsType: orderToClose.tools_type,
-  eventType: orderToClose.event_type
+    });
+
+    setOrdersOnline(prevOrders => prevOrders.filter(order => order.id !== orderId));
+    setEditWindow(null); // סגור את חלון האישור
+
+  } catch (error) {
+    console.error("שגיאה באישור או מחיקת ההזמנה:", error);
+    alert("אירעה שגיאה במהלך אישור ההזמנה. אנא נסה שוב.");
+  }
 };
 
-
-
-      const response = await apiFetch('/api/online_orders/add_customer_order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-
-        },
-        body: JSON.stringify(orderData),
-      });
-      if (response.ok) {
-        // שליחה נוספת לשרת למחיקת ההזמנה מטבלת אונליין
-        const deleteResponse = await apiFetch(`/api/online_orders/${orderId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        });
-        if (deleteResponse.ok) {
-          setOrdersOnline((prevOrders) => prevOrders.filter(order => order.id !== orderId));
-          setEditWindow(null); // סגור את חלון האישור
-        } else {
-          alert("שגיאה במחיקת ההזמנה אונליין");
-          console.error("שגיאה במחיקת ההזמנה אונליין");
-        }
-      } else {
-        console.error("שגיאה באישור ההזמנה");
-      }
-    } catch (error) {
-      console.error("שגיאה באישור ההזמנה:", error);
-    }
-  };
   //----------מחיקת ההזמנה -------------------------------------------
   const handleDeleteOrder = async (orderId) => {
     // חלון אישור מחיקה
@@ -102,17 +96,15 @@ const OnlineOrdersSystem = () => {
     }
     try {
       const token = localStorage.getItem("authToken");
-      const response = await apiFetch(`/api/online_orders/${orderId}`, {
+      await apiFetch(`/api/online_orders/${orderId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
         }
       });
-      if (response.ok) {
+  
         setOrdersOnline((prevOrders) => prevOrders.filter(order => order.id !== orderId));
-      } else {
-        console.error("שגיאה במחיקת ההזמנה");
-      }
+    
     } catch (error) {
       console.error("שגיאה במחיקת ההזמנה:", error);
     }

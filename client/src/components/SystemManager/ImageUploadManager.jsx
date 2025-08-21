@@ -44,7 +44,7 @@ useEffect(() => {
       },
     });
       setImagesByCategory(response.data);
-      console.log(response.data);
+
     } catch (err) {
       console.error('Error fetching images by categories:', err);
     } finally {
@@ -128,8 +128,6 @@ useEffect(() => {
         }
       });
   
-      console.log(response.data);
-  
       if (response.data.success) {
         setUploadedImages(uploadedImages.filter((image) => image.public_id !== public_id));
   
@@ -160,7 +158,7 @@ useEffect(() => {
     }
   
     try {
-      const response = await axiosInstance.put(`/api/updateImage/${editingImage.public_id}`, { name: imageName });
+       await axiosInstance.put(`/api/updateImage/${editingImage.public_id}`, { name: imageName });
       const updatedImage = { ...editingImage, name: imageName };
       setUploadedImages(uploadedImages.map((img) => (img.public_id === updatedImage.public_id ? updatedImage : img)));
       setOpenDialog(false);

@@ -133,7 +133,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await apiFetch(`/api/hideDish/${id}`, {
+      const data = await apiFetch(`/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,18 +144,14 @@ const hideDish = async (id, category) => {
           hidden: false,  
         }),
       });
-      const data = await response.json();
-      if (response.ok) {
         console.log(data.message);  // הודעת הצלחה
-      } else {
-        console.error('Error hiding dish:', data);
         setInventoryAll({
             ...inventoryAll,
             [category]: inventoryAll[category].map(item =>
               item.id === id ? { ...item, is_hidden: true } : item
             ),
           });
-      }
+      
     } catch (err) {
       console.error('Error hiding dish:', err);
     }
@@ -171,7 +167,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const response = await apiFetch(`/api/hideDish/${id}`, {
+      const data = await apiFetch(`/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -182,18 +178,16 @@ const hideDish = async (id, category) => {
           hidden: true,  // שולחים true כדי להחזיר את המנה לתצוגה
         }),
       });
-      const data = await response.json();
-      if (response.ok) {
+    
+     
         console.log(data.message);  // הודעת הצלחה
-      } else {
-        console.error('Error unhiding dish:', data);
+    
         setInventoryAll({
             ...inventoryAll,
             [category]: inventoryAll[category].map(item =>
               item.id === id ? { ...item, is_hidden: false } : item  // עדכון המנה כ"לא מוסתרת"
             ),
           });
-      }
     } catch (err) {
       console.error('Error unhiding dish:', err);
     }

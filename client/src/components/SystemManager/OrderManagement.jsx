@@ -248,7 +248,7 @@ const handleQuantityChange = (category , id, quantity) => {
   const handleDeleteOrder = async () => {
     try {
       if (orderToDelete) {
-        const response = await axios.delete(`https://localhost:3001/OrderManagement/DeleteOrder/${orderToDelete.user_id}`, {
+        const response = await axiosInstance.delete(`/api/OrderManagement/DeleteOrder/${orderToDelete.user_id}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,

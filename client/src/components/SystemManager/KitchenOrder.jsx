@@ -81,17 +81,14 @@ const [editValue, setEditValue] = useState('');
   useEffect(() => {
     const fetchAllDishes = async () => {
       try {
-        const response = await apiFetch('/api/inventoryAll', {
+        const data = await apiFetch('/api/inventoryAll', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await response.json();
         setAllDishes(data);
-     
-        
       } catch (error) {
         console.error('Error fetching dishes:', error);
       }

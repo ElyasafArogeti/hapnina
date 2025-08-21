@@ -60,28 +60,40 @@ const [registerEmailError, setRegisterEmailError] = useState("");
     setError('');
   }, [step]);
 
-  useEffect(() => {
-    const checkToken = async () => {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        try {
-          const data = await axiosInstance.post("/api/verifyToken", {}, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const { role } = data.user;
+ useEffect(() => {
+  const checkToken = async () => {
+    const token = localStorage.getItem("authToken");
 
-          if (role === "manager") {
-            navigate("/SystemManagerHome");
-          } else {
-            console.log("אני ביוזאפקט");
+    // בדיקה תקינה של JWT (שלושה חלקים מופרדים בנקודה)
+    if (token && token.split(".").length === 3) {
+      try {
+        const response = await axiosInstance.post(
+          "/api/verifyToken",
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
           }
-        } catch (err) {
-          localStorage.removeItem("authToken");
+        );
+
+        const { role } = response.data.user;
+
+        if (role === "manager") {
+          navigate("/SystemManagerHome");
+        } else {
+          console.log("אני ביוזאפקט");
         }
+      } catch (err) {
+        console.error("שגיאה באימות טוקן:", err.message);
+        localStorage.removeItem("authToken");
       }
-    };
-    checkToken();
-  }, [navigate]);
+    } else {
+      localStorage.removeItem("authToken"); // הסרה אם הטוקן לא תקני
+    }
+  };
+
+  checkToken();
+}, [navigate]);
+
 
   const handleLogin = async () => {
     setErrors({ userName: '', userPassword: '' });

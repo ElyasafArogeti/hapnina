@@ -95,21 +95,33 @@ const formatDateForMySQL = (isoDate) => {
   return `${year}-${month}-${day}`;
 };
 //-----------------------------------------------------------------------------
-const authenticateToken = (req, res, next) => {  // יצירת טוקן 
+const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];  
+  const token = authHeader && authHeader.split(" ")[1];
+
+  // בדיקת קיום טוקן
   if (!token) {
-    console.log("  בטוקן שגיאה");
+    console.log("❌ שגיאה: לא סופק טוקן");
     return res.status(401).json({ message: "הגישה נדחתה, לא סופק אסימון." });
   }
+
+  // בדיקת תקינות בסיסית של מבנה JWT (שלושה חלקים מופרדים בנקודות)
+  if (token.split(".").length !== 3) {
+    console.log("❌ טוקן לא תקני:", token);
+    return res.status(400).json({ message: "טוקן לא תקני." });
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // לשימוש בהמשך
+    req.user = decoded;
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Invalid token." });
+    console.log("❌ שגיאה באימות טוקן:", err.message);
+    return res.status(403).json({ message: "טוקן שגוי או פג תוקף." });
   }
 };
+console.log("🔐 Token received:", token);
+
 
 //---------------------------------------------------------------------------
 // נתיב אימות טוקן

@@ -544,7 +544,7 @@ app.post('/api/addOrdersOnline', async (req, res) => {
           service: 'gmail',
           auth: {
             user: 'hpnina6600200@gmail.com',
-            pass: 'ycxt oeyj ojha xvyt',
+            pass: 'ians wptr iicy lqdi',
           },
         });
 
@@ -575,7 +575,7 @@ app.post('/api/addOrdersOnline', async (req, res) => {
       }
     })();
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 4000));
     res.status(200).json({ message: 'נשלח בהצלחה'});
 
   } catch (err) {

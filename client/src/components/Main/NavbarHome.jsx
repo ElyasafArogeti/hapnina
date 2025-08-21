@@ -381,7 +381,7 @@ const handleNavigateToRentals = () => { //הזכרות
 
   {/* כל תתי-חבילות ההזמנות */}
   {[
-    { label: "תפריט כללי עשיר", to: "/OrdersOnline" },
+    { label: "תפריט אירועים ", to: "/OrdersOnline" },
     { label: "תפריט לבר מצווה", onClick: handleNavigateToBarMitzvah },
     { label: "תפריט לברית", onClick: handleNavigateToBrit },
     { label: "תפריט לאזכרות", onClick: handleNavigateToRentals }

@@ -95,44 +95,47 @@ const [registerEmailError, setRegisterEmailError] = useState("");
 }, [navigate]);
 
 
-  const handleLogin = async () => {
-    setErrors({ userName: '', userPassword: '' });
-    if (!userName ) {
-      setErrors((prev) => ({ ...prev, userName: "שם המשתמש לא יכול להיות ריק" }));
-      return;
-    }
-    if (!userPassword) {
-      setErrors((prev) => ({ ...prev, userPassword: "הסיסמה לא יכולה להיות ריקה" }));
-      return;
-    }
+ const handleLogin = async () => {
+  setErrors({ userName: '', userPassword: '' });
+  if (!userName) {
+    setErrors((prev) => ({ ...prev, userName: "שם המשתמש לא יכול להיות ריק" }));
+    return;
+  }
+  if (!userPassword) {
+    setErrors((prev) => ({ ...prev, userPassword: "הסיסמה לא יכולה להיות ריקה" }));
+    return;
+  }
 
-    setLoading(true); // הפעלת טעינה
-    try {
-      const data = await axiosInstance.post("/api/login", {
-        userName: userName,
-        password: userPassword,
+  setLoading(true);
+  try {
+    const response = await axiosInstance.post("/api/login", {
+      userName,
+      password: userPassword,
+    });
+
+    const { token, role } = response.data;
+
+    localStorage.setItem("authToken", token);
+    console.log("🚀 טוקן לאחר שמירה:", token);
+
+    if (role === "manager") {
+      navigate("/SystemManagerHome");
+    } else {
+      const ordersResponse = await axiosInstance.get("/api/OrderPersonalArea", {
+        headers: { Authorization: `Bearer ${token}` },
       });
+      const orders = ordersResponse.data;
+      console.log("הזמנות:", orders);
 
-      const { token, role } = await data;
-      localStorage.setItem("authToken", token);
-
-      if (role === "manager") {
-        navigate("/SystemManagerHome");
-      } else {
-        const data = await axiosInstance.get("/api/OrderPersonalArea", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const orders = data;
-        console.log(orders);
-        
-       navigate("/PersonalArea", { state: { orders, userName } });
-      }
-    } catch (err) {
-      setError("שם המשתמש או הסיסמה אינם נכונים.");
-    } finally {
-      setLoading(false); // עצירת טעינה
+      navigate("/PersonalArea", { state: { orders, userName } });
     }
-  };
+  } catch (err) {
+    setError("שם המשתמש או הסיסמה אינם נכונים.");
+    console.error("Login error:", err.response?.data || err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   

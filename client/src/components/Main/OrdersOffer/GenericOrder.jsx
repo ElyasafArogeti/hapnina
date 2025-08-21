@@ -220,41 +220,45 @@ const validateSelectionLimits = () => {
 
     setSending(true);
 
-    try {
-      await apiFetch("/api/addOrdersOnline", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName: guestName,
-          userPhone: phoneNumber,
-          guestCount,
-          eventDate,
-          orderMenu: orderSummary,
-          totalPrice: total,
-          shippingDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
-          email: email,
-          event_location: eventLocation,
-          address: "",
-          shippingCost: 0,
-          serviceCost: 0,
-          toolsType: "",
-          eventType: eventName
+   try {
+  const data = await apiFetch("/api/addOrdersOnline", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userName: guestName,
+      userPhone: phoneNumber,
+      guestCount,
+      eventDate,
+      orderMenu: orderSummary,
+      totalPrice: total,
+      shippingDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      email: email,
+      event_location: eventLocation,
+      address: "",
+      shippingCost: 0,
+      serviceCost: 0,
+      toolsType: "",
+      eventType: eventName
+    }),
+  });
 
-        }),
-      });
+  if (data.message === "נשלח בהצלחה") {
+    setErrorMessage(null);
+    setIsModalOpen(false);
+    setSending(false);
+    setSendingToManager(true);
+  } else {
+    setErrorMessage("אירעה שגיאה בשליחת ההזמנה");
+    setSending(false);
+  }
+} catch (error) {
+  console.error(error);
+  setErrorMessage("אירעה שגיאה בשליחת ההזמנה");
+  setSending(false);
+}
 
-        setErrorMessage(null);
-        setIsModalOpen(false);
-        setSending(false);
-        setSendingToManager(true);
-
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("אירעה שגיאה בשליחת ההזמנה");
-      setSending(false);
-    }
   };
 
   // פונקציה שמייצרת את סיכום ההזמנה עם המנות שנבחרו מלאות (לא רק IDs)

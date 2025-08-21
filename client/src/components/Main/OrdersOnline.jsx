@@ -321,7 +321,7 @@ const removeNonHebrew = (text) => {
    const addOrdersOnline = async () => {
      try {
         setLoading(true);
-              await apiFetch('/api/addOrdersOnline', {
+              const data = await apiFetch('/api/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -343,7 +343,11 @@ const removeNonHebrew = (text) => {
                       eventType: "תפריט כללי"
                   }),
               });
-             
+           if (data.message === "נשלח בהצלחה") {
+            setSendingToManger("true");
+
+           }
+
           } catch (error) {
               console.error('שגיאה בשמירת ההזמנה:', error);
               alert("אירעה שגיאה בשמירת ההזמנה.");

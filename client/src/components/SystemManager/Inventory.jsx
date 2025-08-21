@@ -60,11 +60,11 @@ const Inventory = () => {
         }
     };
 
-    // עדכון מנה קיימת
+       // עדכון מנה קיימת
     const updateDish = async (id, updatedDish) => {
         try {
           const token = localStorage.getItem("authToken");
-            await apiFetch(`/api/updateDish/${id}`, {
+           const data =   await apiFetch(`/api/updateDish/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -82,12 +82,12 @@ const Inventory = () => {
         }
     };
 
-    // מחיקת מנה
+    // מחיקת מנה   
     const deleteDish = async (id, category) => {
         if (window.confirm("האם אתה בטוח שברצונך למחוק את המנה?")) {
             try {
             const token = localStorage.getItem("authToken");
-            await apiFetch(`/api/deleteDish/${id}`, {
+            const data =  await apiFetch(`/api/deleteDish/${id}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
@@ -124,6 +124,7 @@ const Inventory = () => {
 
   
    // פונקציה להסתרה מהתצוגה 
+  
 const hideDish = async (id, category) => {
     setInventoryAll({
         ...inventoryAll,
@@ -133,7 +134,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const data = await apiFetch(`/api/hideDish/${id}`, {
+      const response = await apiFetch(`/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,14 +145,18 @@ const hideDish = async (id, category) => {
           hidden: false,  
         }),
       });
+      const data = await response.json();
+      if (response.ok) {
         console.log(data.message);  // הודעת הצלחה
+      } else {
+        console.error('Error hiding dish:', data);
         setInventoryAll({
             ...inventoryAll,
             [category]: inventoryAll[category].map(item =>
               item.id === id ? { ...item, is_hidden: true } : item
             ),
           });
-      
+      }
     } catch (err) {
       console.error('Error hiding dish:', err);
     }
@@ -167,7 +172,7 @@ const hideDish = async (id, category) => {
       });
     try {
       const token = localStorage.getItem("authToken");
-      const data = await apiFetch(`/api/hideDish/${id}`, {
+      const response = await apiFetch(`/api/hideDish/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -178,20 +183,24 @@ const hideDish = async (id, category) => {
           hidden: true,  // שולחים true כדי להחזיר את המנה לתצוגה
         }),
       });
-    
-     
+      const data = await response.json();
+      if (response.ok) {
         console.log(data.message);  // הודעת הצלחה
-    
+      } else {
+        console.error('Error unhiding dish:', data);
         setInventoryAll({
             ...inventoryAll,
             [category]: inventoryAll[category].map(item =>
               item.id === id ? { ...item, is_hidden: false } : item  // עדכון המנה כ"לא מוסתרת"
             ),
           });
+      }
     } catch (err) {
       console.error('Error unhiding dish:', err);
     }
   };
+  
+
   
   
 // -----------------------------------------
@@ -209,6 +218,7 @@ const hideDish = async (id, category) => {
       <Box sx={{ padding: 2 }} >
           {selectedCategory === null ? (
              <Grid container spacing={2} maxWidth="1200px" margin="0 auto">
+
              <Grid size={{ xs: 12, sm: 3 }}>
                <Box
                  sx={{
@@ -217,7 +227,7 @@ const hideDish = async (id, category) => {
                    border: '1px solid #ccc',
                    cursor: 'pointer',
                    objectFit:'cover',
-                   backgroundImage: 'url("https://www.yad-mordechai.co.il/Uploads//Recipes/From%20Old%20Web/tariaki_rimon.jpg")',
+                   backgroundImage: 'url("https://static.wixstatic.com/media/91dd81_1af0fe2fc4a84c87875602be8280eba8~mv2.jpg/v1/fill/w_558,h_288,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/91dd81_1af0fe2fc4a84c87875602be8280eba8~mv2.jpg")',
                    backgroundSize: 'cover', 
                    backgroundPosition: 'center', 
                    height: 200,  height: 200,
@@ -298,6 +308,9 @@ const hideDish = async (id, category) => {
            <Box dir='rtl' sx={{ maxWidth: '1200px', margin: '0 auto' }}>
             <Typography variant="h4" gutterBottom>
                 {whatCategory[selectedCategory]}
+            </Typography>
+            <Typography variant="body1" >
+                 עריכה ומחיקה נעשים לאחר רינדור הדף !!
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
                 <Button

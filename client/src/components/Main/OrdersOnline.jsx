@@ -321,7 +321,7 @@ const removeNonHebrew = (text) => {
    const addOrdersOnline = async () => {
      try {
         setLoading(true);
-              const data = await apiFetch('/api/addOrdersOnline', {
+              await apiFetch('/api/addOrdersOnline', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',

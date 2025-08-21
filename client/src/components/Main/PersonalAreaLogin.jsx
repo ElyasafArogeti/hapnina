@@ -116,7 +116,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
     const { token, role } = response.data;
 
     localStorage.setItem("authToken", token);
-    console.log("🚀 טוקן לאחר שמירה:", token);
+  
 
     if (role === "manager") {
       navigate("/SystemManagerHome");
@@ -150,7 +150,7 @@ const [registerEmailError, setRegisterEmailError] = useState("");
 
      
       
-      const data = await axiosInstance.post("/api/forgotPassword", { email });
+       await axiosInstance.post("/api/forgotPassword", { email });
         setSnackMessage("קוד לשחזור סיסמה נשלח בהצלחה למייל שלך.");
         setSnackOpen(true);
         setStep(3);
@@ -177,7 +177,7 @@ const handleRegisterUser = async () => {
 
   setLoading(true);
   try {
-    const data = await axiosInstance.post("/api/registerPersonalArea", {
+     await axiosInstance.post("/api/registerPersonalArea", {
       email: registerEmail,
       password: registerPassword,
     });
@@ -202,7 +202,7 @@ const handleRegisterUser = async () => {
     }
   setLoading(true); // הפעלת טעינה
     try {
-      const data = await axiosInstance.post("/api/verifyCode", { email, verificationCode });
+     await axiosInstance.post("/api/verifyCode", { email, verificationCode });
     
     } catch (err) {
        setError("קוד אימות לא תקין.");
@@ -228,7 +228,7 @@ const handleRegisterUser = async () => {
 
     setLoading(true); // הפעלת טעינה
     try {
-      const data = await axiosInstance.post("/api/changePassword", { email, newPassword });
+     await axiosInstance.post("/api/changePassword", { email, newPassword });
         setSnackMessage("הסיסמה שונתה בהצלחה.");
         setSnackOpen(true);
         setStep(1);

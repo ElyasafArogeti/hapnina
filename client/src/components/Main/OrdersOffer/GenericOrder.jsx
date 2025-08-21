@@ -221,7 +221,7 @@ const validateSelectionLimits = () => {
     setSending(true);
 
     try {
-      const response = await apiFetch("/api/addOrdersOnline", {
+      await apiFetch("/api/addOrdersOnline", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -245,17 +245,11 @@ const validateSelectionLimits = () => {
         }),
       });
 
-      const data = await response.json();
-
-      if (data.message === "נשלח בהצלחה") {
         setErrorMessage(null);
         setIsModalOpen(false);
         setSending(false);
         setSendingToManager(true);
-      } else {
-        setErrorMessage("אירעה שגיאה בשליחת ההזמנה");
-        setSending(false);
-      }
+
     } catch (error) {
       console.error(error);
       setErrorMessage("אירעה שגיאה בשליחת ההזמנה");

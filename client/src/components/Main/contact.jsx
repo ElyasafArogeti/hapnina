@@ -64,7 +64,7 @@ const Contact = () => {
   >
     <Box
       component="img"
-      src="https://www.soferet-milim.com/wp-content/uploads/2022/04/Cover-1.jpg"
+      src="https://res.cloudinary.com/dhkegagjk/image/upload/v1756303986/ChatGPT_Image_Aug_27_2025_05_12_17_PM_ycjcjb.png"
       alt="אולם האירועים הפנינה"
       sx={{
         position: "absolute",

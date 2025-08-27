@@ -1,7 +1,9 @@
 
-const baseURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3001'
-  : 'https://web-production-aa784.up.railway.app';
+// const baseURL = process.env.NODE_ENV === 'development'
+//   ? 'http://localhost:3001'
+//   : 'https://web-production-aa784.up.railway.app';
+
+const baseURL = process.env.REACT_APP_API_URL;
 
   //אם רוצה מקומי אז שנה ל 'development'
 export const apiFetch = async (endpoint, options = {}) => {

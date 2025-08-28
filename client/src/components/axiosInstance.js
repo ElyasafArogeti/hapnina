@@ -1,4 +1,3 @@
-// client/src/axiosInstance.js
 
 import axios from 'axios';
 
@@ -10,7 +9,7 @@ const baseURL = process.env.REACT_APP_API_URL;
 
 const axiosInstance = axios.create({
   baseURL,
-  withCredentials: true, // אם אתה שולח cookies
+
   headers: {
     'Content-Type': 'application/json',
   },

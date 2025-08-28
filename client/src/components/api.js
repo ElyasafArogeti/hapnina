@@ -5,11 +5,11 @@
 
 const baseURL = process.env.REACT_APP_API_URL;
 
-  //אם רוצה מקומי אז שנה ל 'development'
+
 export const apiFetch = async (endpoint, options = {}) => {
   const response = await fetch(`${baseURL}${endpoint}`, {
     ...options,
-    credentials: 'include', // אם אתה משתמש ב־cookies או sessions
+
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,

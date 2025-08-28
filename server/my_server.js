@@ -51,35 +51,42 @@ let connection;
  
 const startServer = async () => {
 
-  try {
-   connection = await mysql.createConnection(DB_URL);
-    console.log("✅ ⭕ Connected to the database!");
-    app.locals.db = connection;
+try {
+  const pool = mysql.createPool({
+    uri: DB_URL,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
 
-    // 🧪 בדיקה
-    const [rows] = await connection.query('SELECT 1 + 1 AS solution');
-    console.log("🔍 בדיקת חיבור למסד: ", rows[0].solution); // צריך להחזיר 2
+  connection = pool; // 🪄 שומר את אותו שם כמו קודם
+  app.locals.db = pool;
 
+  console.log("✅ ⭕ Connected to the database!");
 
-    if (!DB_URL) {
-      throw new Error("Missing database URL");
-    }
-  } catch (error) {
-    console.error("❌ Error connecting to the database:", error.message);
-    setTimeout(startServer, 5000); // מנסה להתחבר שוב אחרי 5 שניות במקרה של כשלון
+  // 🧪 בדיקה
+  const [rows] = await connection.query('SELECT 1 + 1 AS solution');
+  console.log("🔍 בדיקת חיבור למסד: ", rows[0].solution); // צריך להחזיר 2
+
+  if (!DB_URL) {
+    throw new Error("Missing database URL");
   }
+} catch (error) {
+  console.error("❌ Error connecting to the database:", error.message);
+  setTimeout(startServer, 5000); // מנסה להתחבר שוב אחרי 5 שניות במקרה של כשלון
+}
 
-  
-  const testConnection = async () => {
-    try {
-      const [rows, fields] = await app.locals.db.query('SELECT 1 + 1 AS solution');
-      console.log('Database connection successful: ', rows[0].solution); // צריך להחזיר 2
-    } catch (err) {
-      console.error('Error testing database connection:', err.message);
-    }
-  };
-  
-  testConnection();
+const testConnection = async () => {
+  try {
+    const [rows] = await app.locals.db.query('SELECT 1 + 1 AS solution');
+    console.log('Database connection successful: ', rows[0].solution); // צריך להחזיר 2
+  } catch (err) {
+    console.error('Error testing database connection:', err.message);
+  }
+};
+
+testConnection();
+
 
 
 

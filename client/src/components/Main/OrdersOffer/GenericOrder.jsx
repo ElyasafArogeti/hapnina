@@ -148,7 +148,8 @@ const validateFinalForm = () => {// בדיקת הלקוח
         const data = await apiFetch("/api/inventoryAll");
         setMenuData(data);
       } catch (err) {
-        setErrorMessage("שגיאה בטעינת המנות");
+        setErrorMessage( err );
+
       } finally {
         setLoading(false);
       }

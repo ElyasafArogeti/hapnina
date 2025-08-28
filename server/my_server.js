@@ -13,7 +13,7 @@ const path = require('path');
 require('dotenv').config(); // למעלה בתחילת הקובץ
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://hapnina.netlify.app", "https://cateringhapnina.netlify.app"],
+  origin: ["http://localhost:3000", "https://cateringhapnina.netlify.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));

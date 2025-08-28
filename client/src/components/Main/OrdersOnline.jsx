@@ -122,8 +122,10 @@ const formSectionRef = useRef(null);
     useEffect(() => {
         const fetchInventoryAll = async () => {
             try {
-                 const data = await fetch('https://web-production-aa784.up.railway.app/api/inventoryAll');
-                setInventoryAll(data);
+         const data = await fetch('https://web-production-aa784.up.railway.app/api/inventoryAll');
+const json = await data.json();
+setInventoryAll(json);
+
             } catch (error) {
                 console.error('Failed to fetch inventory:', error);
             }

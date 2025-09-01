@@ -13,10 +13,11 @@ const path = require('path');
 require('dotenv').config(); // למעלה בתחילת הקובץ
 
 app.use(cors({
-  origin: "*",
+  origin: ["https://cateringhapnina.netlify.app"], // הלקוח שלך
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
 
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 

@@ -4,7 +4,7 @@
 //   : 'https://web-production-aa784.up.railway.app';
 
 const baseURL = process.env.REACT_APP_API_URL;
-console.log(baseURL);
+
 
 
 export const apiFetch = async (endpoint, options = {}) => {

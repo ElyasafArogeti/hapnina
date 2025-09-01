@@ -7,12 +7,12 @@ import dayjs from 'dayjs';
 // import html2pdf from 'html2pdf.js';
 
 import  Grid  from '@mui/material/Grid2';
-import { Card, CardContent, CardMedia, Checkbox, FormControlLabel } from "@mui/material";
+import { Card, CardContent, CardMedia, Checkbox } from "@mui/material";
 
-import { Snackbar, Alert ,Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography, InputAdornment, IconButton,Autocomplete } from '@mui/material';
+import { Snackbar, Alert ,Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography } from '@mui/material';
 import NavbarHome from './NavbarHome';
 import LinearProgress from '@mui/material/LinearProgress';
-import axios from 'axios';
+
 import Stack from '@mui/material/Stack';
 
 import CircularProgress from '@mui/material/CircularProgress';

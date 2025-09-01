@@ -14,9 +14,7 @@ import {
   CardContent,
   Modal,
   TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
+  Dialog
 } from "@mui/material";
 import NavbarHome from "../NavbarHome";
 import Footer from "../Footer";

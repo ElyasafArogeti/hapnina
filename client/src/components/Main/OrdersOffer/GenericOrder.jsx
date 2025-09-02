@@ -146,7 +146,7 @@ const validateFinalForm = () => {// בדיקת הלקוח
         const data = await apiFetch("/api/inventoryAll");
         setMenuData(data);
       } catch (err) {
-        setErrorMessage( err );
+      setErrorMessage(err.message || "אירעה שגיאה בטעינת התפריט"); // ✅
 
       } finally {
         setLoading(false);
@@ -432,7 +432,7 @@ const createOrderSummary = () => {
     >
       שימו לב: מינימום הזמנה 30 מנות! / שליש מכל סוג
     </Typography>
-    <hr />
+
     <Typography
       component="span"
       sx={{

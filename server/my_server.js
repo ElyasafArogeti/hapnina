@@ -13,7 +13,7 @@ const path = require('path');
 require('dotenv').config(); // למעלה בתחילת הקובץ
 
 app.use(cors({
-  origin: ["https://cateringhapnina.netlify.app"], // הלקוח שלך
+  origin: ["https://cateringhapnina.netlify.app","http://localhost:3000"], // הלקוח שלך
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -38,7 +38,7 @@ console.log("🔌 חיבור למסד הנתונים:", DB_URL?.includes('localh
 
 let connection;
 
-console.log(process.env.REACT_APP_API_URL);
+
 
     const managers = [// רשימת המנהלים
   {

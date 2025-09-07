@@ -273,7 +273,7 @@ const Contact = () => {
     <Box mt={6} sx={{ height: { xs: '250px', md: '400px' }, borderRadius: '8px', overflow: 'hidden', border: '1px solid #ddd' }}>
       <iframe
         title="Google Maps Location"
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3394.251301994778!2d35.11510721564083!3d31.6954784813095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1502dbf06e151619%3A0x7e5faecfb28cb705!2z15TXmdeT15nXnteZ16gg15XXqNeV16jXmdeZINec15nXnteU15nXlQ!5e0!3m2!1siw!2sil!4v1691684048408!5m2!1siw!2sil"
+        src="https://maps.app.goo.gl/C1zH9NBJQYeXX3zm8"
         width="100%"
         height="100%"
         style={{ border: 0 }}

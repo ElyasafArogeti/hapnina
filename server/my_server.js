@@ -11,7 +11,8 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
 const { Resend } = require('resend');
-const resend = new Resend('re_GcQwxAgG_KABE5tSpPmYCc5MQUYdcNHn5');
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 require('dotenv').config(); 
 

@@ -10,7 +10,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config(); // למעלה בתחילת הקובץ
+const { Resend } = require('resend');
+const resend = new Resend('re_GcQwxAgG_KABE5tSpPmYCc5MQUYdcNHn5');
+
+require('dotenv').config(); 
 
 app.use(cors({
   origin: [
@@ -499,14 +502,14 @@ app.get("/api/user_calendar/:id", authenticateToken , async (req, res) => {
 
 
        /*OrdersOnline   דף הזמנות אונליין  צד לקוח  */
-  
+
 //  --------- סגירת הזמנה למערכת----------------------------
 app.post('/api/addOrdersOnline', async (req, res) => {
   try {
     const {
       userName, userPhone, guestCount, eventDate, orderMenu,
       totalPrice, shippingDate, email, event_location, address,
-      shippingCost, serviceCost, toolsType,eventType
+      shippingCost, serviceCost, toolsType, eventType
     } = req.body;
 
     await connection.query(`
@@ -518,10 +521,10 @@ app.post('/api/addOrdersOnline', async (req, res) => {
     `, [
       userName, userPhone, guestCount, eventDate,
       JSON.stringify(orderMenu), totalPrice, shippingDate, email,
-      event_location, address, shippingCost, serviceCost, toolsType,eventType
+      event_location, address, shippingCost, serviceCost, toolsType, eventType
     ]);
 
-    // שולח מיילים ברקע
+    // שליחת מיילים ברקע
     (async () => {
       try {
         const templatePath = path.join(__dirname, 'templates', 'orderEmailTemplate.html');
@@ -553,23 +556,17 @@ app.post('/api/addOrdersOnline', async (req, res) => {
           .replace('{{serviceCost}}', serviceCost)
           .replace('{{toolsType}}', toolsType);
 
-        const transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: 'hpnina6600200@gmail.com',
-            pass: 'qdzk clql ysys mnrl',
-          },
-        });
-
-        await transporter.sendMail({
-          from: 'hpnina6600200@gmail.com',
+        // מייל ללקוח
+        await resend.emails.send({
+          from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
           to: email,
           subject: 'הזמנתך התקבלה בהצלחה',
           html: emailTemplate,
         });
 
-        await transporter.sendMail({
-          from: 'hpnina6600200@gmail.com',
+        // מייל למנהל
+        await resend.emails.send({
+           from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
           to: 'elyasaf852@gmail.com',
           subject: 'התקבלה הזמנה חדשה באתר',
           html: `
@@ -581,18 +578,18 @@ app.post('/api/addOrdersOnline', async (req, res) => {
           `
         });
 
-        console.log('המיילים נשלחו בהצלחה');
+        console.log('✔ המיילים נשלחו בהצלחה דרך Resend');
 
       } catch (mailErr) {
-        console.error('שגיאה בשליחת המיילים:', mailErr);
+        console.error('❌ שגיאה בשליחת המיילים דרך Resend:', mailErr);
       }
     })();
 
     await new Promise(resolve => setTimeout(resolve, 4000));
-    res.status(200).json({ message: 'נשלח בהצלחה'});
+    res.status(200).json({ message: 'נשלח בהצלחה' });
 
   } catch (err) {
-    console.error('שגיאה בשליחה הזמנות אונליין', err);
+    console.error('❌ שגיאה בשליחה הזמנות אונליין', err);
     res.status(500).json({ error: 'בעיה בשליחת ההזמנה או המיילים' });
   }
 });
@@ -753,7 +750,6 @@ app.put('/api/KitchenOrder/updateDish',authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'שגיאה בשרת בעת עדכון המנה בתפריט' });
   }
 });
-
 // עדכון פרטים כלליים של ההזמנה לפי user_id
 app.put('/api/KitchenOrder/updateOrderDetails', authenticateToken, async (req, res) => {
   const { user_id, shippingCost, serviceCost, toolsType, totalPrice } = req.body;
@@ -1111,8 +1107,6 @@ app.post('/api/contact', async (req, res) => {
     res.status(500).json({ message: 'שגיאה בשמירת ההודעה' });
   }
 });
-
-
 //------------- קבלת הודעות למנהל-------------------------------------------
 app.get('/api/getMessages',authenticateToken, async (req, res) => {
   try {
@@ -1178,8 +1172,7 @@ app.post("/api/forgotPassword", async (req, res) => {
     console.error(err);  // הדפסת שגיאה לקונסול אם יש בעיות
     return res.status(500).json({ success: false, message: "שגיאה בתהליך." });
   }});
-
-//--------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // שלב 2: אימות קוד לשחזור סיסמה
 app.post("/api/verifyCode", async (req, res) => {
   const { email, verificationCode } = req.body;
@@ -1200,7 +1193,6 @@ app.post("/api/verifyCode", async (req, res) => {
     return res.status(500).json({ success: false, message: "שגיאה בתהליך האימות." });
   }
 });
-
 //-------------שלב 3 סיסמה חדשה ללקוח --------------------------------------------------
 app.post("/api/changePassword", async (req, res) => {
   const { email, newPassword } = req.body;
@@ -1227,86 +1219,59 @@ app.post("/api/changePassword", async (req, res) => {
 
 
         /* מיילים ללקוח והמטבח */
-//--------------מייל ללקוח -------------------------------------------------------------        
-const sendOrderEmailToCustomer = async (orderHTML, customerEmail) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',  // אם אתה משתמש ב-Gmail, או סוכן מייל אחר
-    auth: {
-      user: "hpnina6600200@gmail.com",  // כתובת המייל שלך
-      pass: "ycxt oeyj ojha xvyt",    // סיסמה או App Password
-    }
-  });
-  // הגדרת פרטי המייל
-  const mailOptions = {
-    user: "hpnina6600200@gmail.com",
-    to: customerEmail,
-    subject: 'סיכום הזמנתך מקייטרינג הפנינה',
-    html: orderHTML,
-    attachments: [
-      {
-        filename: 'logo.png',
-        path: './imgs/logo.jpg',  // או כתובת URL אם זה משרת ציבורי
-        cid: 'logo' 
-      },
-    ],
-  };
-  // שליחה של המייל
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Mail sent: ' + info.response);
-  } catch (error) {
-    console.error('Error sending email:', error);
-  }
-};
-// פונקציה לשליחת הזמנה למייל של הלקוח
-app.post('/api/sendOrderToCustomer', (req, res) => {
-  const { customerEmail, orderHTML } = req.body; 
-  sendOrderEmailToCustomer(orderHTML, customerEmail)
-    .then(() => {
-      res.status(200).send('הזמנה נשלחה בהצלחה!');
-    })
-    .catch((error) => {
-      res.status(500).send('שגיאה בשליחת המייל.');
-    });
-});
+//--------------מייל ללקוח -------------------------------------------------------------       
 
+app.post('/api/sendOrderToCustomer', async (req, res) => {
+  const { customerEmail, orderHTML } = req.body;
+
+  try {
+    await resend.emails.send({
+      from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
+      to: customerEmail,
+      subject: 'סיכום הזמנתך מקייטרינג הפנינה',
+      html: orderHTML,
+    });
+
+    res.status(200).send('ההזמנה נשלחה בהצלחה ללקוח!');
+  } catch (error) {
+    console.error('שגיאה בשליחת מייל ללקוח:', error);
+    res.status(500).send('שגיאה בשליחת מייל ללקוח');
+  }
+});
 //-----------------מייל למטבח ----------------------------------------------
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });  // הגדרת מקלט הקבצים (בכדי לשמור את הקבצים שהלקוח שולח)
-const transporter = nodemailer.createTransport({
-  service: 'gmail', 
-  auth: {
-    user: "hpnina6600200@gmail.com",  
-    pass: "ycxt oeyj ojha xvyt",    
+
+app.post('/api/sendOrderToKitchen', upload.single('file'), async (req, res) => {
+  const { recipient, message } = req.body;
+  const file = req.file;
+
+  try {
+    const pdfData = fs.readFileSync(file.path).toString('base64');
+
+    await resend.emails.send({
+     from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
+      to: recipient,
+      subject: 'סיכום הזמנה למטבח',
+      text: `הזמנה מצורפת כקובץ PDF.\n\nהערת מנהל:\n${message}`,
+      attachments: [
+        {
+          filename: file.originalname,
+          content: pdfData,
+          contentType: 'application/pdf',
+        }
+      ]
+    });
+
+    // מחיקת הקובץ מהשרת
+    fs.unlinkSync(file.path);
+
+    res.status(200).send('ההזמנה נשלחה בהצלחה למטבח!');
+  } catch (error) {
+    console.error('שגיאה בשליחת מייל למטבח:', error);
+    res.status(500).send('שגיאה בשליחת מייל למטבח');
   }
 });
-
-app.post('/api/sendOrderToKitchen', upload.single('file'), (req, res) => {
-  const file = req.file;
-  const recipient = req.body.recipient;
- const message = req.body.message || ''; // המלל במייל של המטבח
- 
-  const mailOptions = {
-    from: 'hpnina6600200@gmail.com',
-    to: recipient,
-    subject: 'סיכום הזמנה למטבח',
-    text: `הזמנה מצורפת כקובץ PDF.\n\nהערת מנהל:\n${message}`,
-    attachments: [
-      {
-        filename: file.originalname,
-        path: file.path,
-      },
-    ],
-  };
-  // שליחת המייל
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).send('Error sending email');
-    }
-    res.status(200).send('Order sent to kitchen successfully');
-  });
-});
-
 
 
 

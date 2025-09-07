@@ -671,6 +671,9 @@ let content = `
       setOpenSnackbar(true);
     }
   };
+
+
+  
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };

@@ -13,7 +13,11 @@ const path = require('path');
 require('dotenv').config(); // למעלה בתחילת הקובץ
 
 app.use(cors({
-  origin: ["https://cateringhapnina.netlify.app","http://localhost:3000"], // הלקוח שלך
+  origin: [
+    "https://cateringhapnina.netlify.app",
+    "https://cateringhapnina.co.il",   // הדומיין החדש שלך
+    "http://localhost:3000"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -1440,11 +1444,10 @@ app.delete('/api/deleteImage/:public_id',authenticateToken, async (req, res) => 
 };
 startServer(); // הפעלה
 
-   // ✅ ואז מאזין
-    const PORT = process.env.PORT || 3001;
- app.listen(PORT, () => {
-      console.log(`🚀 השרת רץ על פורט ${PORT}`);
-    });
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 השרת רץ על פורט ${PORT}`);
+});
 
 
 

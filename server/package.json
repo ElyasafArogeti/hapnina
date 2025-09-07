@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node my_server.js",
-   "heroku-postbuild": "cd client && npm install && npm run build"
-
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -19,7 +18,8 @@
     "mysql2": "^3.11.3",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.16",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "resend": "^6.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

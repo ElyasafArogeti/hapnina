@@ -26,7 +26,6 @@ app.use(cors({
   credentials: true
 }));
 
-console.log("🔑 Resend API KEY:", process.env.RESEND_API_KEY);
 
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 

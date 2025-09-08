@@ -10,11 +10,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const fs = require('fs');
 const path = require('path');
-const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-
 require('dotenv').config(); 
+
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(cors({
   origin: [
@@ -26,6 +26,7 @@ app.use(cors({
   credentials: true
 }));
 
+console.log("🔑 Resend API KEY:", process.env.RESEND_API_KEY);
 
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");
 

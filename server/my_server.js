@@ -12,6 +12,8 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config(); 
 
+global.Headers = require('node-fetch').Headers;
+
 const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);

@@ -12,7 +12,9 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config(); 
 
-global.Headers = require('node-fetch').Headers;
+const { Headers } = require('undici');
+global.Headers = Headers;
+
 
 const { Resend } = require('resend');
 

@@ -17,6 +17,7 @@ global.Headers = Headers;
 
 
 const { Resend } = require('resend');
+console.log("Running on Node:", process.version);
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 console.log(process.env.RESEND_API_KEY);

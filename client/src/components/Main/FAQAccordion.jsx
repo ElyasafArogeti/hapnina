@@ -91,7 +91,6 @@ export default function FAQAccordion() {
     שאלות ותשובות
   </Typography>
 
-  {/* אנימציית ריחוף */}
   <style>
     {`
       @keyframes fadeInUp {

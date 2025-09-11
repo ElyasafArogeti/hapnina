@@ -76,7 +76,7 @@ export default function FAQAccordion() {
     overflow: 'hidden',
   }}
 >
-  {/* טקסט עם ריחוף */}
+
   <Typography
     variant="h3"
     sx={{
@@ -106,7 +106,6 @@ export default function FAQAccordion() {
     `}
   </style>
 </Box>
-
 
 
 

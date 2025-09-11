@@ -1,4 +1,4 @@
-
+import  { useState ,useEffect} from 'react';
 import TextMove from "../Main/textMove";
 import NavbarHome from "../Main/NavbarHome";
 import { Typography, List,  ListItemText } from "@mui/material";
@@ -57,6 +57,10 @@ const images = [
 ];
 
 const Home = () => {
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+
+
   return (
     <Box className={styles.mainHome}>
       <NavbarHome/><br/><br/><br/><br/>
@@ -72,13 +76,31 @@ const Home = () => {
     position: "relative",
   }}
 >
-  {/* הווידאו */}
+  {/* תמונה – תוצג רק כשהווידאו עדיין לא מוכן */}
+  {!videoLoaded && (
+    <img
+      src="https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0131_ugknys.jpg"
+      alt="טעינה..."
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 0,
+      }}
+    />
+  )}
+
+  {/* ווידאו – תמיד קיים, אבל מוסתר עד שיטען */}
   <video
     autoPlay
     muted
     loop
     playsInline
     preload="auto"
+    onCanPlayThrough={() => setVideoLoaded(true)}
     style={{
       width: "100%",
       height: "100%",
@@ -86,14 +108,18 @@ const Home = () => {
       position: "absolute",
       top: 0,
       left: 0,
+      zIndex: 1,
+      opacity: videoLoaded ? 1 : 0,
+      transition: "opacity 0.6s ease-in-out",
     }}
   >
     <source
       src="https://res.cloudinary.com/dhkegagjk/video/upload/q_auto,f_auto/v1752406326/%D7%A1%D7%A8%D7%98%D7%95%D7%9F_%D7%93%D7%A3_%D7%94%D7%91%D7%99%D7%AA_dbzqoz.mp4"
       type="video/mp4"
     />
-    Your browser does not support the video tag.
+    הדפדפן שלך אינו תומך בסרטון.
   </video>
+
 
   {/* שכבת כהות */}
   <Box

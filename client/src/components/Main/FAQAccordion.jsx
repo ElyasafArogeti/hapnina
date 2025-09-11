@@ -52,7 +52,9 @@ const faqs = [
 
 
 export default function FAQAccordion() {
+
   return (
+
     <Box sx={{ backgroundColor: '#f9f9f9', width: '100%', direction: 'rtl'  }}>
      <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br /> <br /> <br /><br />
@@ -61,7 +63,7 @@ export default function FAQAccordion() {
 <Box
   sx={{
     height: 400,
-    backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("https://res.cloudinary.com/dhkegagjk/image/upload/v1757238612/%D7%A9%D7%90%D7%9C%D7%95%D7%AA_%D7%95%D7%AA%D7%A9%D7%95%D7%91%D7%95%D7%AA_mp0usm.jpg")`,
+    backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("https://res.cloudinary.com/dhkegagjk/image/upload/v1757592341/%D7%A9%D7%90%D7%9C%D7%95%D7%AA_%D7%95%D7%AA%D7%A9%D7%95%D7%91%D7%95%D7%AA_hsdur3.jpg")`,
     backgroundSize: 'cover',
     backgroundPosition: 'top center',
     backgroundRepeat: 'no-repeat',

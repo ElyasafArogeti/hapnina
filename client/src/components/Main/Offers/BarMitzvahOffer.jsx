@@ -120,6 +120,7 @@ const BarMitzvahOffer = () => {
             <Button
               variant="contained"
               color="warning"
+              translate="no"
               onClick={handleClick}
               sx={{ borderRadius: 8, px: 4, py: 1, fontWeight: "bold" }}
             >

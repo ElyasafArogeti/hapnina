@@ -494,7 +494,11 @@ const createOrderSummary = () => {
 
       
       </Container>
-      <Footer />
+     
+  <Box
+      dir="rtl">
+    <Footer /> 
+      </Box>
 
       {/* מודל פרטי לקוח */}
  <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>

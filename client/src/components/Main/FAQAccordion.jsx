@@ -17,34 +17,43 @@ import TextMove from './textMove';
 
 const faqs = [
   {
+       id: '1',
     question: 'רכשתי באתר ומשהו לא תקין בהזמנה, מה עושים?',
-    answer: 'פנה לשירות הלקוחות שלנו עם פרטי ההזמנה ונשמח לעזור!',
+answer: 'פנה לשירות הלקוחות שלנו עם פרטי ההזמנה ונשמח לעזור! ניתן ליצור קשר בטלפון: 054-8520195',
+
   },
   {
+      id: '2',
     question: 'מה הכשרות שלכם?',
     answer: 'האוכל בכשרות בד"ץ "יורה דעה" של הרב מחפוד שליט"א.',
   },
   {
+      id: '3',
     question: 'כמה זמן מראש צריך לתאם הזמנה?',
     answer: 'יש לתאם את ההזמנה עד שלושה ימים מראש (72- שעות לפני מועד האירוע).',
   },
   {
+      id: '4',
     question: 'מה קורה אם חסר מוצר ממה שהזמנתי?',
     answer: 'השליח עובר על ההזמנה עם הלקוח. במקרה של חוסר – עליו לדאוג ולטפל במקום בפתרון הבעיה מול הלקוח.',
   },
   {
+      id: '5',
     question: 'לאילו אזורים אתם עושים משלוחים ומה העלות?',
     answer: 'אנחנו עושים משלוחים מאזור הדרום (באר שבע) ועד אזור הרצליה, כפר סבא, צפון רמת השרון. עלות המשלוח תיקבע בהתאם לאזור.',
   },
   {
+      id: '6',
     question: 'האם ניתן לבצע שינויים בהזמנה אחרי שבוצעה?',
     answer: 'בוודאי. ניתן ליצור קשר עם הנציג שלנו במספר: 054-8520195 ולקבל שירות אישי לביצוע שינויים, הוספות, מחיקות או עריכה של התפריט – כל עוד זה לא מאוחר מ-3 ימים לפני ההזמנה.',
   },
   {
+      id: '7',
     question: 'מה צריך לעשות לקראת האירוע?',
     answer: 'שום דבר! אנו ניצור איתכם קשר מבעוד מועד כדי לוודא שהכול מוכן ושתקבלו אירוע או קייטרינג ברמה הגבוהה ביותר.',
   },
   {
+      id: '8',
     question: 'האם יש לכם גם מנות צמחוניות?',
     answer: 'בהחלט. ניתן להזמין מנות צמחוניות בתיאום מראש עם שירות הלקוחות שלנו.',
   },
@@ -52,8 +61,23 @@ const faqs = [
 
 
 export default function FAQAccordion() {
+const [expandedId, setExpandedId] = React.useState(null);
+React.useEffect(() => {
+  const hash = window.location.hash?.replace('#', '');
+  if (hash) {
+    setExpandedId(hash);
+    const el = document.getElementById(hash);
+    if (el) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100); // טיפה לחכות ל-render
+    }
+  }
+}, []);
+
 
   return (
+
 
     <Box sx={{ backgroundColor: '#f9f9f9', width: '100%', direction: 'rtl'  }}>
      <NavbarHome sx={{ padding: 0, margin: 0 }} />
@@ -110,43 +134,40 @@ export default function FAQAccordion() {
 
 
       <Container maxWidth="md" sx={{ mt: 6, mb: 8 }}>
-        {faqs.map((faq, index) => (
-          <Accordion
-            key={index}
-            sx={{
-              backgroundColor: index % 2 === 0 ? '#f5f5f5' : '#ffffff',
-              boxShadow: 2,
-              borderRadius: 1,
-              mb: 2,
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                boxShadow: 4,
-              },
-            }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon sx={{ flexDirection: 'row-reverse' }} />}
-            >
-              <Typography
-                sx={{
-                  flexGrow: 1,
-                  fontWeight: 600,
-                  textAlign: 'right',
-                }}
-              >
-                {faq.question}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography
-                color="text.secondary"
-                sx={{ textAlign: 'center' }}
-              >
-                {faq.answer}
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+  {faqs.map((faq, index) => (
+  <Accordion
+    key={faq.id}
+    id={faq.id}
+    expanded={expandedId === faq.id}
+    onChange={() => setExpandedId(expandedId === faq.id ? null : faq.id)}
+    sx={{
+      backgroundColor: expandedId === faq.id ? '#e0f7fa' : (index % 2 === 0 ? '#f5f5f5' : '#ffffff'),
+      boxShadow: 2,
+      borderRadius: 1,
+      mb: 2,
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        boxShadow: 4,
+      },
+    }}
+  >
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon sx={{ flexDirection: 'row-reverse' }} />}
+    >
+      <Typography sx={{ flexGrow: 1, fontWeight: 600, textAlign: 'right' }}>
+        {faq.question}
+      </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      <Typography color="text.secondary" sx={{ textAlign: 'center' }}>
+        {faq.answer}
+      </Typography>
+    </AccordionDetails>
+  </Accordion>
+))}
+
+
+
       </Container>
 
       <Footer />

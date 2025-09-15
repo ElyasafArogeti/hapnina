@@ -162,13 +162,13 @@ const Contact = () => {
           <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>
             <LocationOn sx={{ fontSize: 28, color: '#0072e3' }} />
             <Typography variant="body1" sx={{ fontSize: '1rem' }}>
-              רחוב מפעל הש"ס 1, ביתר עלית
+             מושב עין צורים 
             </Typography>
           </Box>
 
           <Box display="flex" gap={2} mt={2}>
             <IconButton
-              href="tel:+972548520195"
+              href="tel:+972546600200"
               target="_blank"
               sx={{
                 backgroundColor: '#0072e3',
@@ -269,19 +269,20 @@ const Contact = () => {
       </Alert>
     </Snackbar>
 
-    {/* מפה */}
-    <Box mt={6} sx={{ height: { xs: '250px', md: '400px' }, borderRadius: '8px', overflow: 'hidden', border: '1px solid #ddd' }}>
-      <iframe
-        title="Google Maps Location"
-        src="https://maps.app.goo.gl/C1zH9NBJQYeXX3zm8"
-        width="100%"
-        height="100%"
-        style={{ border: 0 }}
-        allowFullScreen=""
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      ></iframe>
-    </Box>
+    
+<Box mt={6} sx={{ height: { xs: '250px', md: '400px' }, borderRadius: '8px', overflow: 'hidden', border: '1px solid #ddd' }}>
+  <iframe
+    title="Google Maps Location"
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6789.47304859471!2d34.72337790805809!3d31.69576999653626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150297a61e7a2fb7%3A0x99cd903c2851860e!2z16LXmdefINem15XXqNeZ150!5e0!3m2!1siw!2sil!4v1757920022554!5m2!1siw!2sil"
+    width="100%"
+    height="100%"
+    style={{ border: 0 }}
+    allowFullScreen=""
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  ></iframe>
+</Box>
+
   </Container>
 
   <Footer />

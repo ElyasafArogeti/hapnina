@@ -58,7 +58,8 @@ const WeddingOffer = () => {
             </Typography>
           </Box>
 
-        <Typography variant="h6" gutterBottom fontSize="1.2rem">
+        <Typography variant="h6" translate="no" gutterBottom fontSize="1.2rem">
+
                   תפריט עשיר ויוקרתי , הצעת מחיר במקום 
                   </Typography>
         
@@ -73,6 +74,7 @@ const WeddingOffer = () => {
             <Button
               variant="contained"
               color="error"
+              translate="no"
               onClick={() => navigate("/OrdersOnline")}
               sx={{ borderRadius: 8, px: 4, py: 1, fontWeight: "bold" }}
             >

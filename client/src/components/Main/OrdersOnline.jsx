@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import dayjs from 'dayjs';
 // import html2pdf from 'html2pdf.js';
-
+import Footer from './Footer';
 import  Grid  from '@mui/material/Grid2';
 import { Card, CardContent, CardMedia, Checkbox } from "@mui/material";
 
@@ -584,6 +584,7 @@ return (
     <Typography
       variant="h3"
       component="h1"
+      translate="no"
       sx={{
         position: "absolute",
         top: "50%",
@@ -1114,7 +1115,7 @@ return (
 
 
 
-
+ 
    {/* כפתור סיכום הזמנה */}
         <div className="order-summary-container">
         <br />
@@ -1123,7 +1124,10 @@ return (
         </button>
         <br />
         <br />
+    
+      
       </div>
+
 
       </div>
 
@@ -1192,7 +1196,7 @@ return (
 
 
 
-  </div>
+  </div> 
      )}
 
 
@@ -1798,8 +1802,15 @@ return (
 )}
 
 
+  <Box
+      dir="rtl">
+    <Footer /> 
+      </Box>
+ 
+
 
    </div>
+
  )}
 
 

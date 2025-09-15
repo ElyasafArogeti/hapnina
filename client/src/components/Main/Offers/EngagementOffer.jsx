@@ -120,6 +120,8 @@ const EngagementOffer = () => {
             <Button
               variant="contained"
               color="error"
+              translate="no"
+
               onClick={handleClick}
               sx={{ borderRadius: 8, px: 4, py: 1, fontWeight: "bold" }}
             >

@@ -58,7 +58,7 @@ let connection;
   {
     email: "ely6600200@gmail.com",
     userName: "אלי ארוגטי",
-    password: bcrypt.hashSync("1234", 10), // סיסמה מוצפנת
+    password: bcrypt.hashSync("Aa135923", 10), // סיסמה מוצפנת
   },];
  const isManager = (userName) => managers.some((m) => m.userName === userName);
 
@@ -563,9 +563,10 @@ app.post('/api/addOrdersOnline', async (req, res) => {
           .replace('{{serviceCost}}', serviceCost)
           .replace('{{toolsType}}', toolsType);
 
+         console.log("מייל לקוח שהזמין " , email);
         // מייל ללקוח
         await resend.emails.send({
-          from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
+        from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
           to: email,
           subject: 'הזמנתך התקבלה בהצלחה',
           html: emailTemplate,
@@ -573,7 +574,7 @@ app.post('/api/addOrdersOnline', async (req, res) => {
 
         // מייל למנהל
         await resend.emails.send({
-           from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
+          from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
           to: 'elyasaf852@gmail.com',
           subject: 'התקבלה הזמנה חדשה באתר',
           html: `
@@ -585,7 +586,7 @@ app.post('/api/addOrdersOnline', async (req, res) => {
           `
         });
 
-        console.log('✔ המיילים נשלחו בהצלחה דרך Resend');
+        console.log('✔ המיילים נשלחו בהצלחה ');
 
       } catch (mailErr) {
         console.error('❌ שגיאה בשליחת המיילים דרך Resend:', mailErr);
@@ -1233,7 +1234,7 @@ app.post('/api/sendOrderToCustomer', async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
+    from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
       to: customerEmail,
       subject: 'סיכום הזמנתך מקייטרינג הפנינה',
       html: orderHTML,
@@ -1245,6 +1246,7 @@ app.post('/api/sendOrderToCustomer', async (req, res) => {
     res.status(500).send('שגיאה בשליחת מייל ללקוח');
   }
 });
+
 //-----------------מייל למטבח ----------------------------------------------
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });  // הגדרת מקלט הקבצים (בכדי לשמור את הקבצים שהלקוח שולח)
@@ -1257,7 +1259,7 @@ app.post('/api/sendOrderToKitchen', upload.single('file'), async (req, res) => {
     const pdfData = fs.readFileSync(file.path).toString('base64');
 
     await resend.emails.send({
-     from: 'קייטרינג הפנינה <info@cateringhapnina.co.il>',
+     from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
       to: recipient,
       subject: 'סיכום הזמנה למטבח',
       text: `הזמנה מצורפת כקובץ PDF.\n\nהערת מנהל:\n${message}`,

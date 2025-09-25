@@ -321,7 +321,7 @@ const editOrderDetails = (order) => {
       shippingCost: order.shipping_cost,
       serviceCost: order.service_cost,
       toolsType: order.tools_type,
-      eventType: order.event_type
+       eventType: order.event_type
     }
   });
 };

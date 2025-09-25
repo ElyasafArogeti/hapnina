@@ -77,7 +77,7 @@ try {
 
   connection = pool; // 🪄 שומר את אותו שם כמו קודם
   app.locals.db = pool;
-
+  
   console.log("✅ ⭕ Connected to the database!");
 
   // 🧪 בדיקה
@@ -574,17 +574,20 @@ app.post('/api/addOrdersOnline', async (req, res) => {
 
         // מייל למנהל
         await resend.emails.send({
-          from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
-          to: 'elyasaf852@gmail.com',
-          subject: 'התקבלה הזמנה חדשה באתר',
-          html: `
+        from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
+        to: 'elyasaf852@gmail.com',
+        subject: 'התקבלה הזמנה חדשה באתר',
+         html: `
+          <div style="direction: rtl; text-align: right; font-family: Arial, sans-serif;">
             <h2>התקבלה הזמנה חדשה באתר</h2>
-            <p>שם הלקוח: ${userName}</p>
-            <p>טלפון: ${userPhone}</p>
-            <p>תאריך האירוע: ${eventDate}</p>
-            <p>סכום כולל: ₪${totalPrice}</p>
-          `
-        });
+            <p><strong>שם הלקוח:</strong> ${userName}</p>
+            <p><strong>טלפון:</strong> ${userPhone}</p>
+            <p><strong>תאריך האירוע:</strong> ${eventDate}</p>
+            <p><strong>סכום כולל:</strong> ₪${Number(totalPrice).toFixed(2)}</p>
+          </div>
+        `
+       });
+
 
         console.log('✔ המיילים נשלחו בהצלחה ');
 
@@ -1236,7 +1239,7 @@ app.post('/api/sendOrderToCustomer', async (req, res) => {
     await resend.emails.send({
     from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
       to: customerEmail,
-      subject: 'סיכום הזמנתך מקייטרינג הפנינה',
+      subject: 'קבלה שלך מקייטרינג הפנינה ',
       html: orderHTML,
     });
 
@@ -1259,18 +1262,24 @@ app.post('/api/sendOrderToKitchen', upload.single('file'), async (req, res) => {
     const pdfData = fs.readFileSync(file.path).toString('base64');
 
     await resend.emails.send({
-     from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
-      to: recipient,
-      subject: 'סיכום הזמנה למטבח',
-      text: `הזמנה מצורפת כקובץ PDF.\n\nהערת מנהל:\n${message}`,
-      attachments: [
-        {
-          filename: file.originalname,
-          content: pdfData,
-          contentType: 'application/pdf',
-        }
-      ]
-    });
+  from: 'קייטרינג הפנינה <orders@cateringhapnina.co.il>',
+  to: recipient,
+  subject: 'סיכום הזמנה למטבח',
+  html: `
+    <div dir="rtl" style="text-align: right; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4;">
+      <p>הזמנה מצורפת כקובץ PDF.</p>
+      ${message ? `<p><strong>הערת מנהל:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>` : ''}
+    </div>
+  `,
+  attachments: [
+    {
+      filename: file.originalname,
+      content: pdfData,
+      contentType: 'application/pdf',
+    }
+  ]
+});
+
 
     // מחיקת הקובץ מהשרת
     fs.unlinkSync(file.path);

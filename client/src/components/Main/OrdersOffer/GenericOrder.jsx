@@ -430,7 +430,7 @@ const createOrderSummary = () => {
         fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
       }}
     >
-      שימו לב: מינימום הזמנה 30 מנות! / שליש מכל סוג
+      -  שימו לב: מינימום הזמנה 30 מנות! / שליש מכל סוג
     </Typography>
 
     <Typography
@@ -444,6 +444,7 @@ const createOrderSummary = () => {
     >
      מחיר למנה - {pricePerDish} ש"ח
     </Typography>
+
   </Typography>
          </Box>
 

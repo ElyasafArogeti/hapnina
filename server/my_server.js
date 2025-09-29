@@ -558,7 +558,7 @@ app.post('/api/addOrdersOnline', async (req, res) => {
           .replace('{{userName}}', userName)
           .replace('{{eventDate}}', eventDate)
           .replace('{{guestCount}}', guestCount)
-          .replace('{{totalPrice}}', totalPrice)
+          .replace('{{totalPrice}}', totalPrice.toFixed(2))
           .replace('{{shippingCost}}', shippingCost)
           .replace('{{serviceCost}}', serviceCost)
           .replace('{{toolsType}}', toolsType);

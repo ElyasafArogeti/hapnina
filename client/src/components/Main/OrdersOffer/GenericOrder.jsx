@@ -213,7 +213,6 @@ const validateSelectionLimits = () => {
     const orderSummary = createOrderSummary();
 
     const total = pricePerDish * guestCount ;
-    console.log(total);
     
     
 

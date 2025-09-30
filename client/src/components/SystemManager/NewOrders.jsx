@@ -49,81 +49,142 @@ const NewOrders = () => {
         };
         fetchInventoryAll(); 
     }, []);
+const formatDisplayWeight = (weight, dishWeight) => {
+  // dishWeight === משקל של מנה אחת מהדאטהבייס
+  const isUnits = dishWeight > 0 && dishWeight < 2;
+
+  if (isUnits) return `${weight} מנות`;
+  if (weight >= 1000) return `${(weight / 1000).toFixed(2)} ק"ג`;
+  return `${parseInt(weight)} גרם`;
+};
 
     const handleOrderSummary = () => {   
-        let total = 0;   
-                      //  סלטים 
-        const selectedSaladsData = selectedSalads.map((id) => {
-            const salad = inventoryAll.salads[id-1];  // ממסד הנתונים       
-            const totalPrice = salad.weight * salad.price / 1000 * guestCount;
-            const totalWeight = salad.weight * guestCount;
-            total += totalPrice;
-            return {
-                dish_name: salad.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: totalWeight.toFixed(2)
-            };
+    
+        let total = 0;
+  
+           const roundWeight = (weight) => {
+         return weight < 500 ? weight : Math.ceil(weight / 500) * 500;
+       };
+    
+        // סלטים
+         const selectedSaladsData = selectedSalads.map((id) => {
+          const salad = inventoryAll.salads.find(d => Number(d.id) === Number(id));
+           if (!salad) {
+             console.warn("Salad not found for id:", id);
+             return null; // או להמשיך בלי לחשב
+           }
+           const pricePerKg = Number(salad.price);       // מחיר בשקלים לקילו
+           const weightPerGuest = Number(salad.weight);  // משקל בגרם לאדם
+
+             const totalWeight = roundWeight(weightPerGuest * guestCount); // סה"כ משקל לכל המוזמנים
+             const totalPrice = (totalWeight / 1000) * pricePerKg;         // מחיר = ק"ג * מחיר לק"ג
+
+            total += totalPrice;       
+           return {
+  dish_name: salad.dish_name,
+  totalPrice: totalPrice.toFixed(2),
+  totalWeight: Number(totalWeight).toFixed(2),
+  dishWeight: salad.weight  // הוספה חשובה!
+};
+
         });
-                //מנה ראשונה
-        const selectedFirstDishesData = selectedFirstDishes.map((dish) => {
-            const firstDish = inventoryAll.first_courses.find(d => d.id === dish.id);
-            let totalPrice = 0 ;
-            let totalWeight = 0 ; 
-            if(firstDish.weight > 0 && firstDish.weight < 2) {   // משווה לפי יחידות מנה        
-                totalPrice = dish.value  *  firstDish.price; 
-                totalWeight = dish.value;                
-          }else {  // משווה לפי גרם מנה 
-            totalPrice = (dish.value * firstDish.weight) / 1000 * firstDish.price; 
-            totalWeight = dish.value; 
+    
+        //מנה ראשונה
+        const selectedFirstDishesData = selectedFirstDishes.map((id) => {
+            const firstDish = inventoryAll.first_courses.find(d => d.id === id);
+            if (!firstDish) {
+            console.warn("firstDish not found for id:", id);
+            return null; // או להמשיך בלי לחשב
+            }
+            let totalPrice = 0;
+            let totalWeight = 0;
+            if (firstDish.weight > 0 && firstDish.weight < 2) { // יחידות
+                totalPrice = firstDish[id] * firstDish.price;
+                totalWeight = firstDish[id];
+            } else {
+                totalWeight = roundWeight(firstDish[id] * firstDish.weight);
+                totalPrice = (totalWeight * firstDish.price / 1000);  
+            }
+            total += totalPrice;
+                      return {
+  dish_name: firstDish.dish_name,
+  totalPrice: totalPrice.toFixed(2),
+  totalWeight: Number(totalWeight).toFixed(2),
+  dishWeight: firstDish.weight  // הוספה חשובה!
+};
+        });
+    
+        //מנה עיקרית
+        const selectedMainDishesData = selectedMainDishes.map((id) => {
+            const mainDish = inventoryAll.main_courses.find(d => d.id === id);
+            if (!mainDish) {
+             console.warn("mainDish not found for id:", id);
+             return null; // או להמשיך בלי לחשב
+          }
+            const noRoundWeightMainDishIds = [3, 8, 11,12, 28 ,29]; // לדוג' פרגית ממולא, אסאדו, צלי וכו'
+
+            let totalPrice = 0;
+            let totalWeight = 0;
+            if (mainDish.weight > 0 && mainDish.weight < 2) { 
+                 // מנות לפי יחידות
+                totalPrice = mainDish[id] * mainDish.price;
+                totalWeight = mainDish[id];
+            } else {
+            // מנות לפי גרם
+            const rawWeight = mainDish[id] * mainDish.weight;
+
+            if (noRoundWeightMainDishIds.includes(Number(mainDish.id))) {
+              totalWeight = rawWeight; // לא נעגל
+            } else {
+              totalWeight = roundWeight(rawWeight); // כן נעגל
+            }
+
+            totalPrice = totalWeight * mainDish.price / 1000;
           }
             total += totalPrice;
-            return {
-                dish_name: firstDish.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: totalWeight
-            };
+                     return {
+  dish_name: mainDish.dish_name,
+  totalPrice: totalPrice.toFixed(2),
+  totalWeight: Number(totalWeight).toFixed(2),
+  dishWeight: mainDish.weight  // הוספה חשובה!
+};
         });
-                  //  מנות עיקריות 
-        const selectedMainDishesData = selectedMainDishes.map((dish) => {
-            const mainDish = inventoryAll.main_courses.find(d => d.id === dish.id);
-            let totalPrice = 0 ;
-            let totalWeight = 0 ;
-            if(mainDish.weight > 0 && mainDish.weight < 2) { // אם זה לפי יחידות 
-            totalPrice = dish.value * mainDish.price;
-            totalWeight = dish.value;
-           } else {
-            totalPrice =(dish.value * mainDish.weight) / 1000 * mainDish.price; 
-            totalWeight = dish.value; 
-           }  
-            total += totalPrice;
-            return {
-                dish_name: mainDish.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: totalWeight
-            };
-        });
-                  //  תוספות 
+    
+        // תוספות
         const selectedSidesData = selectedSides.map((id) => {
-            const Sides = inventoryAll.side_dishes[id-1];
-            const totalPrice = Sides.weight * Sides.price / 1000 * guestCount;
-             const totalWeight = Sides.weight * guestCount;
+         const side = inventoryAll.side_dishes.find(d => Number(d.id) === Number(id));
+         if (!side) return null;
+            const totalWeight = roundWeight(side.weight * guestCount ); // עיגול המשקל
+            const totalPrice = totalWeight * side.price / 1000;
             total += totalPrice;
-            return {
-                dish_name: Sides.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: totalWeight.toFixed(2)
-            };
-        });
-            // אובייקט סיכום הזמנה לאחר חישוב
+                      return {
+  dish_name: side.dish_name,
+  totalPrice: totalPrice.toFixed(2),
+  totalWeight: Number(totalWeight).toFixed(2),
+  dishWeight: side.weight  // הוספה חשובה!
+};
+        }).filter(Boolean);
+    
+
         const selectedItems = {
             salads: selectedSaladsData,
             first_courses: selectedFirstDishesData,
             main_courses: selectedMainDishesData,
             side_dishes: selectedSidesData
         };
-             
-        setTotalPrice(total.toFixed(2)); // עדכון המחיר הכולל
 
+        // הוספת רווח של 40%
+          const profitRate = 0.4; // 40%
+          const profitAmount = total * profitRate; // שיעור רווח 
+          total += profitAmount; // הוספת הרווח
+    
+
+        const vatRate = 0.18; // מחיר המעם בישראל 
+
+     
+        const vatAmount = total * vatRate; // סכום מע״מ בלבד
+       const totalWithVAT = total + vatAmount; // כולל מע״מ
+         setTotalPrice(totalWithVAT.toFixed(2));
         setOrderSummary(selectedItems);//עדכון סיכום הזמנה
         setClosingOrderSummary(selectedItems);//עדכון סגירת הזמנה 
         setOrderDisplay(false);  // תצוגת מסך ההזמנה 
@@ -427,9 +488,7 @@ const NewOrders = () => {
                             <td>{item.dish_name}</td>
                             <td className="order-summary-weight">₪ {item.totalPrice}</td>
                             <td className="order-summary-weight">
-                                {item.totalWeight > 1000 
-                                    ? `${(item.totalWeight / 1000).toFixed(2)} קילו` 
-                                    : `${parseInt(item.totalWeight)} מנות`}
+                               {formatDisplayWeight(item.totalWeight, item.dishWeight)}
                             </td>
                         </tr>
                     ))}

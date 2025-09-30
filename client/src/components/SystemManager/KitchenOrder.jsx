@@ -308,7 +308,7 @@ const currentDate = new Date().toLocaleDateString('he-IL');
             <td style="border: 1px solid black; padding: 3px; text-align: center;">${item.dish_name}</td>
             ${isForKitchen ? '' : `<td style="border: 1px solid black; padding: 3px; text-align: center;">${item.totalPrice}</td>`}
             <td style="border: 1px solid black; padding: 3px; text-align: center;">
-              ${item.totalWeight > 1000 ? `${(item.totalWeight / 1000).toFixed(2)} קילו` : `${parseInt(item.totalWeight)} יחידות`}
+             ${formatDisplayWeight(item.totalWeight, item.dishWeight)}
             </td>
           </tr>
         `;
@@ -325,6 +325,16 @@ const currentDate = new Date().toLocaleDateString('he-IL');
      // המרת התוכן ל-PDF
     html2pdf().from(content).set(options).save();
   };
+
+// תצוגת יחידות קילו גרם או גרם 
+const formatDisplayWeight = (weight, dishWeight) => {
+  // dishWeight === משקל של מנה אחת מהדאטהבייס
+  const isUnits = dishWeight > 0 && dishWeight < 2;
+
+ if (isUnits) return `${parseInt(weight)} מנות`;
+  if (weight >= 1000) return `${(weight / 1000).toFixed(2)} ק"ג`;
+  return `${parseInt(weight)} גרם`;
+};
 
 
 // שליחה במייל ללקוח
@@ -599,7 +609,7 @@ const currentDate = new Date().toLocaleDateString('he-IL');
           <tr>
             <td style="border: 1px solid black; padding: 3px; text-align: center;">${item.dish_name}</td>
             <td style="border: 1px solid black; padding: 3px; text-align: center;">
-              ${item.totalWeight > 1000 ? `${(item.totalWeight / 1000).toFixed(2)} קילו` : `${parseInt(item.totalWeight)} יחידות`}
+               ${formatDisplayWeight(item.totalWeight, item.dishWeight)}
             </td>
           </tr>
         `;
@@ -855,7 +865,7 @@ const currentDate = new Date().toLocaleDateString('he-IL');
                   <tr key={`${item.dish_name}-${index}`}>
                     <td>{item.dish_name}</td>
                     <td>{item.totalPrice}</td>
-                    <td>{item.totalWeight > 1000 ? `${(item.totalWeight / 1000).toFixed(2)} קילו` : `${parseInt(item.totalWeight)} מנות`}</td>
+                    <td> {formatDisplayWeight(item.totalWeight, item.dishWeight)}</td>
                     <td>
                     <button className='kitchen-order-edit-button' onClick={() => handleShowEditModal(item.dish_name, item.totalPrice, item.totalWeight)}>ערוך</button>
                     </td>

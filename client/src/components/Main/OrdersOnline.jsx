@@ -202,28 +202,41 @@ const removeNonHebrew = (text) => {
     
         let total = 0;
   
-        const roundWeight = (weight) => {  // פונקציה לעיגול המשקל
-          const rounded = Math.ceil(weight / 500) * 500;
-          return rounded;
-        };
+       const roundWeight = (weight) => {
+         return weight < 500 ? weight : Math.ceil(weight / 500) * 500;
+       };
+
     
         // סלטים
         const selectedSaladsData = selectedSalads.map((id) => {
           const salad = inventoryAll.salads.find(d => Number(d.id) === Number(id));
+           if (!salad) {
+             console.warn("Salad not found for id:", id);
+             return null; // או להמשיך בלי לחשב
+           }
+           const pricePerKg = Number(salad.price);       // מחיר בשקלים לקילו
+           const weightPerGuest = Number(salad.weight);  // משקל בגרם לאדם
 
-            const totalWeight = roundWeight(salad.weight * guestCount); // עיגול המשקל
-            const totalPrice = totalWeight * salad.price / 1000;
+             const totalWeight = roundWeight(weightPerGuest * guestCount); // סה"כ משקל לכל המוזמנים
+             const totalPrice = (totalWeight / 1000) * pricePerKg;         // מחיר = ק"ג * מחיר לק"ג
+
             total += totalPrice;       
             return {
-                dish_name: salad.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: Number(totalWeight).toFixed(2)
+              dish_name: salad.dish_name,
+              totalPrice: totalPrice.toFixed(2),
+              totalWeight: Number(totalWeight).toFixed(2),
+              dishWeight: salad.weight 
             };
+
         });
-    
+
         //מנה ראשונה
         const selectedFirstDishesData = selectedFirstDishes.map((id) => {
             const firstDish = inventoryAll.first_courses.find(d => d.id === id);
+            if (!firstDish) {
+            console.warn("firstDish not found for id:", id);
+            return null; // או להמשיך בלי לחשב
+            }
             let totalPrice = 0;
             let totalWeight = 0;
             if (firstDish.weight > 0 && firstDish.weight < 2) { // יחידות
@@ -234,16 +247,22 @@ const removeNonHebrew = (text) => {
                 totalPrice = (totalWeight * firstDish.price / 1000);  
             }
             total += totalPrice;
-            return {
-                dish_name: firstDish.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: Number(totalWeight).toFixed(2)
-            };
+           return {
+            dish_name: firstDish.dish_name,
+            totalPrice: totalPrice.toFixed(2),
+            totalWeight: Number(totalWeight).toFixed(2),
+            dishWeight: firstDish.weight  // הוספה חשובה!
+          };
+
         });
     
         //מנה עיקרית
         const selectedMainDishesData = selectedMainDishes.map((id) => {
             const mainDish = inventoryAll.main_courses.find(d => d.id === id);
+            if (!mainDish) {
+             console.warn("mainDish not found for id:", id);
+             return null; // או להמשיך בלי לחשב
+          }
             const noRoundWeightMainDishIds = [3, 8, 11,12, 28 ,29]; // לדוג' פרגית ממולא, אסאדו, צלי וכו'
 
             let totalPrice = 0;
@@ -265,26 +284,32 @@ const removeNonHebrew = (text) => {
             totalPrice = totalWeight * mainDish.price / 1000;
           }
             total += totalPrice;
-            return {
-                dish_name: mainDish.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: Number(totalWeight).toFixed(2)
-            };
+           return {
+            dish_name: mainDish.dish_name,
+            totalPrice: totalPrice.toFixed(2),
+            totalWeight: Number(totalWeight).toFixed(2),
+            dishWeight: mainDish.weight  // הוספה חשובה!
+          };
+
         });
     
         // תוספות
         const selectedSidesData = selectedSides.map((id) => {
          const side = inventoryAll.side_dishes.find(d => Number(d.id) === Number(id));
+         if (!side) return null;
             const totalWeight = roundWeight(side.weight * guestCount ); // עיגול המשקל
             const totalPrice = totalWeight * side.price / 1000;
             total += totalPrice;
-            return {
-                dish_name: side.dish_name,
-                totalPrice: totalPrice.toFixed(2),
-                totalWeight: Number(totalWeight).toFixed(2)
-            };
+           return {
+            dish_name: side.dish_name,
+            totalPrice: totalPrice.toFixed(2),
+            totalWeight: Number(totalWeight).toFixed(2),
+            dishWeight: side.weight  // הוספה חשובה!
+          };
+
         }).filter(Boolean);
     
+
         const selectedItems = {
             salads: selectedSaladsData,
             first_courses: selectedFirstDishesData,
@@ -571,7 +596,7 @@ return (
     <Box
       component="img"
       src="https://res.cloudinary.com/dhkegagjk/image/upload/v1754492906/pexels-ella-olsson-572949-1640773_l5ebhe.jpg"
-      alt="אולם האירועים הפנינה"
+      alt="תמונת תפריט הזמנה"
       sx={{
         width: "100%",
         maxHeight: "400px",
@@ -653,7 +678,7 @@ return (
         color: '#333',
       }}
     >
-      פלאפון: <strong>  054-6600-200 </strong> | מייל: hpnina6600200@gmail.com
+      פלאפון: <strong>  054-8520-195 </strong> |  מייל: <strong> hpnina6600200@gmail.com</strong>
     </Typography>
 
     <Typography
@@ -665,7 +690,7 @@ return (
         textAlign: 'center',
       }}
     >
-      ברוכים הבאים! לפניכם התפריט העשיר שלנו בו תקבלו בפשטות ובמהירות הצעת מחיר משתלמת במיוחד עבור האירוע שלכם.
+      ברוכים הבאים ! לפניכם התפריט העשיר שלנו בו תקבלו בפשטות ובמהירות הצעת מחיר משתלמת במיוחד עבור האירוע שלכם.
       <br />
       שליחת התפריט אינה מהווה התחייבות עד לאישור סופי מנציג.
     </Typography>

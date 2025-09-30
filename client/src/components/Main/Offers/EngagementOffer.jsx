@@ -99,7 +99,7 @@ const EngagementOffer = () => {
       >
         <Box sx={{ position: "relative", zIndex: 2, maxWidth: 320 }}>
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-            <Typography variant="h5" fontWeight="bold" fontSize="1.6rem">
+            <Typography    translate="no" variant="h5" fontWeight="bold" fontSize="1.6rem">
               תפריט אזכרות 
             </Typography>
           </Box>
@@ -108,7 +108,7 @@ const EngagementOffer = () => {
                      רק ₪60 למנה
                    </Typography>
          
-          <Typography   variant="body1"  sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }} >
+          <Typography   translate="no"  variant="body1"  sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }} >
                 
                      5 סוגי סלטים לבחירה ✔      <br />
                     3 מנות עיקריות לבחירה ✔<br />

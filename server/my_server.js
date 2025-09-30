@@ -324,10 +324,10 @@ app.post("/api/registerPersonalArea", async (req, res) => {
         `UPDATE ${category} SET dish_name = ?, price = ?, weight = ? WHERE id = ?`,
         [dish_name, price, weight, id]
       );
-      res.send("Dish updated successfully");
+    res.json({ success: true, id, dish_name, price, weight }); // ✅ JSON
     } catch (err) {
       console.error("Failed to update data in database:", err);
-      res.status(500).send("Error updating data");
+      res.status(500).json({ error: "Error updating data" }); // ✅ גם כאן JSON
     }
   });
   //----- מחיקת מנה--------------------------------------------------------
@@ -907,10 +907,11 @@ app.get('/api/OrderManagement',authenticateToken,  async (req, res) => {
         orders.shipping_cost,
         orders.service_cost,
         orders.tools_type,
+         orders.event_type,
         users.name AS owner_name, 
         users.phone AS owner_phone , -- הוספת שדה טלפון של בעל ההזמנה
         users.email AS owner_email -- הוספת שדה דוא"ל של בעל ההזמנה
-
+      
       FROM orders 
       JOIN users ON orders.user_id = users.id
     `);

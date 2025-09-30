@@ -305,8 +305,6 @@ const handleSearch = (e) => {
 };
 //------------עריכת תוכן ההזמנה---------------------------------------
 const editOrderDetails = (order) => {
-
-  // שולח את המידע הרלוונטי לעריכת ההזמנה לדף KitchenOrder
   navigate('/KitchenOrder', {
     state: {
       orderSummary: [order],

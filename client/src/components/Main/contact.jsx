@@ -150,7 +150,7 @@ const Contact = () => {
           <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>
             <Phone sx={{ fontSize: 28, color: '#0072e3' }} />
             <Typography variant="body1" sx={{ fontSize: '1rem' }}>
-              054-6600-200
+              054-8520-195
             </Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>
@@ -168,7 +168,7 @@ const Contact = () => {
 
           <Box display="flex" gap={2} mt={2}>
             <IconButton
-              href="tel:+972546600200"
+              href="tel:+972548520195"
               target="_blank"
               sx={{
                 backgroundColor: '#0072e3',
@@ -179,7 +179,7 @@ const Contact = () => {
               <BsTelephoneOutbound size={20} />
             </IconButton>
             <IconButton
-              href="https://wa.me/+972546600200"
+              href="https://wa.me/+972548520195"
               target="_blank"
               sx={{
                 backgroundColor: '#25D366',

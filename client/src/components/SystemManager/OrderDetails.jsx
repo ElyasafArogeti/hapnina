@@ -2,6 +2,17 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 
 const OrderDetails = () => {
+
+  const formatDisplayWeight = (weight, dishWeight) => {
+  // dishWeight === משקל של מנה אחת מהדאטהבייס
+  const isUnits = dishWeight > 0 && dishWeight < 2;
+
+ if (isUnits) return `${parseInt(weight)} מנות`;
+  if (weight >= 1000) return `${(weight / 1000).toFixed(2)} ק"ג`;
+ return `${parseInt(weight)} גרם`;
+};
+
+
   const location = useLocation();
   const { orderDetails } = location.state || {}; // קבלת פרטי ההזמנה
 
@@ -48,7 +59,7 @@ const OrderDetails = () => {
                   <tr key={`${item.dish_name}-${index}`}>
                     <td>{item.dish_name}</td>
                     <td>{item.totalPrice}</td>
-                    <td>{item.totalWeight > 1000 ? `${(item.totalWeight / 1000).toFixed(2)} קילו` : `${parseInt(item.totalWeight)} מנות`}</td>
+                    <td> {formatDisplayWeight(item.totalWeight, item.dishWeight)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -459,14 +459,15 @@ const createOrderSummary = () => {
           />
         )}
 
-        {menuData.first_courses && (
-          <MenuSection
-            title={`מנות ראשונות [${selectionLimits.first_courses} לבחירה]`}
-            dishes={filterVisibleDishes(menuData.first_courses, "first_courses")}
-            selected={selectedFirstDishes}
-            setSelected={setSelectedFirstDishes}
-          />
-        )}
+      {menuData.first_courses && selectionLimits.first_courses > 0 && (
+  <MenuSection
+    title={`מנות ראשונות [${selectionLimits.first_courses} לבחירה]`}
+    dishes={filterVisibleDishes(menuData.first_courses, "first_courses")}
+    selected={selectedFirstDishes}
+    setSelected={setSelectedFirstDishes}
+  />
+)}
+
 
         {menuData.main_courses && (
           <MenuSection

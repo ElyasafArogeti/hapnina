@@ -186,18 +186,37 @@ const removeNonHebrew = (text) => {
   //--- חישוב המנות כולם  --------------------------------------------------------------
     const handleSubmit = async () => {
 
-      const totalFirstDish = Object.values(firstDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
-      const totalMainDish  = Object.values(mainDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
-  
-      setErrorFirstDish(totalFirstDish);
-      setErrorMainDish(totalMainDish);
-      
-      if (totalFirstDish > guestCount || totalFirstDish < guestCount || totalMainDish > guestCount || totalMainDish < guestCount ) {
-        setErrorMessage(" הכמויות שהזנת לא תואמות את כמות המוזמנים . אנא חשב שוב את הכמויות");  
-        setTimeout(() => {
-           setErrorMessage(null);
-        },7000);
-      } else {
+     const totalFirstDish = Object.values(firstDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
+     const totalMainDish = Object.values(mainDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
+    
+    setErrorFirstDish(totalFirstDish);
+    setErrorMainDish(totalMainDish);
+// בדיקת כמות מנות ראשונות
+  if (selectedFirstDishes.length > 0 && totalFirstDish !== guestCount) {
+    setErrorFirstDish(totalFirstDish);
+    setErrorMessage(`.סך מנות ראשונות חייב להיות בדיוק ${guestCount}`);
+    return;
+  } else {
+    setErrorFirstDish(null);
+  }
+
+  // בדיקת כמות מנות עיקריות
+  if (selectedMainDishes.length > 0 && totalMainDish !== guestCount) {
+    setErrorMainDish(totalMainDish);
+    setErrorMessage(`.סך מנות עיקריות חייב להיות בדיוק ${guestCount}`);
+    return;
+  } else {
+    setErrorMainDish(null);
+  }
+
+  // בדיקה רק אם כמות האורחים קטנה מ-30
+  if (guestCount < 30) {
+    setErrorMessage(".המערכת מיועדת לאירועים של 30 אורחים ומעלה");
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 7000);
+    return;
+  }
         setErrorMessage(null); // אם אין שגיאה, ננקה את ההודעה
     
         let total = 0;
@@ -337,8 +356,9 @@ const removeNonHebrew = (text) => {
 
         setCustomerOrderSummary(selectedItems);  
         setIsQuantityModalOpen(false);
+        
         setOnlineOrderMain(false);
-      }
+      
     };
     
   
@@ -427,10 +447,21 @@ const removeNonHebrew = (text) => {
     setShippingDate(new Date().toISOString().slice(0, 19).replace('T', ' '));
     setTotalDelivery(calculateDeliveryCost(deliveryRegion));
 
-    if (!hasError) {
-      setIsQuantityModalOpen(true);
-      setLoginUser(null);
-    }
+   
+  if (hasError) {
+    return; // עצור במידה ויש שגיאות
+  }
+
+  // אם יש מנות ראשונות או מנות עיקריות - פתח מודאל הכמויות
+  if ((selectedFirstDishes.length > 0) || (selectedMainDishes.length > 0)) {
+    setIsQuantityModalOpen(true);
+    setLoginUser(null);
+  } else {
+    // אם אין מנות ראשונות או עיקריות - דלג למתן הצעת מחיר ישירה
+    handleSubmit();  // תפעיל ישירות את חישוב ההצעה
+    setLoginUser(null);
+  }
+
   };
   //---- הלקוח בסגירת הזמנה-----------------------------------
   const validateFinalForm = () => {
@@ -487,18 +518,7 @@ const removeNonHebrew = (text) => {
 
 // בדיקה אם המשתמש בחר משהו מכל הקטגוריות----------------------------------------------------
   const handleOrderSummaryClick = () => {
-    if (
-      selectedSalads.length === 0 ||
-      selectedFirstDishes.length === 0 ||
-      selectedMainDishes.length === 0 ||
-      selectedSides.length === 0
-    ) {
-      // אם לא נבחר שום דבר, הצג הודעת שגיאה
-      setErrorMessage("נא לבחור לפחות מנה אחת מכל קטגוריה.");
-    } else {
-      // אם נבחרו פריטים, פתח את המודל
       openEditModal();
-    }
   };
 
 //-------------פתיחת תמונה לצפייה-------------------------------------
@@ -705,6 +725,18 @@ return (
       }}
     >
       מינימום הזמנה 30 מנות !!
+    </Typography>
+    
+    <Typography
+      variant="subtitle1"
+      sx={{
+        color: '#333',
+        fontWeight: 600,
+        fontSize: { xs: '0.9rem', sm: '1rem' },
+        textAlign: 'center',
+      }}
+    >
+    ניתן להרכיב מנות בודדות לאוכל מוכן לשבת / אזכרה / גיבוש משפחתי וכ'ו 
     </Typography>
   </Container>
      </Box>
@@ -1216,11 +1248,6 @@ return (
 </Dialog>
 
 
-
-
-
-
-
   </div> 
      )}
 
@@ -1296,6 +1323,247 @@ return (
 
 
   {/* ---------------- חלון כמות מנות -------------------------------------------------------------------- */}
+  {(selectedFirstDishes.length > 0 || selectedMainDishes.length > 0) && (
+  <Dialog textAlign="center" open={isQuantityModalOpen}>
+    <DialogTitle>
+      <Typography variant="h6" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+        !עזור לנו לדעת מה רצונך
+      </Typography>
+    </DialogTitle>
+
+    <DialogContent>
+      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+        הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת
+      </Typography>
+      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+        פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה
+      </Typography>
+
+      {/* ========== מנות ראשונות ========== */}
+      {selectedFirstDishes.length > 0 && (
+        <div style={{ marginTop: '20px' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            מנות ראשונות
+          </Typography>
+
+          {selectedFirstDishes.map((id) => {
+            const dish = inventoryAll.first_courses.find((d) => d.id === id);
+            return (
+              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+                    {dish?.dish_name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    value={firstDishQuantities[id]}
+                    onChange={(e) =>
+                      handleQuantityChange('first_courses', id, e.target.value)
+                    }
+                    required
+                    variant="outlined"
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
+            );
+          })}
+
+          {errorFirstDish && errorFirstDish !== guestCount && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              הזנת: <strong>{errorFirstDish}</strong> אך יש לך {guestCount} מוזמנים
+            </Typography>
+          )}
+        </div>
+      )}
+
+      {/* ========== מנות עיקריות ========== */}
+      {selectedMainDishes.length > 0 && (
+        <div style={{ marginTop: '20px' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            מנות עיקריות
+          </Typography>
+
+          {selectedMainDishes.map((id) => {
+            const dish = inventoryAll.main_courses.find((d) => d.id === id);
+            return (
+              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+                    {dish?.dish_name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    value={mainDishQuantities[id]}
+                    onChange={(e) =>
+                      handleQuantityChange('main_courses', id, e.target.value)
+                    }
+                    required
+                    variant="outlined"
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
+            );
+          })}
+
+          {errorMainDish && errorMainDish !== guestCount && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              הזנת: <strong>{errorMainDish}</strong> אך יש לך {guestCount} מוזמנים
+            </Typography>
+           
+          )}
+        </div>
+      )}
+ {errorMessage && (
+        <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+          {errorMessage}
+        </Typography>
+      )}
+      
+    </DialogContent>
+
+    <DialogActions>
+      <Button
+        onClick={handleSubmit}
+        color="primary"
+        variant="contained"
+        disabled={!!errorMessage} // מונע מעבר אם יש שגיאה
+      >
+        המשך להצעת מחיר
+      </Button>
+    </DialogActions>
+
+  </Dialog>
+)}
+
+    
+
+    
+  {/* ---------------- חלון כמות מנות -------------------------------------------------------------------- */}
+  {(selectedFirstDishes.length > 0 || selectedMainDishes.length > 0) && (
+  <Dialog textAlign="center" open={isQuantityModalOpen}>
+    <DialogTitle>
+      <Typography variant="h6" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+        !עזור לנו לדעת מה רצונך
+      </Typography>
+    </DialogTitle>
+
+    <DialogContent>
+      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+        הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת
+      </Typography>
+      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+        פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה
+      </Typography>
+
+      {/* ========== מנות ראשונות ========== */}
+      {selectedFirstDishes.length > 0 && (
+        <div style={{ marginTop: '20px' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            מנות ראשונות
+          </Typography>
+
+          {selectedFirstDishes.map((id) => {
+            const dish = inventoryAll.first_courses.find((d) => d.id === id);
+            return (
+              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+                    {dish?.dish_name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    value={firstDishQuantities[id]}
+                    onChange={(e) =>
+                      handleQuantityChange('first_courses', id, e.target.value)
+                    }
+                    required
+                    variant="outlined"
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
+            );
+          })}
+
+          {errorFirstDish && (errorFirstDish > guestCount || errorFirstDish < guestCount) && (
+            <Typography color="error" variant="body2">הזנת: <strong>{errorFirstDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
+          )}
+          
+        </div>
+        
+      )}
+
+      {/* ========== מנות עיקריות ========== */}
+      {selectedMainDishes.length > 0 && (
+        <div style={{ marginTop: '20px' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            מנות עיקריות
+          </Typography>
+
+          {selectedMainDishes.map((id) => {
+            const dish = inventoryAll.main_courses.find((d) => d.id === id);
+            return (
+              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
+                    {dish?.dish_name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    value={mainDishQuantities[id]}
+                    onChange={(e) =>
+                      handleQuantityChange('main_courses', id, e.target.value)
+                    }
+                    required
+                    variant="outlined"
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
+            );
+          })}
+
+           {errorMainDish && (errorMainDish > guestCount || errorMainDish < guestCount) && (
+            <Typography color="error" variant="body2">הזנת: <strong>{errorMainDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
+          )}
+        </div>
+      )}
+
+     {errorMessage && (
+          <Typography color="error" variant="body2" style={{ marginTop: '5px' }}>
+            {errorMessage}
+          </Typography>
+        )}
+    </DialogContent>
+
+   <DialogActions >
+        <Button onClick={handleSubmit} color="primary" variant="contained">
+          המשך להצעת מחיר
+        </Button>
+      </DialogActions>
+  </Dialog>
+)}
+
+    
+  {/* ---------------- חלון כמות מנות --------------------------------------------------------------------
   <Dialog textAlign="center" open={isQuantityModalOpen}>
       <DialogTitle>
         <Typography variant="h6" style={{fontFamily:"-moz-initial"}}>! עזור לנו לדעת מה רצונך</Typography>
@@ -1372,7 +1640,7 @@ return (
           המשך להצעת מחיר
         </Button>
       </DialogActions>
-    </Dialog>
+    </Dialog> */}
     
 
 {/* //-----------------------------סיכום הצעת מחיר------------------------------------------------ */}
@@ -1620,7 +1888,12 @@ return (
    🍽️ פרטי ההזמנה שלך 🍽️
   </Typography>
 
-  {Object.keys(orderSummary).map((category) => (
+ {Object.keys(orderSummary).map((category) => {
+  const items = orderSummary[category];
+  
+  if (!items || items.length === 0) return null; // אם אין פריטים - לא מציג כלום
+
+  return (
     <Box key={category} sx={{ mb: 3 }}>
       <Typography
         variant="h6"
@@ -1630,7 +1903,7 @@ return (
           borderBottom: '1px solid #ccc',
           pb: 1,
           mb: 2,
-          color: '##1F8A70',
+         
         }}
       >
         {category === 'salads'
@@ -1643,11 +1916,11 @@ return (
       </Typography>
 
       <List disablePadding>
-        {orderSummary[category].map((item, index) => (
+        {items.map((item, index) => (
           <ListItem
             key={`${item.dish_name}-${index}`}
             sx={{
-              bgcolor: index % 2 === 0 ? '#e6e6e6ff':'#fafafa'  ,
+              bgcolor: index % 2 === 0 ? '#e6e6e6ff' : '#fafafa',
               border: '1px solid #c2c2c2ff',
               borderRadius: 1,
               mb: 1,
@@ -1666,7 +1939,9 @@ return (
         ))}
       </List>
     </Box>
-  ))}
+  );
+})}
+
 </Box>
 
 
@@ -1723,6 +1998,7 @@ return (
     </Paper>
   </Box>
 )}
+
 
 
 

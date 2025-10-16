@@ -12,10 +12,10 @@ const BritOffer = () => {
     eventName: " ברית מילה  ",
     pricePerDish: 60,
     selectionLimits: {
-      salads: 5,
-      first_courses: 3,
+      salads: 8,
+   
       main_courses: 3,
-      side_dishes: 2,
+      side_dishes: 3,
     },
     eventImage:
       "https://res.cloudinary.com/dhkegagjk/image/upload/v1752409193/%D7%91%D7%A8%D7%99%D7%AA_3_i9lfck.jpg",
@@ -27,13 +27,6 @@ const BritOffer = () => {
         "פלפל מתוק בצבעים",
         "סלט בטטה",
         "סלט ירוק",
-      ],
-      first_courses: [
-        "נסיכת הנילוס מזרחי",
-       "ארטישוק ממולא בשר",
-       "כבדי עוף מוקפצים",
-       "פילה סלמון ברוטב פסטו",
-        "מוסקה בשרית",
       ],
       main_courses: [
         "כרעיים עוף ממולא",
@@ -111,7 +104,7 @@ const BritOffer = () => {
            variant="body1"
            sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}
          >
-            5 סוגי סלטים לבחירה ✔      <br />
+           8 סוגי סלטים לבחירה ✔      <br />
            3 מנות עיקריות לבחירה ✔<br />
            3 תוספות לבחירה ✔ <br />
          </Typography>

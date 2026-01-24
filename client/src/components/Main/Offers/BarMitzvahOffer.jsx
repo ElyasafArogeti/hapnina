@@ -34,6 +34,7 @@ const BarMitzvahOffer = () => {
        "ארטישוק ממולא בשר",
        "כבדי עוף מוקפצים",
        "פילה סלמון ברוטב פסטו",
+       "פילה סלמון ברוטב אדם",
         "מוסקה בשרית",
       ],
       main_courses: [
@@ -105,12 +106,13 @@ const BarMitzvahOffer = () => {
           </Box>
 
           <Typography variant="h6" gutterBottom fontSize="1.2rem">
-            רק ₪60 למנה
+            רק ₪70 למנה
           </Typography>
 
          <Typography   variant="body1"  sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}>
 
                 5 סוגי סלטים לבחירה ✔  <br />
+                5    ✔  <br />
                3 מנות עיקריות לבחירה ✔<br />
                3 תוספות לבחירה ✔ <br />
                </Typography>

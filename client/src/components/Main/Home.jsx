@@ -323,7 +323,7 @@ const Home = () => {
   </Grid2>
 </Container>
 
-
+{/* קטע החבילות  */}
 <OffersSection />
 
 

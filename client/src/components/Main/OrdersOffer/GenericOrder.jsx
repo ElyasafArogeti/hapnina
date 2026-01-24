@@ -353,7 +353,7 @@ const createOrderSummary = () => {
         fontSize: { xs: "0.75rem", sm: "0.85rem", md: "1rem" },
       }}
     >
-      להזמנות: 054-6600200 | eli6600200@gmail.com
+      להזמנות: 054-8520195 | hpnina6600200@gmail.com
     </Typography>
   </Box>
      </Box>
@@ -431,7 +431,7 @@ const createOrderSummary = () => {
     >
       -  שימו לב: מינימום הזמנה 30 מנות! / שליש מכל סוג
     </Typography>
-
+      <br />
     <Typography
       component="span"
       sx={{

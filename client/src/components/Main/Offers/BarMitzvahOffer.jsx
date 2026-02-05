@@ -36,6 +36,9 @@ const BarMitzvahOffer = () => {
        "פילה סלמון ברוטב פסטו",
        "פילה סלמון ברוטב אדם",
         "מוסקה בשרית",
+        "מאפה פילו במילוי פרגית",
+        "קרואסון אסאדו",
+        "דג טונה",
       ],
       main_courses: [
         "כרעיים עוף ממולא",
@@ -44,14 +47,17 @@ const BarMitzvahOffer = () => {
           "צלי בקר מספר 5",
           "צלי בקר מספר 6",
           "בשר ראש עם חומוס",
+          "פרגית ממולא",
       ],
       side_dishes: [
         "זיתים מרוקאים",
       "ארטישוק ופטריות",
         "קוסקוס עם ירקות",
+        "טנזיה",
       ],
     },
   },
+
 });
   };
 
@@ -109,13 +115,24 @@ const BarMitzvahOffer = () => {
             רק ₪70 למנה
           </Typography>
 
-         <Typography   variant="body1"  sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}>
+          <Typography
+  variant="body1"
+  sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}
+>
+  5 סוגי סלטים לבחירה ✔<br />
+  2 מנות ראשונות{" "}
+  <Box component="span" sx={{ fontSize: "0.85rem", fontWeight: "bold" }}>
+    (מעל 90 איש – 3 לבחירה)
+  </Box>{" "}
+  ✔<br />
+  2 מנות עיקריות{" "}
+  <Box component="span" sx={{ fontSize: "0.85rem", fontWeight: "bold" }}>
+    (מעל 90 איש – 3 לבחירה)
+  </Box>{" "}
+  ✔<br />
+  3 תוספות לבחירה ✔
+</Typography>
 
-                5 סוגי סלטים לבחירה ✔  <br />
-                5    ✔  <br />
-               3 מנות עיקריות לבחירה ✔<br />
-               3 תוספות לבחירה ✔ <br />
-               </Typography>
 
 
           <Box textAlign="center">

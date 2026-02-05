@@ -54,13 +54,13 @@ const WeddingOffer = () => {
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
          
             <Typography variant="h5" fontWeight="bold" fontSize="1.3rem">
-             אירועי יוקרה - חתונות / דינרים
+            התפריט העשיר 
             </Typography>
           </Box>
 
         <Typography variant="h6" translate="no" gutterBottom fontSize="1.2rem">
 
-                  תפריט עשיר ויוקרתי , הצעת מחיר במקום 
+                 !! תפריט המלא, הצעת מחיר במקום 
                   </Typography>
         
                         <Typography   variant="body1" sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}  >

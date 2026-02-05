@@ -94,6 +94,7 @@ const filterVisibleDishes = (dishes, category) => {
     (dish) => !hidden.includes(dish.dish_name.trim())
   );
 };
+
 const validateFinalForm = () => {// בדיקת הלקוח 
   let hasFinalError = false;
   const newErrors = {};
@@ -115,7 +116,7 @@ const validateFinalForm = () => {// בדיקת הלקוח
   }
 
   // בדיקת מייל
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
   if (!email) {
     newErrors.email = 'יש להזין כתובת מייל';
     hasFinalError = true;
@@ -156,45 +157,57 @@ const validateFinalForm = () => {// בדיקת הלקוח
   }, []);
 
   // בדיקת כמות מנות מול המגבלות - מחזיר אמת אם תקין, אחרת שגיאה
-const validateSelectionLimits = () => {
-  let errors = [];
-
-  // בדיקת חרגת מגבלה
-  if (selectedSalads.length > (selectionLimits.salads || 0)) {
-    errors.push(`חריגה במנות סלטים: עד ${selectionLimits.salads}`);
-  }
-  if (selectedFirstDishes.length > (selectionLimits.first_courses || 0)) {
-    errors.push(`חריגה במנות ראשונות: עד ${selectionLimits.first_courses}`);
-  }
-  if (selectedMainDishes.length > (selectionLimits.main_courses || 0)) {
-    errors.push(`חריגה במנות עיקריות: עד ${selectionLimits.main_courses}`);
-  }
-  if (selectedSides.length > (selectionLimits.side_dishes || 0)) {
-    errors.push(`חריגה בתוספות: עד ${selectionLimits.side_dishes}`);
-  }
-
-  // בדיקת מינימום - לפחות 1 מכל קטגוריה
-  if (selectedSalads.length === 0) {
-    errors.push('יש לבחור לפחות סלט אחד');
-  }
-  if (selectedFirstDishes.length === 0) {
-    errors.push('יש לבחור לפחות מנה ראשונה אחת');
-  }
-  if (selectedMainDishes.length === 0) {
-    errors.push('יש לבחור לפחות מנה עיקרית אחת');
-  }
-  if (selectedSides.length === 0) {
-    errors.push('יש לבחור לפחות תוספת אחת');
-  }
-
-  // אם נמצאו שגיאות, הצג אותן
-  if (errors.length > 0) {
-    setErrorMessage(errors.join('\n'));
-    return false;
-  }
-
-  return true;
-};
+  const validateSelectionLimits = () => {
+    let errors = [];
+  
+    const saladsLimit = selectionLimits.salads || 0;
+    const firstLimit =  selectionLimits.first_courses || 0
+    const mainLimit =  selectionLimits.main_courses || 0
+    const sidesLimit = selectionLimits.side_dishes || 0;
+  
+    // חריגה ממגבלות
+    if (selectedSalads.length > saladsLimit) {
+      errors.push(`חריגה במנות סלטים: עד ${saladsLimit}`);
+    }
+  
+    if (selectedFirstDishes.length > firstLimit) {
+      errors.push(`חריגה במנות ראשונות: עד ${firstLimit}`);
+    }
+  
+    if (selectedMainDishes.length > mainLimit) {
+      errors.push(`חריגה במנות עיקריות: עד ${mainLimit}`);
+    }
+  
+    if (selectedSides.length > sidesLimit) {
+      errors.push(`חריגה בתוספות: עד ${sidesLimit}`);
+    }
+  
+    // מינימום – רק אם הקטגוריה קיימת
+    if (saladsLimit > 0 && selectedSalads.length === 0) {
+      errors.push("יש לבחור לפחות סלט אחד");
+    }
+  
+    if (firstLimit > 0 && selectedFirstDishes.length === 0) {
+      errors.push("יש לבחור לפחות מנה ראשונה אחת");
+    }
+  
+    if (mainLimit > 0 && selectedMainDishes.length === 0) {
+      errors.push("יש לבחור לפחות מנה עיקרית אחת");
+    }
+  
+    if (sidesLimit > 0 && selectedSides.length === 0) {
+      errors.push("יש לבחור לפחות תוספת אחת");
+    }
+  
+    if (errors.length > 0) {
+      setErrorMessage(errors.join("\n"));
+      return false;
+    }
+  
+    return true;
+  };
+  
+  
 
 
   // פתיחת מודל פרטי לקוח עם בדיקת מגבלות
@@ -280,9 +293,6 @@ const createOrderSummary = () => {
 };
 
 
-
-
-
   return (
     <>
        <NavbarHome sx={{ padding: 0, margin: 0 }} />
@@ -359,7 +369,8 @@ const createOrderSummary = () => {
      </Box>
 
 
-      <Container dir="rtl" maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
+
+ <Container dir="rtl" maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
         {loading && (
           <Box sx={{ width: "100%", mb: 2 }}>
             <LinearProgress />
@@ -370,34 +381,40 @@ const createOrderSummary = () => {
           <Alert severity="error">{errorMessage}</Alert>
         </Snackbar>
 
-        {/* מלל בהתחללה  */}
-        <Box sx={{ textAlign: "center", my: { xs: 2, md: 5 }, px: { xs: 1.5, sm: 3 } }}>
- <Typography
-  variant="h5"
-  fontWeight="bold"
-  gutterBottom
+
+   {/* מלל פתיחה */}
+<Box
   sx={{
-    fontSize: { xs: "1.3rem", sm: "1.8rem", md: "2rem" },
-    color: "#1b5e20",
-    whiteSpace: { xs: "pre-line", md: "normal" }, // שבירת שורה רק במסכים קטנים
+    textAlign: "center",
+    my: { xs: 2, md: 5 },
+    px: { xs: 1.5, sm: 3 },
   }}
 >
-  מחפשים קייטרינג יוקרתי{" "}
-  <Box
-    component="span"
+  {/* כותרת */}
+  <Typography
+    variant="h5"
+    fontWeight="bold"
+    gutterBottom
     sx={{
-      borderBottom: "1px solid black",
-  
-      px: "4px", // ריווח פנימי בצדדים
-      fontWeight: "bold",
+      fontSize: { xs: "1.3rem", sm: "1.8rem", md: "2rem" },
+      color: "#1b5e20",
     }}
   >
-    ל־ {eventName}
-  </Box>
-  ?
-</Typography>
+    מחפשים קייטרינג יוקרתי{" "}
+    <Box
+      component="span"
+      sx={{
+        borderBottom: "2px solid #1b5e20",
+        px: "4px",
+        fontWeight: "bold",
+      }}
+    >
+      ל־{eventName}
+    </Box>
+    ?
+  </Typography>
 
-
+  {/* טקסט שיווקי */}
   <Typography
     variant="body1"
     sx={{
@@ -406,51 +423,82 @@ const createOrderSummary = () => {
       lineHeight: { xs: 1.6, sm: 1.8, md: 2 },
       fontSize: { xs: "0.82rem", sm: "0.95rem", md: "1.05rem" },
       color: "#333",
+      mb: 3,
     }}
   >
-    <strong>ברוכים הבאים לקייטרינג הפנינה</strong> – הבחירה הנכונה לאירוע בלתי נשכח!
+    <strong>ברוכים הבאים לקייטרינג הפנינה</strong> – הבחירה הנכונה לאירוע בלתי נשכח.
     <br />
-    אנו מתמחים בקייטרינג <strong>כשר למהדרין</strong> בהשגחת "יורה דעה" של הרב מחפוד,
-    תוך שימוש בחומרי גלם <strong>טריים ואיכותיים</strong>, תפריטים מגוונים, ועיצוב אסתטי
-    שמרשים את האורחים כבר מהביס הראשון.
+    אנו מתמחים בקייטרינג <strong>כשר למהדרין</strong> בהשגחת “יורה דעה” של הרב מחפוד,
+    תוך שימוש בחומרי גלם <strong>טריים ואיכותיים</strong>, תפריטים מגוונים
+    והגשה אסתטית שמרשימה כבר מהביס הראשון.
     <br /><br />
     רוצים שהאורחים שלכם ידברו על האוכל הרבה אחרי שהאירוע נגמר?
-    <span style={{ color: "#2e7d32", fontWeight: 600 }}> אנחנו כאן בדיוק בשביל זה.</span><br/>
-     בחרו מנות מהתפריט ונציגנו יחזרו אליכם 
+    <Box component="span" sx={{ color: "#2e7d32", fontWeight: 600 }}>
+      {" "}אנחנו כאן בדיוק בשביל זה.
+    </Box>
     <br />
-   
-    <Typography
-      component="span"
-      sx={{
-        display: "inline-block",
-        color: "#d74444ff",
-        fontWeight: "bold",
-        mt: 1,
-        fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
-      }}
-    >
-      -  שימו לב: מינימום הזמנה 30 מנות! / שליש מכל סוג
-    </Typography>
-      <br />
-    <Typography
-      component="span"
-      sx={{
-        
-        fontWeight: "bold",
-        mt: 1,
-        fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
-      }}
-    >
-     מחיר למנה - {pricePerDish} ש"ח
-    </Typography>
-
+    בחרו מנות מהתפריט ונציגנו יחזרו אליכם בהקדם.
   </Typography>
-         </Box>
+
+  {/* תיבת תנאים */}
+  <Box
+    sx={{
+      maxWidth: 650,
+      mx: "auto",
+      p: 2,
+      borderRadius: 2,
+      backgroundColor: "#fff5f5",
+      border: "1px solid #f1c4c4",
+      textAlign: "right",
+    }}
+  >
+    <Typography
+      sx={{
+        color: "#d74444",
+        fontWeight: 700,
+        mb: 1,
+        fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" },
+      }}
+    >
+      שימו לב
+    </Typography>
+
+    <Typography
+      sx={{
+        mb: 1,
+        fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" },
+      }}
+    >
+      מינימום הזמנה הינו <strong>30 מנות</strong>, אשר יוגשו בחלוקה שווה של <strong>שליש מכל סוג </strong>   עבור כלל האורחים.
+    </Typography>
+
+    <Typography
+      sx={{
+        fontWeight: 700,
+        mb: 1,
+        fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" },
+      }}
+    >
+      מחיר למנה: {pricePerDish} ₪
+    </Typography>
+
+    <Typography
+      sx={{
+        color: "text.secondary",
+        fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.85rem" },
+      }}
+    >
+     <strong> המחיר כולל אוכל בלבד ואינו כולל שירותי הפקה, מלצרים, משלוח או כלים.</strong>
+    </Typography>
+  </Box>
+</Box>
 
 
 
 
-        {menuData.salads && (
+
+
+{menuData.salads && (
           <MenuSection
             title={`סלטים [${selectionLimits.salads} לבחירה]`}
             dishes={filterVisibleDishes(menuData.salads, "salads")}
@@ -459,9 +507,10 @@ const createOrderSummary = () => {
           />
         )}
 
-      {menuData.first_courses && selectionLimits.first_courses > 0 && (
+
+{menuData.first_courses && selectionLimits.first_courses > 0 && (
   <MenuSection
-    title={`מנות ראשונות [${selectionLimits.first_courses} לבחירה]`}
+    title={`מנות ראשונות [${selectionLimits.first_courses } לבחירה]`}
     dishes={filterVisibleDishes(menuData.first_courses, "first_courses")}
     selected={selectedFirstDishes}
     setSelected={setSelectedFirstDishes}
@@ -469,14 +518,18 @@ const createOrderSummary = () => {
 )}
 
 
-        {menuData.main_courses && (
-          <MenuSection
-            title={`מנות עיקריות [${selectionLimits.main_courses} לבחירה]`}
-            dishes={filterVisibleDishes(menuData.main_courses, "main_courses")}
-            selected={selectedMainDishes}
-            setSelected={setSelectedMainDishes}
-          />
-        )}
+
+
+{menuData.main_courses && (
+  <MenuSection
+    title={`מנות עיקריות [${selectionLimits.main_courses} לבחירה]`}
+    dishes={filterVisibleDishes(menuData.main_courses, "main_courses")}
+    selected={selectedMainDishes}
+    setSelected={setSelectedMainDishes}
+  />
+)}
+
+
 
         {menuData.side_dishes && (
           <MenuSection
@@ -486,6 +539,8 @@ const createOrderSummary = () => {
             setSelected={setSelectedSides}
           />
         )}
+
+
 
         <Box sx={{ textAlign: "center", mt: 4 ,width:"100%"}}>
           <Button variant="contained" size="large" onClick={handleOrderSummaryClick}>

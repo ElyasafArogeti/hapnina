@@ -15,7 +15,7 @@ const OffersSection = () => {
       <Grid size={{ xs: 12, sm: 6 }} lg={3}><WeddingOffer /></Grid> 
         {/* בר מצוה */}
       <Grid size={{ xs: 12, sm: 6 }}  lg={3}><BarMitzvahOffer /></Grid>
-        {/* אירוסין */}
+        {/* אזכרות */}
       <Grid size={{ xs: 12, sm:6 }} lg={3}><EngagementOffer /></Grid>
         {/* ברית */}
       <Grid size={{ xs: 12, sm: 6 }} lg={3}><BritOffer /></Grid>

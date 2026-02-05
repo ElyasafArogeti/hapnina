@@ -6,14 +6,14 @@ import { useNavigate } from "react-router-dom";
 const BritOffer = () => {
   const navigate = useNavigate();
 
+  // תפריט ברית 
   const handleClick = () => {
  navigate("/GenericOrder", {
   state: {
     eventName: " ברית מילה  ",
-    pricePerDish: 60,
+    pricePerDish: 65,
     selectionLimits: {
       salads: 8,
-   
       main_courses: 3,
       side_dishes: 3,
     },
@@ -33,13 +33,14 @@ const BritOffer = () => {
         "חזה עוף ממולא",
           "אצבעות אסאדו בסגנון השף",
           "צלי בקר מספר 5",
-        
           "בשר ראש עם חומוס",
+          "פרגית ממולא",
       ],
       side_dishes: [
         "זיתים מרוקאים",
       "ארטישוק ופטריות",
         "קוסקוס עם ירקות",
+        "טנזיה",
       ],
     },
   },
@@ -97,14 +98,14 @@ const BritOffer = () => {
           </Box>
 
           <Typography variant="h6" gutterBottom fontSize="1.2rem">
-            רק ₪60 למנה
+            רק ₪65 למנה
           </Typography>
 
                  <Typography
            variant="body1"
            sx={{ mb: 3, lineHeight: 1.8, fontSize: "1rem", direction: "rtl" }}
          >
-           8 סוגי סלטים לבחירה ✔      <br />
+           8 סוגי סלטים לבחירה ✔  <br />
            3 מנות עיקריות לבחירה ✔<br />
            3 תוספות לבחירה ✔ <br />
          </Typography>

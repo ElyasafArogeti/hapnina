@@ -3,7 +3,7 @@ import { Card, Typography, Button, Box } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate } from "react-router-dom";
 
-// אירוסין 
+// אזכרות 
 
 const EngagementOffer = () => {
   const navigate = useNavigate();
@@ -14,7 +14,6 @@ const EngagementOffer = () => {
     pricePerDish: 60,
     selectionLimits: {
       salads: 5,
-      first_courses: 3,
       main_courses: 3,
       side_dishes: 2,
     },
@@ -43,11 +42,13 @@ const EngagementOffer = () => {
           "צלי בקר מספר 5",
           "צלי בקר מספר 6",
           "בשר ראש עם חומוס",
+          "פרגית ממולא",
       ],
       side_dishes: [
         "זיתים מרוקאים",
       "ארטישוק ופטריות",
         "קוסקוס עם ירקות",
+        "טנזיה",
       ],
     },
   },
@@ -112,7 +113,7 @@ const EngagementOffer = () => {
                 
                      5 סוגי סלטים לבחירה ✔      <br />
                     3 מנות עיקריות לבחירה ✔<br />
-                    3 תוספות לבחירה ✔ <br />
+                    2 תוספות לבחירה ✔ <br />
                   </Typography>
 
 

@@ -22,6 +22,12 @@ import imgApnina from "../../assets/imgs/img3.jpeg";
 import OffersSection from "../Main/Offers/OffersSection";
 import { motion } from "framer-motion";
 
+// דברים לתקן 1. תפריט אזכרות מה להוריד 
+// 2.
+
+
+
+
 
 
 const images = [

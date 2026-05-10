@@ -7,8 +7,8 @@ import Grid from '@mui/material/Grid2';
 const OffersSection = () => {
   return (
     <Container sx={{ py: 6 }}>
-      <Typography variant="h4" textAlign="center" fontWeight="bold" gutterBottom>
-         חבילות לאירועים 
+      <Typography variant="h4" textAlign="center"  gutterBottom>
+         חבילות תפריטים שונים  
       </Typography>
       <Grid size={{ xs: 12, sm:4 }} container spacing={1}>
         {/* חתונה */}

@@ -54,7 +54,7 @@ const WeddingOffer = () => {
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
          
             <Typography variant="h5" fontWeight="bold" fontSize="1.3rem">
-            התפריט העשיר 
+           GOLD  תפריט   
             </Typography>
           </Box>
 

@@ -240,7 +240,7 @@ const Home = () => {
           gutterBottom
           fontSize={{ xs: "0.75rem", md: "inherit" }}
         >
-          הזמנות אונליין
+          הזמנות אוכל אונליין
         </Typography>
 
         <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
@@ -259,7 +259,7 @@ const Home = () => {
           fontWeight="bold"
           fontSize={{ xs: "1.25rem", md: "2rem" }}
         >
-          הצעת מחיר לאירוע שלכם
+        להזמנת אוכל מוכן 
         </Typography>
 
         <Typography
@@ -270,7 +270,7 @@ const Home = () => {
             fontSize: { xs: "0.9rem", md: "1rem" },
           }}
         >
-          .האתר שלנו מציע שירות הזמנות אונליין מהיר ונוח,  עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
+          .האתר שלנו מציע שירות הזמנות אוכל אונליין מהיר ונוח,  עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
         </Typography>
 
         <Typography
@@ -284,12 +284,12 @@ const Home = () => {
         </Typography>
 
 
-        <List dense sx={{ textAlign: "center" }}>
+        <List dense sx={{ textAlign: "center" }}> 
+          <ListItemText primary="✔ אזכרות" />
           <ListItemText primary="✔ ברית מילה" />
-          <ListItemText primary="✔ אירוסין / חינה" />
           <ListItemText primary="✔ בר/בת מצווה" />
           <ListItemText primary="✔ כנסים ואירועי תרבות" />
-          <ListItemText primary="✔  חתונות" />
+          <ListItemText primary="✔  שמחה משפחתית ועוד"  />
         </List>
 
         {/* כפתור */}
@@ -307,7 +307,7 @@ const Home = () => {
           }}
           href="/ordersOnline"
         >
-          <Typography variant="button">להצעת מחיר בתפריט</Typography>
+          <Typography variant="button">להזמנת אוכל לחצו </Typography>
         </Button>
       </Card>
     </Grid2>
@@ -316,7 +316,7 @@ const Home = () => {
     <Grid2 size={{ xs: 12, sm: 6 }} md={1} order={{ md: 1 }}>
     <img
         src='https://res.cloudinary.com/dhkegagjk/image/upload/v1752410371/IMG-20250713-WA0099_vqvudj.jpg'
-        alt="אוכל קיירינט הפנינה"
+        alt="אוכל קייטרינג הפנינה"
         style={{
           objectFit: "cover",
           width: "100%",
@@ -329,19 +329,9 @@ const Home = () => {
   </Grid2>
 </Container>
 
-{/* קטע החבילות  */}
-<OffersSection />
 
 
-
-{/* ------------------------------------------------------------------------------------- */}
-
-
-{/* חבילה של כמה אלמנטים */}
- <Box sx={{ width: "100%",  overflowX: "hidden",  boxSizing: "border-box",  padding: 0,  margin: 0, }}>
-   
-
-  {/* קטע תמונה שקופה 1  */}
+{/* קטע תמונה צפה ראשונה  */}
  <Box
   sx={{
     width: "100%",
@@ -424,7 +414,17 @@ const Home = () => {
 
 </Box>
 
-{/* ----------------------------------------------------------- */}
+{/* קטע החבילות  */}
+<OffersSection />
+
+
+
+{/* ------------------------------------------------------------------------------------- */}
+
+
+{/* חבילה של כמה אלמנטים */}
+ <Box sx={{ width: "100%",  overflowX: "hidden",  boxSizing: "border-box",  padding: 0,  margin: 0, }}>
+   
 
  {/* כרטיס ותמונה מיוחדות שלנו  */}
 <Container sx={{ py: { xs: 2, md: 4 }, width: "100%" }}>

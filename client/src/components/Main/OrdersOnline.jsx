@@ -306,7 +306,7 @@ const removeNonHebrew = (text) => {
            return {
             dish_name: mainDish.dish_name,
             totalPrice: totalPrice.toFixed(2),
-            totalWeight: Number(totalWeight).toFixed(2),
+            totalWeight: (totalWeight / 1000).toFixed(1),
             dishWeight: mainDish.weight  // הוספה חשובה!
           };
 
@@ -336,8 +336,8 @@ const removeNonHebrew = (text) => {
             side_dishes: selectedSidesData
         };
 
-        // הוספת רווח של 40%
-          const profitRate = 0.4; // 40%
+        // הוספת רווח של 80%
+          const profitRate = 0.8; // 80%
           const profitAmount = total * profitRate; // שיעור רווח 
           total += profitAmount; // הוספת הרווח
         

@@ -76,6 +76,9 @@ const [editModalOpen, setEditModalOpen] = useState(false);
 const [editField, setEditField] = useState('');
 const [editValue, setEditValue] = useState('');
 
+// פרטי הנהג המובין בתפריט 
+const [driverName, setDriverName] = useState('');
+const [driverPhone, setDriverPhone] = useState('');
 
  // קריאה לשרת לקבלת התפריט הכללי
   useEffect(() => {
@@ -281,8 +284,15 @@ const currentDate = new Date().toLocaleDateString('he-IL');
   </div>
 
   <h2 style="text-align: center; font-weight: bold;">קייטרינג הפנינה - ארוגטי</h2>
-  <div style="font-size: 16px; text-align: center;">תאריך האירוע: ${EventDate}</div>
-  ${pickupTime ? `<div style="font-size: 10px; text-align: center; margin-top: 8px;"><strong>שעת איסוף:</strong> ${pickupTime}</div>` : ''}
+  <div style="font-size: 16px; text-align: center;">תאריך ביצוע הזמנה: ${EventDate}</div>
+  ${pickupTime ? `<div style="font-size: 15px; text-align: center; margin-top: 8px;"><strong>מוכן לשעה :</strong> ${pickupTime}</div>` : ''}
+${driverName ? `
+<div style="text-align:center; margin-top:5px;">
+  <span style="display:inline-block; font-size:10px; border:0.7px solid black; padding:4px 10px; border-radius:6px;">
+    <strong>נהג:</strong>  ${driverName} &nbsp;&nbsp;|&nbsp;&nbsp;  <strong>טלפון:</strong>  ${driverPhone}
+  </span>
+</div>` : ''}
+
 `;
 
 
@@ -332,7 +342,7 @@ const formatDisplayWeight = (weight, dishWeight) => {
   const isUnits = dishWeight > 0 && dishWeight < 2;
 
  if (isUnits) return `${parseInt(weight)} מנות`;
-  if (weight >= 1000) return `${(weight / 1000).toFixed(2)} ק"ג`;
+  if (weight >= 1000) return `${(weight / 1000).toFixed(3)} ק"ג`;
   return `${parseInt(weight)} גרם`;
 };
 
@@ -907,6 +917,23 @@ const currentDate = new Date().toLocaleDateString('he-IL');
                   style={{ width: '140px', marginBottom: '8px', padding: '6px', fontSize: '16px' }}
                   placeholder="שעת איסוף"
                  />
+                 <input
+  type="text"
+  className="kitchen-order-action-button"
+  placeholder="שם הנהג"
+  value={driverName}
+  onChange={(e) => setDriverName(e.target.value)}
+  style={{ width: '140px', marginBottom: '8px', padding: '6px', fontSize: '16px' }}
+/>
+
+<input
+  type="tel"
+  className="kitchen-order-action-button"
+  placeholder="טלפון הנהג"
+  value={driverPhone}
+  onChange={(e) => setDriverPhone(e.target.value)}
+  style={{ width: '140px', marginBottom: '8px', padding: '6px', fontSize: '16px' }}
+/>
 
 
         <button className="kitchen-order-action-button" onClick={() => handleShareWhatsApp()}title='שליחה בוואצאפ למטבח'><BsWhatsapp /> שלח וואצאפ</button>

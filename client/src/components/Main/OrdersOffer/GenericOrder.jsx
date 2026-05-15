@@ -479,7 +479,7 @@ const createOrderSummary = () => {
         fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" },
       }}
     >
-      מחיר למנה: {pricePerDish} ₪
+      מחיר למנה: {pricePerDish} ₪ אינו כולל מע'מ 
     </Typography>
 
     <Typography

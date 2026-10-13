@@ -1,6 +1,10 @@
 import { Card, CardContent, Typography, Button, Box } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+
+
+// ?
+
 const EventOfferCard = ({ title, price, details, href }) => {
   return (
     <Card sx={{ boxShadow: 3, borderRadius: 4, padding: 3, minHeight: 300 }}>

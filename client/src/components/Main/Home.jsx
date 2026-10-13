@@ -1,8 +1,8 @@
-import  { useState ,useEffect} from 'react';
+import  { useState } from 'react';
 import TextMove from "../Main/textMove";
 import NavbarHome from "../Main/NavbarHome";
 import { Typography, List,  ListItemText } from "@mui/material";
-import { Box, Button, Container, Card } from "@mui/material";
+import { Box, Button, Container, Card , ListItem,} from "@mui/material";
 import {
   CheckCircleOutline,
   RestaurantMenu,
@@ -17,14 +17,9 @@ import Grid2 from '@mui/material/Grid2';
 import Footer from './Footer';
 import ContactSection from "./ContactSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import imgApnina from "../../assets/imgs/img3.jpeg";
-
 import OffersSection from "../Main/Offers/OffersSection";
-import { motion } from "framer-motion";
-
-// דברים לתקן 1. תפריט אזכרות מה להוריד 
-// 2.
-
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 
 
 
@@ -220,199 +215,437 @@ const Home = () => {
 
 
 {/* כרטיס קייטרינג */}
-<Container sx={{ py: { xs: 2, md: 4 }, width: "100%" }}>
-  <Grid2 container spacing={2}>
-    <Grid2 size={{ xs: 12, sm: 6 }} md={6} order={{ md: 2 }}>
+{/* שני כרטיסי קייטרינג - רספונסיביים */}
+<Container
+  maxWidth={false}
+  sx={{
+    py: { xs: 2, md: 4 },
+    px: { xs: 2, md: 4 },
+    width: "100%",
+    boxSizing: "border-box",
+  }}
+>
+  <Grid2
+    container
+    spacing={3}
+    alignItems="stretch"
+  >
+
+
+     {/* כרטיס 1 - אוכל מוכן */}
+    <Grid2 size={{ xs: 12, md: 6 }}>
       <Card
         sx={{
-          boxShadow: 3,
-          p: { xs: 2, md: 7 },
-          height: "auto",
+          position: "relative",
+          height: "100%",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
           borderRadius: 4,
-          textAlign: "center",
+          overflow: "hidden",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
           backgroundColor: "#fff",
         }}
       >
-        <Typography
-          variant="overline"
-          display="block"
-          fontWeight="bold"
-          gutterBottom
-          fontSize={{ xs: "0.75rem", md: "inherit" }}
+        {/* סרט כתום */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 22,
+            left: -39,
+            width: 145,
+            py: 0.8,
+            textAlign: "center",
+            transform: "rotate(-45deg)",
+            background: "linear-gradient(135deg, #ff9800, #f57c00)",
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: "1rem",
+            zIndex: 2,
+            boxShadow: 2,
+          }}
         >
-          הזמנות אוכל אונליין
-        </Typography>
+         חדש
+        </Box>
 
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-          <Box
+        {/* תוכן הכרטיס */}
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            p: { xs: 3, md: 2.5 },
+            pt: { xs: 5, md: 3 },
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="h4"
             sx={{
-              width: "40px",
-              height: "2px",
-              backgroundColor: "#333",
+              fontWeight: 800,
+              color: "#374151",
+              mb: 1.5,
+              fontSize: { xs: "1.7rem", md: "1.8rem" },
+            }}
+          >
+          משלוח אוכל מוכן 
+          </Typography>
+
+          <Divider
+            sx={{
+              width: 65,
+              height: 4,
+              borderRadius: 5,
+              backgroundColor: "#f57c00",
+              mb: 2,
+              border: 0,
+            }}
+          />
+
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: "#424b57",
+              mb: 1.5,
+              fontSize: { xs: "1.1rem", md: "1.2rem" },
+            }}
+          >
+           ! מגוון מנות עשיר
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#5f6670",
+              fontSize: { xs: "0.95rem", md: "0.95rem" },
+              lineHeight: 1.8,
+              mb: 2,
+            }}
+          >
+           הוסף לסל הקניות מבחר מנות עשיר ומגוון מבלי לצאת מהבית ,
+          . צפו בתפריט הכולל מנות עשירות והזמינו ישירות מהאתר
+          </Typography>
+
+          <Typography
+            sx={{
+              fontSize: { xs: "1rem", md: "1.05rem" },
+              fontWeight: 800,
+              color: "#374151",
+              mb: 0.5,
+            }}
+          >
+          :מתאימים לכל סוגי האירועים
+          </Typography>
+
+          <List
+            dense
+            sx={{
+              width: "100%",
+              maxWidth: 300,
+              p: 0,
+              mb: 1,
+            }}
+          >
+            {[
+              "אזכרות",
+              "ברית מילה",
+              "בר/בת מצווה",
+              "כנסים ואירועי תרבות",
+              "שמחה משפחתית ועוד",
+            ].map((item) => (
+              <ListItem
+                key={item}
+                sx={{ py: 0.25, px: 0, gap: 1 }}
+              >
+                <CheckCircleIcon
+                  sx={{ color: "#27864b", fontSize: 21 }}
+                />
+                <ListItemText
+                  primary={item}
+                  primaryTypographyProps={{
+                    fontSize: { xs: "0.95rem", md: "0.95rem" },
+                    color: "#4b5563",
+                    textAlign: "right",
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Button
+            variant="contained"
+            href="/MainCourse"
+            endIcon={<ArrowBackIcon />}
+            sx={{
+              mt: 2,
+              px: { xs: 3, md: 2.5 },
+              py: 1.3,
+              borderRadius: 3,
+              background: "linear-gradient(135deg, #ff9800, #f57c00)",
+              color: "#fff",
+              fontSize: { xs: "0.95rem", md: "0.9rem" },
+              fontWeight: 800,
+              boxShadow: "0 5px 14px rgba(245,124,0,0.3)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #f57c00, #e96b00)",
+              },
+            }}
+          >
+            להזמנת אוכל מוכן לחצו
+          </Button>
+        </Box>
+
+
+        {/* תמונת האוכל */}
+        <Box
+          sx={{
+            width: { xs: "100%", md: "40%" },
+            height: { xs: 260, md: "auto" },
+            minHeight: { md: 480 },
+            p: { xs: 1.5, md: 1.5 },
+            boxSizing: "border-box",
+            flexShrink: 0,
+          }}
+        >
+          <Box
+            component="img"
+            src="https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0131_ugknys.jpg"
+            alt="מבחר מנות אוכל מוכן של קייטרינג הפנינה"
+            sx={{
+              width: "100%",
+              height: { xs: 260, md: "100%" },
+              minHeight: { md: 450 },
+              objectFit: "cover",
+              display: "block",
+              borderRadius: 3,
             }}
           />
         </Box>
-
-        <Typography
-          variant="h5"
-          gutterBottom
-          fontWeight="bold"
-          fontSize={{ xs: "1.25rem", md: "2rem" }}
-        >
-        להזמנת אוכל מוכן 
-        </Typography>
-
-        <Typography
-          variant="body2"
-          sx={{
-            textAlign: "center",
-            mb: 2,
-            fontSize: { xs: "0.9rem", md: "1rem" },
-          }}
-        >
-          .האתר שלנו מציע שירות הזמנות אוכל אונליין מהיר ונוח,  עם מערכת הזמנות פשוטה, תוכל לבחור את התפריט המושלם, להוסיף פרטים אישיים ולהזמין בקלות ישירות מהאתר שלנו, מבלי לצאת מהבית
-        </Typography>
-
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          fontWeight="bold"
-          textAlign="center"
-          fontSize={{ xs: "1rem", md: "1.25rem" }}
-        >
-          !! הצעת מחיר דרך האתר
-        </Typography>
-
-
-        <List dense sx={{ textAlign: "center" }}> 
-          <ListItemText primary="✔ אזכרות" />
-          <ListItemText primary="✔ ברית מילה" />
-          <ListItemText primary="✔ בר/בת מצווה" />
-          <ListItemText primary="✔ כנסים ואירועי תרבות" />
-          <ListItemText primary="✔  שמחה משפחתית ועוד"  />
-        </List>
-
-        {/* כפתור */}
-        <Button
-          variant="contained"
-          color="success"
-          endIcon={<ArrowBackIcon />}
-          sx={{
-            mt: 3,
-            px: { xs: 3, md: 4 },
-            py: { xs: 1, md: 1.5 },
-            fontSize: { xs: "0.9rem", md: "1rem" },
-            fontWeight: "bold",
-            borderRadius: 8,
-          }}
-          href="/ordersOnline"
-        >
-          <Typography variant="button">להזמנת אוכל לחצו </Typography>
-        </Button>
       </Card>
     </Grid2>
 
-    {/* תמונה */}
-    <Grid2 size={{ xs: 12, sm: 6 }} md={1} order={{ md: 1 }}>
-    <img
-        src='https://res.cloudinary.com/dhkegagjk/image/upload/v1752410371/IMG-20250713-WA0099_vqvudj.jpg'
-        alt="אוכל קייטרינג הפנינה"
-        style={{
-          objectFit: "cover",
-          width: "100%",
-          height: "100%",
-          borderRadius: "8px",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-        }}      
-      /> 
-    </Grid2>
-  </Grid2>
-</Container>
-
-
-
-{/* קטע תמונה צפה ראשונה  */}
- <Box
-  sx={{
-    width: "100%",
-    minHeight: "500px",
-    position: "relative",
-    backgroundImage:
-      "url('https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0131_ugknys.jpg')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundAttachment: "fixed",
-  }}
->
-  {/* שכבת כהות */}
-  <Box
+{/* כרטיס 2 - הזמנות תפריטים אונליין */}
+<Grid2 size={{ xs: 12, md: 6 }}>
+  <Card
     sx={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
+      position: "relative",
+      overflow: "hidden",
+      boxShadow: "0 8px 28px rgba(24, 60, 48, 0.12)",
+      p: { xs: 3, md: 4 },
       height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.4)",
-      zIndex: 1,
-    }}
-  />
-
-  {/* טקסט במרכז */}
-  <Box
-    sx={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 2,
+      boxSizing: "border-box",
+      borderRadius: 4,
       textAlign: "center",
-      width: "90%",           // מתאים לרוחב המסך
-      maxWidth: "1000px",     // לא יחרוג גם במסך רחב
-      mx: "auto",
-      px: 2,
+      background: "linear-gradient(180deg, #ffffff 0%, #f3f8f5 100%)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      border: "1px solid #e1ebe5",
+      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+      "&:hover": {
+        transform: "translateY(-5px)",
+        boxShadow: "0 14px 32px rgba(24, 60, 48, 0.18)",
+      },
     }}
   >
-    <Typography
-      variant="h4"
+    {/* פס עיצוב עליון */}
+    <Box
       sx={{
-        color: "#fff",
-        fontWeight: "bold",
-        textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 7,
+        background: "linear-gradient(90deg, #086041, #78a88b)",
+      }}
+    />
+
+    {/* סמל */}
+    <Box
+      sx={{
+        mt: 1,
         mb: 2,
-        fontSize: { xs: "1.8rem", md: "2rem" },
+        width: 66,
+        height: 66,
+        borderRadius: "22px",
+        backgroundColor: "#e1efe6",
+        color: "#236247",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "inset 0 0 0 1px #cfe2d5",
       }}
     >
-      ברוכים הבאים לקייטרינג הפנינה
+      <RestaurantMenuIcon sx={{ fontSize: 36 }} />
+    </Box>
+
+    <Typography
+      variant="overline"
+      sx={{
+        color: "#397456",
+        fontWeight: 800,
+        letterSpacing: 1,
+        fontSize: "0.8rem",
+      }}
+    >
+      מזמינים בקלות ובנוחות
     </Typography>
 
     <Typography
       variant="h5"
       sx={{
-        color: "#fff",
-        fontWeight: "bold",
-        textShadow: "1px 1px 6px rgba(0,0,0,0.7)",
+        fontWeight: 800,
+        color: "#203d30",
+        mt: 1,
         mb: 2,
-        fontSize: { xs: "1.2rem", md: "1.6rem" },
-        lineHeight: 1.6,
+        fontSize: { xs: "1.45rem", md: "1.8rem" },
       }}
     >
-      טעם של חגיגה בכל ביס – באירועים עסקיים, משפחתיים ופרטיים
+      הזמנות תפריטים אונליין
     </Typography>
+
+    <Box
+      sx={{
+        width: 55,
+        height: 3,
+        borderRadius: 5,
+        backgroundColor: "#78a88b",
+        mb: 2.5,
+      }}
+    />
 
     <Typography
-      variant="h6"
       sx={{
-        color: "#fff",
-        textShadow: "1px 1px 5px rgba(0,0,0,0.6)",
-        fontSize: { xs: "1rem", md: "1.2rem" },
-        lineHeight: 1.6,
+        textAlign: "center",
+        mb: 3,
+        fontSize: { xs: "0.95rem", md: "1rem" },
+        lineHeight: 1.9,
+        color: "#59665f",
       }}
     >
-      קייטרינג מקצועי עם טאץ' אישי • חומרי גלם טריים ואיכותיים • חוויה קולינרית בלתי נשכחת
+      רוצים להזמין אוכל לאירוע שלכם בלי לצאת מהבית?
+      אצלנו תוכלו לבחור תפריט מתאים, למלא את הפרטים
+      ולקבל הצעת מחיר פשוטה, נוחה ומהירה
     </Typography>
-  </Box>
 
-</Box>
+    {/* אזור סוגי האירועים */}
+    <Box
+      sx={{
+        width: "100%",
+        backgroundColor: "#ffffff",
+        border: "1px solid #e0ebe3",
+        borderRadius: 3,
+        p: { xs: 2, md: 2.5 },
+        mb: 2,
+        boxSizing: "border-box",
+      }}
+    >
+      <Typography
+        sx={{
+          fontWeight: 800,
+          color: "#294f3c",
+          mb: 1.5,
+          fontSize: "1.05rem",
+        }}
+      >
+        לאילו אירועים אפשר להזמין?
+      </Typography>
+
+      <List dense sx={{ p: 0 }}>
+        {[
+          "אזכרות",
+          "ברית מילה",
+          "בר/בת מצווה",
+          "כנסים ואירועי תרבות",
+          "שמחות משפחתיות ועוד",
+        ].map((item) => (
+          <ListItem
+            key={item}
+            sx={{
+              py: 0.55,
+              px: 0,
+              gap: 1.2,
+              borderBottom: "1px solid #edf2ee",
+              "&:last-child": {
+                borderBottom: "none",
+              },
+            }}
+          >
+            <CheckCircleIcon
+              sx={{
+                color: "#43845f",
+                fontSize: 21,
+                flexShrink: 0,
+              }}
+            />
+
+            <ListItemText
+              primary={item}
+              primaryTypographyProps={{
+                textAlign: "right",
+                fontSize: { xs: "0.92rem", md: "0.98rem" },
+                color: "#46564c",
+                fontWeight: 500,
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+
+    <Typography
+      sx={{
+        color: "#68776d",
+        fontSize: "0.9rem",
+        mb: 1,
+      }}
+    >
+      התפריט המתאים לאירוע שלכם מתחיל כאן
+    </Typography>
+
+    <Box sx={{ flexGrow: 1 }} />
+
+    {/* כפתור בסגנון שונה מכרטיס האוכל המוכן */}
+    <Button
+      variant="contained"
+      href="/ordersOnline"
+      endIcon={<ArrowBackIcon />}
+      sx={{
+        mt: 2,
+        px: { xs: 3, md: 4 },
+        py: 1.4,
+        borderRadius: "12px",
+        backgroundColor: "#245b43",
+        color: "#fff",
+        fontWeight: 800,
+        fontSize: { xs: "0.95rem", md: "1rem" },
+        boxShadow: "0 5px 14px rgba(36, 91, 67, 0.2)",
+        "&:hover": {
+          backgroundColor: "#194631",
+          boxShadow: "0 8px 20px rgba(36, 91, 67, 0.3)",
+        },
+      }}
+    >
+      להזמנת תפריט לחצו
+    </Button>
+  </Card>
+</Grid2>
+
+
+
+
+  </Grid2>
+</Container>
+
+
+
+
+
+
 
 {/* קטע החבילות  */}
 <OffersSection />

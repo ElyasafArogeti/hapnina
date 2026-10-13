@@ -8,6 +8,10 @@ import Footer from './Footer';
 import Grid from '@mui/material/Grid2'; 
 import axios from 'axios';
 import TextMove from './textMove';
+
+
+//    דף יצירת קשר
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -162,7 +166,7 @@ const Contact = () => {
           <Box display="flex" alignItems="center" gap={2} sx={{ flexDirection: 'row-reverse' }}>
             <LocationOn sx={{ fontSize: 28, color: '#0072e3' }} />
             <Typography variant="body1" sx={{ fontSize: '1rem' }}>
-             מושב עין צורים 
+             גבעת שאול ירושלים 
             </Typography>
           </Box>
 

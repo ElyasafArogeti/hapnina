@@ -20,6 +20,10 @@ import logo from "../../assets/imgs/logo.jpg";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+// קישורים בחלק העליון 
+
+
+
 const NavbarHome = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -181,10 +185,13 @@ const handleNavigateToRentals = () => { //אזכרות
 
   const dropdownItems = [
     {label: "תפריט אירועים", to: "/OrdersOnline"},
+    {label: "אוכל מוכן עד הבית ", to: "/MainCourse"},
     { label: "תפריט לבר מצווה", onClick: handleNavigateToBarMitzvah },
     { label: "תפריט לברית",  onClick: handleNavigateToBrit },
     { label: "תפריט לאזכרות",  onClick: handleNavigateToRentals },
   ];
+
+
 
   return (
     <Box
@@ -229,6 +236,7 @@ const handleNavigateToRentals = () => { //אזכרות
       <Box sx={{ display: { xs: "none", md: "flex" }, gap: "1rem" }}>
         {[
           { label: "דף הבית", to: "/" },
+          { label: "אוכל מוכן עד הבית", to: "/MainCourse" },
           { label: "שאלות ותשובות", to: "/FAQAccordion" },
           { label: "קצת עלינו", to: "/about" },
           { label: "צור קשר", to: "/contact" }
@@ -366,7 +374,7 @@ const handleNavigateToRentals = () => { //אזכרות
             >
               <Box>
                <List>
-  {[{ label: "דף הבית", to: "/" }, { label: "קצת עלינו", to: "/about" }, { label: "צור קשר", to: "/contact" }, { label: "שאלות ותשובות", to: "/FAQAccordion" }].map(
+  {[{ label: "דף הבית", to: "/" },{ label: " אוכל מוכן עד הבית ", to: "/MainCourse" }, { label: "קצת עלינו", to: "/about" }, { label: "צור קשר", to: "/contact" }, { label: "שאלות ותשובות", to: "/FAQAccordion" }].map(
     (link, index) => (
       <ListItem key={index} disablePadding>
         <ListItemButton

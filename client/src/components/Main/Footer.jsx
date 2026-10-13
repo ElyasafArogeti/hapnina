@@ -37,7 +37,7 @@ const Footer = () => {
               />
             </Link>
             <Typography variant="body2">
-              קייטרינג איכותי עם שירות אישי, באירועים קטנים וגדולים – מושב עין צורים.
+              קייטרינג איכותי עם שירות אישי, באירועים קטנים וגדולים –  גבעת שאול ירושלים   .
             </Typography>
           </Grid>
 
@@ -68,7 +68,7 @@ const Footer = () => {
           <Grid item xs={12} md={3}>
             <Typography variant="h6" gutterBottom>צור קשר</Typography>
             <Typography variant="body2" gutterBottom>
-              מושב עין צורים, ישראל<br />
+              גבעת שאול ירושלים <br />
               שירות לקוחות: <MuiLink href="tel:+972548520195" color="inherit">054-8520-195</MuiLink><br />
               אימייל: <MuiLink href="mailto:hpnina6600200@gmail.com" color="inherit">hpnina6600200@gmail.com</MuiLink>
             </Typography>

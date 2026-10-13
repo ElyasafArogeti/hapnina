@@ -4,6 +4,10 @@ import WeddingOffer from "./WeddingOffer";// חתונה
 import EngagementOffer from "./EngagementOffer";//אירוסין
 import BritOffer from "./BritOffer";//ברית
 import Grid from '@mui/material/Grid2';
+
+// חלק החבילות בדף הבית 
+
+
 const OffersSection = () => {
   return (
     <Container sx={{ py: 6 }}>

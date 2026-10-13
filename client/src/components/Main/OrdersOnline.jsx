@@ -27,6 +27,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { Container } from '@mui/material';
 
+//  התפריט הכללי 
+
 
 const OrdersOnline = () => {
     const Navigate = useNavigate();
@@ -37,6 +39,7 @@ const OrdersOnline = () => {
         salads: [],
         side_dishes: []
     });
+    
     const [onlineOrderMain, setOnlineOrderMain] = useState(true);//התפריט הראשי
 
     const [loginUser, setLoginUser] = useState(null); // להירשם למערכת   
@@ -1750,7 +1753,7 @@ return (
           'גוש עציון': 350,
           'הרצליה והסביבה': 400,
           'חיפה וצפון': 500,
-          'איסוף עצמי: מושב עין צורים': 0,
+          'איסוף עצמי:  גבעת שאול ירושלים ': 0,
         };
 
         const cost = regionShippingPrices[e.target.value] ?? 0;
@@ -1766,7 +1769,7 @@ return (
       <MenuItem value="גוש עציון">גוש עציון</MenuItem>
       <MenuItem value="הרצליה והסביבה">הרצליה והסביבה</MenuItem>
       <MenuItem value="חיפה וצפון">חיפה וצפון</MenuItem>
-      <MenuItem value="איסוף עצמי: מושב עין צורים">איסוף עצמי: מושב עין צורים</MenuItem>
+      <MenuItem value="איסוף עצמי:  גבעת שאול ירושלים  ">איסוף עצמי: גבעת שאול ירושלים  </MenuItem>
     </Select>
   </FormControl>
 
@@ -1782,7 +1785,7 @@ return (
 )}
 
 
-  {shippingCost === 0 && deliveryRegion === 'איסוף עצמי: מושב עין צורים' && (
+  {shippingCost === 0 && deliveryRegion === 'איסוף עצמי: מושב  גבעת שאול ירושלים  ' && (
     <Typography variant="body2" color="text.secondary">
       הזמנה לא כוללת דמי משלוח (איסוף עצמי)
     </Typography>

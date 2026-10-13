@@ -27,6 +27,10 @@ import NavbarHome from './NavbarHome';
 import { useLocation } from 'react-router-dom';
 import { styled } from '@mui/system';
 
+
+// דף אזור אישי ללקוח 
+
+
 // סטייל מותאם ל-TableCell
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontWeight: 'bold',

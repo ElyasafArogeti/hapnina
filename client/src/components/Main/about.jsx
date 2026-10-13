@@ -8,6 +8,10 @@ import ContactSection from "./ContactSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BsWhatsapp, BsTelephoneOutbound } from 'react-icons/bs';
 
+
+// אודות 
+
+
 const About = () => {
   return (
     <Box sx={{ backgroundColor: '#f9f9f9', width: '100%',direction: 'rtl'}}>

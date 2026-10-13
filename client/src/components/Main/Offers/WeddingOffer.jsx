@@ -3,7 +3,9 @@ import { Card, Typography, Button, Box } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useNavigate } from "react-router-dom";
 
-// חתונה 
+
+
+// תפריט GOLD  
 
 const WeddingOffer = () => {
   const navigate = useNavigate();

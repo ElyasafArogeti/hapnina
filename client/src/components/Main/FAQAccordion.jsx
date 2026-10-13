@@ -14,6 +14,8 @@ import Footer from './Footer';
 import img from '../../assets/imgs/imgFAQ.jpeg';
 import TextMove from './textMove';
 
+//  דף שאלות ותשובות 
+
 
 const faqs = [
   {

@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 const BarMitzvahOffer = () => {
   const navigate = useNavigate();
+  
+// תפריט בר מצווה 
 
   const handleClick = () => { // לא לשכוח לשנות פרטים גם בקישורים
   navigate("/GenericOrder", {

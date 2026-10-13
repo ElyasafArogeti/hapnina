@@ -8,6 +8,11 @@ import { Visibility, VisibilityOff } from "@mui/icons-material"; // אייקונ
 import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import Divider from '@mui/material/Divider';
 
+
+// דף אזור אישי 
+
+
+
 const PersonalAreaLogin = () => {
   const navigate = useNavigate();
 

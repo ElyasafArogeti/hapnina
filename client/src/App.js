@@ -31,6 +31,7 @@ import BarMitzvahOffer from './components/Main/Offers/BarMitzvahOffer';
 
 import GenericOrder from './components/Main/OrdersOffer/GenericOrder'
 import FAQAccordion from './components/Main/FAQAccordion';
+import Checkout from './components/Main/Checkout';
 
 
 function App() {
@@ -48,7 +49,8 @@ function App() {
           <Route path='/textMove' element={<TextMove />} />
           <Route path='/MainCourse' element={<MainCourse />} />
           <Route path='/FAQAccordion' element={<FAQAccordion />} />
-        
+          <Route path='/Checkout' element={<Checkout />} />
+
 
 <Route path='/OffersSection' element={<OffersSection />} />
 <Route path='/BarMitzvahOffer' element={<BarMitzvahOffer />} />

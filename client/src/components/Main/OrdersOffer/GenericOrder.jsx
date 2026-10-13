@@ -50,6 +50,10 @@ const MenuSection = ({ title, dishes, selected, setSelected }) => (
   </Card>
 );
 
+
+//   דף גנרי לתצוגת תפריטי חבילות 
+
+
 const GenericOrder = () => {
   
   const { state } = useLocation();
@@ -225,6 +229,8 @@ const validateFinalForm = () => {// בדיקת הלקוח
 
     const orderSummary = createOrderSummary();
 
+    console.log(orderSummary);
+    
     const total = pricePerDish * guestCount ;
     
     
@@ -291,6 +297,9 @@ const createOrderSummary = () => {
     side_dishes: extractDishNames(menuData.side_dishes, selectedSides),
   };
 };
+
+
+
 
 
   return (
@@ -555,7 +564,11 @@ const createOrderSummary = () => {
       dir="rtl">
     <Footer /> 
       </Box>
+   
 
+
+
+   
       {/* מודל פרטי לקוח */}
  <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
   <Box

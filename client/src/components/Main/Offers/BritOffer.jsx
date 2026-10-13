@@ -7,6 +7,7 @@ const BritOffer = () => {
   const navigate = useNavigate();
 
   // תפריט ברית 
+  
   const handleClick = () => {
  navigate("/GenericOrder", {
   state: {

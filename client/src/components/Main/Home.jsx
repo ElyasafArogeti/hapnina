@@ -552,7 +552,7 @@ const Home = () => {
           fontSize: "1.05rem",
         }}
       >
-        לאילו אירועים אפשר להזמין?
+      ?  לאילו אירועים אפשר להזמין
       </Typography>
 
       <List dense sx={{ p: 0 }}>

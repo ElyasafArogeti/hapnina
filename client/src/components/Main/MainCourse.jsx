@@ -862,6 +862,11 @@ const categories = [
     image:
       "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411441/IMG-20250713-WA0107_w1m5cg.jpg",
   },
+  {
+    name: "לשבתות ",
+    image:
+      "https://res.cloudinary.com/dhkegagjk/image/upload/v1791904848/%D7%AA%D7%9E%D7%95%D7%A0%D7%94_%D7%A9%D7%91%D7%AA_jmcv5t.jpg",
+  },
 ];
 
 

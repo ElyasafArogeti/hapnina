@@ -139,11 +139,13 @@ const BarMitzvahOffer = () => {
 
           <Box textAlign="center">
             <Button
-              variant="contained"
-              color="warning"
-              translate="no"
+              sx={{  background: "linear-gradient(135deg, #f5df9b, #c6a24b, #a47b25)",
+              color: "#17130a",
+              fontSize: { xs: "0.95rem", md: "0.9rem" },
+              fontWeight: 800,
+              boxShadow: "0 5px 14px rgba(198,162,75,0.22)", borderRadius: 8, px: 4, py: 1, fontWeight: "bold"}}
               onClick={handleClick}
-              sx={{ borderRadius: 8, px: 4, py: 1, fontWeight: "bold" }}
+            
             >
              להזמנת תפריט בר מצווה 
             </Button>

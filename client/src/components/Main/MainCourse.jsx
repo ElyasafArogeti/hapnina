@@ -32,11 +32,12 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 
 
 
-// פונקציית חישוב המנה כולל הרווח והמעמ 
+// חישוב מחיר ללקוח כולל 50% רווח ומע"מ 18%
+// עיגול תמיד כלפי מעלה לשקל שלם
 const calculateCustomerPrice = (price) => {
   if (price == null) return null;
 
-  return Math.round(price * 1.5 * 1.18 * 100) / 100;
+  return Math.ceil(price * 1.5 * 1.18);
 };
 
 // תפריט קייטרינג הפנינה
@@ -1040,7 +1041,6 @@ const filteredDishes = dishes.filter(
 
   </Box>
 </Box>
-
 
 
      {/* קטגוריות */}

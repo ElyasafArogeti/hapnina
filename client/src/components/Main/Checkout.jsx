@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import NavbarHome from "./NavbarHome";
 import TextMove from "./textMove";
 import { apiFetch } from '../api'; 
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
   Dialog,
   DialogTitle,
@@ -217,10 +218,44 @@ console.log(error);
       <NavbarHome />
       <br /><br /><br /><br />
       <TextMove />
+<br />
+{/* כפתור חזרה לעריכת ההזמנה */}
+<Box
+  sx={{
+    display: "flex",
+    justifyContent: "flex-start",
+    mb: 3,
+  }}
+>
+  <Button
+    variant="outlined"
+    startIcon={<ArrowForwardIosIcon />}
+    onClick={() => navigate("/MainCourse")}
+    sx={{
+      direction: "rtl",
+      color: "#8c6a25",
+      borderColor: "#b89546",
+      borderRadius: "12px",
+      px: 2.5,
+      py: 1.2,
+      fontWeight: 700,
+      backgroundColor: "#fff",
+      "&:hover": {
+        backgroundColor: "#faf7ef",
+        borderColor: "#8c6a25",
+      },
+    }}
+  >
+    חזרה לעריכת ההזמנה
+  </Button>
+</Box>
 
-      <Box sx={{ pt: 12, px: { xs: 2, md: 5 } }}>
+      <Box sx={{ pt: 1, px: { xs: 2, md: 5 } }}>
         <Typography variant="h3" textAlign="center" fontWeight={700} sx={{ mt: 4, mb: 5, color: "#444", fontSize: { xs: 34, md: 52 } }}>
           סיכום ההזמנה
+        </Typography>
+        <Typography variant="h5" textAlign="center" fontWeight={700} sx={{ mt: 4, mb: 5, color: "#8c6a25", fontSize: { xs: 16, md: 25 } }}>
+        מינימום הזמנה 1500 ש'ח 
         </Typography>
      
        {/* מלוי פרטים לשליחה  */} 

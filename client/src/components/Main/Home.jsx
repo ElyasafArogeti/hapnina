@@ -68,150 +68,277 @@ const Home = () => {
 
        <TextMove/> 
 
-{/* /קטע וידיאו/ */}
+{/* פתיח יוקרתי – קייטרינג הפנינה */}
 <Box
   sx={{
     width: "100%",
-    height: { xs: "50vh", md: "70vh" },
+    height: { xs: "82svh", sm: "88vh", md: "92vh" },
+    minHeight: { xs: 520, md: 620 },
+    maxHeight: 1000,
     overflow: "hidden",
     position: "relative",
+    isolation: "isolate",
+    bgcolor: "#17130f",
   }}
 >
-  {/* תמונה – תוצג רק כשהווידאו עדיין לא מוכן */}
+  {/* תמונת גיבוי בזמן טעינת הסרטון */}
   {!videoLoaded && (
-    <img
+    <Box
+      component="img"
       src="https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0131_ugknys.jpg"
-      alt="טעינה..."
-      style={{
+      alt="קייטרינג הפנינה"
+      sx={{
+        position: "absolute",
+        inset: 0,
         width: "100%",
         height: "100%",
         objectFit: "cover",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        zIndex: 0,
+        objectPosition: "center",
       }}
     />
   )}
 
-  {/* ווידאו – תמיד קיים, אבל מוסתר עד שיטען */}
-  <video
+  {/* סרטון הרקע */}
+  <Box
+    component="video"
     autoPlay
     muted
     loop
     playsInline
     preload="auto"
-    onCanPlayThrough={() => setVideoLoaded(true)}
-    style={{
+    onCanPlay={() => setVideoLoaded(true)}
+    onError={() => setVideoLoaded(false)}
+    sx={{
+      position: "absolute",
+      inset: 0,
       width: "100%",
       height: "100%",
       objectFit: "cover",
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: 1,
+      objectPosition: "center",
       opacity: videoLoaded ? 1 : 0,
-      transition: "opacity 0.6s ease-in-out",
+      transition: "opacity 1s ease",
     }}
   >
     <source
       src="https://res.cloudinary.com/dhkegagjk/video/upload/q_auto,f_auto/v1752406326/%D7%A1%D7%A8%D7%98%D7%95%D7%9F_%D7%93%D7%A3_%D7%94%D7%91%D7%99%D7%AA_dbzqoz.mp4"
       type="video/mp4"
     />
-    הדפדפן שלך אינו תומך בסרטון.
-  </video>
+  </Box>
 
-
-  {/* שכבת כהות */}
+  {/* שכבת עומק עדינה */}
   <Box
     sx={{
       position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      inset: 0,
+      background: `
+        linear-gradient(
+          180deg,
+          rgba(10, 8, 5, 0.32) 0%,
+          rgba(10, 8, 5, 0.10) 30%,
+          rgba(10, 8, 5, 0.30) 58%,
+          rgba(10, 8, 5, 0.68) 78%,
+          rgba(10, 8, 5, 0.88) 100%
+        )
+      `,
       zIndex: 1,
     }}
   />
 
-  {/* טקסט עם אפקט הופעה מעל הווידאו */}
+  {/* תוכן מרכזי */}
   <Box
     sx={{
       position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
+      inset: 0,
       zIndex: 2,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
       textAlign: "center",
-      color: "#FFF",
-      textShadow: "2px 2px 6px rgba(0,0,0,0.9)",
-      animation: "fadeInUp 1.8s ease-out forwards",
-      opacity: 0, // מתחיל מוסתר
+      px: { xs: 2.5, md: 4 },
+      pt: 3,
+      pb: { xs: 7, md: 9 },
+      animation: "heroReveal 1.4s ease-out both",
     }}
   >
-    <Typography
+    {/* קו זהב וכותרת קטנה */}
+    <Box
       sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1.5,
+        mb: 2.5,
+      }}
+    >
+      <Box
+        sx={{
+          width: { xs: 28, md: 48 },
+          height: "1px",
+          bgcolor: "#c6a15b",
+        }}
+      />
+
+      <Typography
+        sx={{
+          color: "#e6c98c",
+          fontSize: { xs: 13, md: 16 },
+          letterSpacing: { xs: 2, md: 4 },
+          fontWeight: 500,
+        }}
+      >
+        טעמים של חוויה
+      </Typography>
+
+      <Box
+        sx={{
+          width: { xs: 28, md: 48 },
+          height: "1px",
+          bgcolor: "#c6a15b",
+        }}
+      />
+    </Box>
+
+    {/* שם העסק */}
+    <Typography
+      component="h1"
+      sx={{
+        color: "#fffaf0",
         fontWeight: 800,
-        fontSize: { xs: "2.5rem", md: "4rem" },
-        fontFamily: "'Playfair Display', serif",
-        letterSpacing: "2px",
+        fontSize: {
+          xs: "clamp(2.5rem, 10vw, 3.6rem)",
+          sm: "3.8rem",
+          md: "5.5rem",
+        },
+        lineHeight: 1.15,
+        letterSpacing: { xs: 0, md: 1.5 },
+        textShadow: "0 4px 24px rgba(0,0,0,0.35)",
+        mb: 2,
       }}
     >
       קייטרינג הפנינה
     </Typography>
+
+    {/* תת-כותרת */}
+    <Typography
+      sx={{
+        color: "rgba(255,255,255,0.88)",
+        fontSize: { xs: 16, sm: 18, md: 23 },
+        fontWeight: 400,
+        lineHeight: 1.8,
+        maxWidth: 600,
+        textShadow: "0 2px 12px rgba(0,0,0,0.45)",
+      }}
+    >
+      טעם משובח, אירוח מוקפד ורגעים בלתי נשכחים
+    </Typography>
+
+    {/* קו זהב קטן */}
+    <Box
+      sx={{
+        width: 54,
+        height: 2,
+        borderRadius: 5,
+        bgcolor: "#c6a15b",
+        mt: 3,
+      }}
+    />
   </Box>
 
-  {/* חץ למטה */}
+  {/* חיווי גלילה */}
   <Box
     sx={{
       position: "absolute",
-      bottom: "10px",
+      bottom: { xs: 35, md: 48 },
       left: "50%",
       transform: "translateX(-50%)",
-      zIndex: 2,
-      animation: "bounce 2s infinite",
+      zIndex: 3,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 1,
+      animation: "heroBounce 2s infinite",
     }}
   >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="30"
-      fill="white"
-      viewBox="0 0 24 24"
+    <Typography
+      sx={{
+        color: "rgba(255,255,255,0.78)",
+        fontSize: 10,
+        letterSpacing: 2,
+      }}
     >
-      <path d="M12 16.5l-7-7 1.4-1.4L12 13.7l5.6-5.6L19 9.5l-7 7z" />
-    </svg>
+      גלו עוד
+    </Typography>
+
+    <Box
+      sx={{
+        width: 32,
+        height: 32,
+        border: "1px solid rgba(198,161,91,0.8)",
+        borderRadius: "50%",
+        display: "grid",
+        placeItems: "center",
+        color: "#e6c98c",
+      }}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="m6 9 6 6 6-6"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </Box>
   </Box>
 
-  {/* אנימציות CSS */}
+  {/* מעבר הדרגתי לרקע הלבן של האתר */}
+  <Box
+    sx={{
+      position: "absolute",
+      zIndex: 2,
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: { xs: 100, md: 150 },
+      background:
+        "linear-gradient(to bottom, transparent 0%, rgba(245,245,245,0.35) 45%, #f5f5f5 100%)",
+      pointerEvents: "none",
+    }}
+  />
+
+  {/* אנימציות */}
   <style>
     {`
-      @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-          transform: translateX(-50%) translateY(0);
+      @keyframes heroReveal {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
         }
-        40% {
-          transform: translateX(-50%) translateY(-8px);
-        }
-        60% {
-          transform: translateX(-50%) translateY(-4px);
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
 
-      @keyframes fadeInUp {
-        0% {
-          opacity: 0;
-          transform: translate(-50%, 30%);
+      @keyframes heroBounce {
+        0%, 100% {
+          margin-bottom: 0;
         }
-        100% {
-          opacity: 1;
-          transform: translate(-50%, -50%);
+        50% {
+          margin-bottom: -7px;
         }
       }
     `}
   </style>
 </Box>
+
 
 
 
@@ -310,7 +437,7 @@ const Home = () => {
               fontSize: { xs: "1.1rem", md: "1.2rem" },
             }}
           >
-           ! מגוון מנות עשיר
+           ! סל הקניות המשתלם ביותר 
           </Typography>
 
           <Typography
@@ -333,7 +460,7 @@ const Home = () => {
               mb: 0.5,
             }}
           >
-           : מתאימים לכל סוגי האירועים
+             ? לאילו אירועים אפשר להזמין
           </Typography>
 
           <List
@@ -501,10 +628,10 @@ const Home = () => {
             color: "#f5df9b",
             mt: 1,
             mb: 2,
-            fontSize: { xs: "1.45rem", md: "1.8rem" },
+            fontSize: { xs: "1.20rem", md: "1.7rem" },
           }}
         >
-         הצעת מחיר במקום 
+       תפריט כללי - הצעת מחיר במקום
         </Typography>
 
         <Box
@@ -550,16 +677,18 @@ const Home = () => {
               fontSize: "1.05rem",
             }}
           >
-            לאילו אירועים אפשר להזמין?
+          : מתאימים לכל סוגי האירועים
           </Typography>
 
           <List dense sx={{ p: 0 }}>
             {[
-              "אזכרות",
-              "ברית מילה",
+              "חתונות",
+              "אירוסין", 
               "בר/בת מצווה",
-              "כנסים ואירועי תרבות",
+              "ברית מילה",
+              "אזכרות",
               "שמחות משפחתיות ועוד",
+
             ].map((item) => (
               <ListItem
                 key={item}

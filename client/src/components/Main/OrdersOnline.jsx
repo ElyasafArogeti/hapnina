@@ -729,18 +729,7 @@ return (
     >
       מינימום הזמנה 30 מנות !!
     </Typography>
-    
-    <Typography
-      variant="subtitle1"
-      sx={{
-        color: '#333',
-        fontWeight: 600,
-        fontSize: { xs: '0.9rem', sm: '1rem' },
-        textAlign: 'center',
-      }}
-    >
-    ניתן להרכיב מנות בודדות לאוכל מוכן לשבת / אזכרה / גיבוש משפחתי וכ'ו 
-    </Typography>
+  
   </Container>
      </Box>
 

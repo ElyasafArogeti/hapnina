@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
+
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ import {
   Divider
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import Footer from './Footer';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -875,6 +877,7 @@ const categories = [
 
 export default function MainCourse() {
   
+
 const [selectedCategory, setSelectedCategory] = useState("סלטים");
 
 const navigate = useNavigate();
@@ -894,6 +897,8 @@ const [addingToCart, setAddingToCart] = useState(null);
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+
+const productsSectionRef = useRef(null);
 
   const increase = (id) => {
 
@@ -975,7 +980,20 @@ const filteredDishes = dishes.filter(
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br/> <br/> <br/><br/>
       <TextMove/>
-
+{/* פתיח להזמנה */}
+<Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", mt: { xs: 2, md: 4 }, mb: { xs: 3, md: 5 }, px: { xs: 2, md: 3 }, boxSizing: "border-box" }}>
+  <Box sx={{ textAlign: "center", bgcolor: "#fffaf5", border: "1px solid #eadbc8", borderRadius: 3, px: { xs: 2, md: 5 }, py: { xs: 3, md: 4 }, boxShadow: "0 4px 18px rgba(100,65,30,0.06)" }}>
+    <Typography sx={{ fontSize: { xs: 23, md: 32 }, fontWeight: 800, color: "#6d4228", mb: 1 }}>
+      הטעם הטוב מתחיל כאן
+    </Typography>
+    <Typography sx={{ fontSize: { xs: 14, md: 17 }, color: "#62564d", lineHeight: 1.9, maxWidth: 700, mx: "auto" }}>
+      ברוכים הבאים להזמנת האוכל המוכן שלנו. בחרו ממגוון המנות האהובות עליכם, לפי קילוגרמים או יחידות, בהתאם לאופן שבו כל מנה מוצגת בתפריט.
+    </Typography>
+    <Typography sx={{ fontSize: { xs: 14, md: 16 }, color: "#6d4228", fontWeight: 600, mt: 1 }}>
+      הוסיפו את המנות לסל הקניות, עברו לסיכום ההזמנה והמשיכו להשלמת הפרטים.
+    </Typography>
+  </Box>
+</Box>
      {/* קטגוריות */}
 <Box
   sx={{
@@ -991,7 +1009,18 @@ const filteredDishes = dishes.filter(
   {categories.map((cat) => (
     <Box
       key={cat.name}
-      onClick={() => setSelectedCategory(cat.name)}
+     onClick={() => {
+  setSelectedCategory(cat.name);
+
+  if (window.innerWidth < 900) {
+    setTimeout(() => {
+      productsSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  }
+}}
       sx={{
         width: 150,
         cursor: "pointer",
@@ -1093,8 +1122,10 @@ const filteredDishes = dishes.filter(
 {/* כרטיסי מוצרים - עיצוב יוקרתי */}
 
   <Box 
+   ref={productsSectionRef}
   sx={{
     width: "100%",
+    scrollMarginTop: "100px",
     maxWidth: 1200,
     mx: "auto",
     px: { xs: 1, sm: 3 },
@@ -1641,6 +1672,32 @@ const filteredDishes = dishes.filter(
   )}
 </Drawer>
 
+
+
+
+{/* בחירת קטגוריות בתחתית העמוד */}
+<Box sx={{ width: "100%", maxWidth: 1100, mx: "auto", mt: { xs: 4, md: 6 }, mb: { xs: 5, md: 7 }, px: { xs: 1, md: 3 }, boxSizing: "border-box" }}>
+  <Typography sx={{ textAlign: "center", fontSize: { xs: 13, md: 16 }, fontWeight: 600, color: "#555", mb: 1.5 }}>
+    המשך לבחור מוצרים לפי קטגוריה
+  </Typography>
+
+  <Box sx={{ width: "100%", display: "flex", justifyContent: "center", overflow: "hidden" }}>
+    <Box sx={{ display: "flex", flexWrap: "nowrap", justifyContent: { xs: "flex-start", md: "center" }, alignItems: "center", gap: { xs: 0.7, md: 1.5 }, width: "fit-content", maxWidth: "100%", overflowX: "auto", direction: "rtl", py: 1, mx: "auto", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}>
+      {categories.map((cat) => (
+        <Box key={cat.name} onClick={() => {
+          setSelectedCategory(cat.name);
+          if (window.innerWidth < 900) setTimeout(() => productsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+        }} sx={{ flex: "0 0 auto", cursor: "pointer", whiteSpace: "nowrap", px: { xs: 1.2, md: 2 }, py: { xs: 0.7, md: 1 }, borderRadius: 10, border: "1px solid", borderColor: selectedCategory === cat.name ? "#d32f2f" : "#e0e0e0", bgcolor: selectedCategory === cat.name ? "#d32f2f" : "#fff", color: selectedCategory === cat.name ? "#fff" : "#444", fontSize: { xs: 11, md: 14 }, fontWeight: selectedCategory === cat.name ? 700 : 500, boxShadow: selectedCategory === cat.name ? "0 3px 8px rgba(211,47,47,0.2)" : "none", transition: "0.2s", "&:hover": { borderColor: "#d32f2f" } }}>
+          {cat.name}
+        </Box>
+      ))}
+    </Box>
+  </Box>
+</Box>
+
+
+
+  <Footer />
     </Box>
   );
 }

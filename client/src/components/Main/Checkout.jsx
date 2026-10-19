@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Confetti from "react-confetti";
 import { useNavigate } from "react-router-dom";
-
+import Footer from './Footer';
 
 export default function Checkout() {
   const { state } = useLocation();
@@ -23,6 +23,12 @@ export default function Checkout() {
   const productsTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryPrice = 0;
   const totalPrice = productsTotal + deliveryPrice;
+
+  
+const totalIncludingVat = totalPrice;
+const priceBeforeVat = totalIncludingVat / 1.18;
+const vatAmount = totalIncludingVat - priceBeforeVat;
+
 
   const [guestName, setGuestName] = useState("");
   const [guestCount, setGuestCount] = useState("");
@@ -216,63 +222,80 @@ console.log(error);
         <Typography variant="h3" textAlign="center" fontWeight={700} sx={{ mt: 4, mb: 5, color: "#444", fontSize: { xs: 34, md: 52 } }}>
           סיכום ההזמנה
         </Typography>
+     
+       {/* מלוי פרטים לשליחה  */} 
+ <Grid container spacing={4} alignItems="flex-start">
+   <Grid size={{ xs: 12, md: 8 }}>
 
-        <Grid container spacing={4} alignItems="flex-start">
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Paper elevation={0} sx={{ background: "#fff", borderRadius: 2, p: 3, boxShadow: "0 3px 15px rgba(0,0,0,.15)" }}>
-              <Typography fontWeight="bold" fontSize={22} mb={3}>המוצרים שבחרת</Typography>
+  {/* רשימת מוצרים */}
+<Paper elevation={0} sx={{ background: "#fff", borderRadius: 2, p: { xs: 2, md: 3 }, boxShadow: "0 3px 15px rgba(0,0,0,.15)" }}>
+  <Typography fontWeight="bold" fontSize={22} mb={3}>המוצרים שבחרת</Typography>
 
-              <Box sx={{ display: { xs: "none", md: "grid" }, gridTemplateColumns: "100px 1fr 100px 100px 120px", px: 2, mb: 2, color: "#555", fontWeight: "bold" }}>
-                <Typography>תמונה</Typography>
-                <Typography>מוצר</Typography>
-                <Typography>מחיר</Typography>
-                <Typography>כמות</Typography>
-                <Typography>סה"כ</Typography>
-              </Box>
+  {/* כותרות במחשב */}
+  <Box sx={{ display: { xs: "none", md: "grid" }, gridTemplateColumns: "100px 1fr 100px 100px 120px", px: 2, mb: 2, color: "#555", fontWeight: "bold" }}>
+    <Typography>תמונה</Typography>
+    <Typography>מוצר</Typography>
+    <Typography>מחיר</Typography>
+    <Typography>כמות</Typography>
+    <Typography>סה"כ</Typography>
+  </Box>
 
-              {cart.map(item => (
-                <Card key={item.id} sx={{ display: "grid", gridTemplateColumns: { xs: "80px 1fr", md: "100px 1fr 100px 100px 120px" }, alignItems: "center", gap: 2, mb: 2, p: 2, borderRadius: 2, boxShadow: "0 2px 10px rgba(0,0,0,.12)" }}>
-                  <CardMedia component="img" image={item.image} sx={{ width: { xs: 70, md: 85 }, height: { xs: 70, md: 85 }, borderRadius: 2, objectFit: "cover" }} />
-                  <CardContent sx={{ p: 0 }}>
-                    <Typography fontWeight="bold" fontSize={18}>{item.name}</Typography>
-                    <Chip label={item.unit} size="small" sx={{ mt: 1 }} />
-                  </CardContent>
-                  <Typography fontWeight="bold">₪ {item.price}</Typography>
-                  <Typography fontWeight="bold">{item.quantity}</Typography>
-                  <Typography fontWeight="bold" color="success.main">₪ {(item.price * item.quantity).toFixed(2)}</Typography>
-                </Card>
-              ))}
-                            <Divider sx={{ my: 4 }} />
+  
+  {cart.map((item) => (
+    <Card key={item.id} sx={{ mb: 2, borderRadius: 2, boxShadow: "0 2px 10px rgba(0,0,0,.12)", overflow: "hidden" }}>
+      {/* מובייל */}
+      <Box sx={{ display: { xs: "flex", md: "none" }, direction: "rtl", alignItems: "stretch", gap: 2, p: 1.5 }}>
+        <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: 90, minWidth: 90, height: 100, borderRadius: 2, objectFit: "cover" }} />
+        <Box sx={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", py: 0.5 }}>
+          <Typography fontWeight="bold" fontSize={17} sx={{ lineHeight: 1.4, overflowWrap: "anywhere" }}>{item.name}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>כמות: {item.quantity} {item.unit}</Typography>
+          <Typography fontWeight="bold" fontSize={18} color="success.main" sx={{ mt: 2, textAlign: "left", whiteSpace: "nowrap" }}>₪ {(Number(item.price) * Number(item.quantity)).toFixed(2)}</Typography>
+        </Box>
+      </Box>
 
-              <Typography fontWeight="bold" fontSize={22}>
-                פרטי תשלום
-              </Typography>
+      {/* מחשב */}
+      <Box sx={{ display: { xs: "none", md: "grid" }, gridTemplateColumns: "100px 1fr 100px 100px 120px", alignItems: "center", gap: 2, p: 2 }}>
+        <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: 85, height: 85, borderRadius: 2, objectFit: "cover" }} />
+        <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+          <Typography fontWeight="bold" fontSize={18}>{item.name}</Typography>
+          <Chip label={item.unit} size="small" sx={{ mt: 1 }} />
+        </CardContent>
+        <Typography fontWeight="bold">₪ {Number(item.price).toFixed(2)}</Typography>
+        <Typography fontWeight="bold">{item.quantity}</Typography>
+        <Typography fontWeight="bold" color="success.main">₪ {(Number(item.price) * Number(item.quantity)).toFixed(2)}</Typography>
+      </Box>
+    </Card>
+  ))}
 
-              <Box sx={{ mt: 3, background: "#fafafa", p: 3, borderRadius: 2 }}>
-                <Typography fontWeight="bold" mb={2}>סיכום</Typography>
+  <Divider sx={{ my: 4 }} />
 
-                <Stack spacing={2}>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography>סכום ההזמנה - ללא משלוח</Typography>
-                    <Typography fontWeight="bold">
-                      ₪ {productsTotal.toFixed(2)}
-                    </Typography>
-                  </Box>
-                </Stack>
+  {/* פירוט מחיר ההזמנה */}
+  <Typography fontWeight="bold" fontSize={22}>פירוט מחיר ההזמנה</Typography>
+  <Box sx={{ mt: 3, background: "#fafafa", p: { xs: 2, md: 3 }, borderRadius: 2 }}>
+    <Stack spacing={2}>
+      <Box display="flex" justifyContent="space-between" gap={2}>
+        <Typography>סכום לפני מע"מ</Typography>
+        <Typography fontWeight="bold">₪ {priceBeforeVat.toFixed(2)}</Typography>
+      </Box>
+      <Box display="flex" justifyContent="space-between" gap={2}>
+        <Typography>מע"מ (18%)</Typography>
+        <Typography fontWeight="bold">₪ {vatAmount.toFixed(2)}</Typography>
+      </Box>
+    </Stack>
+    <Divider sx={{ my: 2 }} />
+    <Box display="flex" justifyContent="space-between" alignItems="center" gap={2}>
+      <Typography fontSize={22} fontWeight="bold">סה"כ כולל מע"מ</Typography>
+      <Typography fontSize={{ xs: 21, md: 26 }} color="success.main" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>₪ {totalIncludingVat.toFixed(2)}</Typography>
+    </Box>
+    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>המחיר הסופי יוצג לאישור לאחר יצירת קשר עם נציגנו.</Typography>
+  </Box>
+</Paper>
 
-                <Divider sx={{ my: 2 }} />
 
-                <Box display="flex" justifyContent="space-between">
-                  <Typography fontSize={22} fontWeight="bold">סה"כ</Typography>
-                  <Typography fontSize={26} color="success.main" fontWeight="bold">
-                    ₪ {totalPrice.toFixed(2)}
-                  </Typography>
-                </Box>
-              </Box>
-            </Paper>
-          </Grid>
 
-          <Grid size={{ xs: 12, md: 4 }}>
+  </Grid>
+         {/* פרטי משתמש */}
+      <Grid size={{ xs: 12, md: 4 }}>
             <Paper
               elevation={0}
               sx={{
@@ -359,8 +382,9 @@ console.log(error);
                 </Typography>
               )}
             </Paper>
-          </Grid>
-        </Grid>
+       </Grid>
+      </Grid>
+
       </Box>
 
 
@@ -468,6 +492,7 @@ console.log(error);
   </Box>
 </Dialog>
 
+  <Footer />
     </Box>
   );
 }

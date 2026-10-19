@@ -214,7 +214,7 @@ const Home = () => {
 </Box>
 
 
-{/* כרטיס קייטרינג */}
+
 {/* שני כרטיסי קייטרינג - רספונסיביים */}
 <Container
   maxWidth={false}
@@ -634,8 +634,6 @@ const Home = () => {
     </Button>
   </Card>
 </Grid2>
-
-
 
 
   </Grid2>

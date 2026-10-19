@@ -215,7 +215,7 @@ const Home = () => {
 
 
 
-{/* שני כרטיסי קייטרינג - רספונסיביים */}
+{/* שני כרטיסי קייטרינג - עיצוב שחור וזהב */}
 <Container
   maxWidth={false}
   sx={{
@@ -225,14 +225,9 @@ const Home = () => {
     boxSizing: "border-box",
   }}
 >
-  <Grid2
-    container
-    spacing={3}
-    alignItems="stretch"
-  >
+  <Grid2 container spacing={3} alignItems="stretch">
 
-
-     {/* כרטיס 1 - אוכל מוכן */}
+    {/* כרטיס 1 - אוכל מוכן */}
     <Grid2 size={{ xs: 12, md: 6 }}>
       <Card
         sx={{
@@ -243,11 +238,13 @@ const Home = () => {
           flexDirection: { xs: "column", md: "row" },
           borderRadius: 4,
           overflow: "hidden",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
-          backgroundColor: "#fff",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.22)",
+          backgroundColor: "#111111",
+          border: "1px solid #b89546",
+          color: "#fff",
         }}
       >
-        {/* סרט כתום */}
+        {/* סרט זהב */}
         <Box
           sx={{
             position: "absolute",
@@ -257,15 +254,15 @@ const Home = () => {
             py: 0.8,
             textAlign: "center",
             transform: "rotate(-45deg)",
-            background: "linear-gradient(135deg, #ff9800, #f57c00)",
-            color: "#fff",
+            background: "linear-gradient(135deg, #f5df9b, #b89546, #8c6a25)",
+            color: "#17130a",
             fontWeight: "bold",
             fontSize: "1rem",
             zIndex: 2,
             boxShadow: 2,
           }}
         >
-         חדש
+          חדש
         </Box>
 
         {/* תוכן הכרטיס */}
@@ -285,12 +282,12 @@ const Home = () => {
             variant="h4"
             sx={{
               fontWeight: 800,
-              color: "#374151",
+              color: "#e5c46a",
               mb: 1.5,
               fontSize: { xs: "1.7rem", md: "1.8rem" },
             }}
           >
-          משלוח אוכל מוכן 
+            משלוח אוכל מוכן
           </Typography>
 
           <Divider
@@ -298,7 +295,7 @@ const Home = () => {
               width: 65,
               height: 4,
               borderRadius: 5,
-              backgroundColor: "#f57c00",
+              backgroundColor: "#c6a24b",
               mb: 2,
               border: 0,
             }}
@@ -308,35 +305,35 @@ const Home = () => {
             variant="h6"
             sx={{
               fontWeight: 700,
-              color: "#424b57",
+              color: "#fff",
               mb: 1.5,
               fontSize: { xs: "1.1rem", md: "1.2rem" },
             }}
           >
-           ! מגוון מנות עשיר
+            מגוון מנות עשיר!
           </Typography>
 
           <Typography
             sx={{
-              color: "#5f6670",
+              color: "#d1d1d1",
               fontSize: { xs: "0.95rem", md: "0.95rem" },
               lineHeight: 1.8,
               mb: 2,
             }}
           >
-           הוסף לסל הקניות מבחר מנות עשיר ומגוון מבלי לצאת מהבית ,
-          . צפו בתפריט הכולל מנות עשירות והזמינו ישירות מהאתר
+            הוסיפו לסל הקניות מבחר מנות עשיר ומגוון מבלי לצאת מהבית.
+            צפו בתפריט הכולל מנות עשירות והזמינו ישירות מהאתר.
           </Typography>
 
           <Typography
             sx={{
               fontSize: { xs: "1rem", md: "1.05rem" },
               fontWeight: 800,
-              color: "#374151",
+              color: "#e5c46a",
               mb: 0.5,
             }}
           >
-          :מתאימים לכל סוגי האירועים
+            מתאימים לכל סוגי האירועים:
           </Typography>
 
           <List
@@ -360,13 +357,13 @@ const Home = () => {
                 sx={{ py: 0.25, px: 0, gap: 1 }}
               >
                 <CheckCircleIcon
-                  sx={{ color: "#27864b", fontSize: 21 }}
+                  sx={{ color: "#d4b45f", fontSize: 21 }}
                 />
                 <ListItemText
                   primary={item}
                   primaryTypographyProps={{
                     fontSize: { xs: "0.95rem", md: "0.95rem" },
-                    color: "#4b5563",
+                    color: "#e0e0e0",
                     textAlign: "right",
                   }}
                 />
@@ -385,20 +382,20 @@ const Home = () => {
               px: { xs: 3, md: 2.5 },
               py: 1.3,
               borderRadius: 3,
-              background: "linear-gradient(135deg, #ff9800, #f57c00)",
-              color: "#fff",
+              background: "linear-gradient(135deg, #f5df9b, #c6a24b, #a47b25)",
+              color: "#17130a",
               fontSize: { xs: "0.95rem", md: "0.9rem" },
               fontWeight: 800,
-              boxShadow: "0 5px 14px rgba(245,124,0,0.3)",
+              boxShadow: "0 5px 14px rgba(198,162,75,0.22)",
               "&:hover": {
-                background: "linear-gradient(135deg, #f57c00, #e96b00)",
+                background: "linear-gradient(135deg, #ffe9a8, #d4b45f, #b89546)",
+                boxShadow: "0 7px 18px rgba(198,162,75,0.35)",
               },
             }}
           >
             להזמנת אוכל מוכן לחצו
           </Button>
         </Box>
-
 
         {/* תמונת האוכל */}
         <Box
@@ -422,223 +419,224 @@ const Home = () => {
               objectFit: "cover",
               display: "block",
               borderRadius: 3,
+              border: "1px solid #b89546",
             }}
           />
         </Box>
       </Card>
     </Grid2>
 
-{/* כרטיס 2 - הזמנות תפריטים אונליין */}
-<Grid2 size={{ xs: 12, md: 6 }}>
-  <Card
-    sx={{
-      position: "relative",
-      overflow: "hidden",
-      boxShadow: "0 8px 28px rgba(24, 60, 48, 0.12)",
-      p: { xs: 3, md: 4 },
-      height: "100%",
-      boxSizing: "border-box",
-      borderRadius: 4,
-      textAlign: "center",
-      background: "linear-gradient(180deg, #ffffff 0%, #f3f8f5 100%)",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      border: "1px solid #e1ebe5",
-      transition: "transform 0.3s ease, box-shadow 0.3s ease",
-      "&:hover": {
-        transform: "translateY(-5px)",
-        boxShadow: "0 14px 32px rgba(24, 60, 48, 0.18)",
-      },
-    }}
-  >
-    {/* פס עיצוב עליון */}
-    <Box
-      sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 7,
-        background: "linear-gradient(90deg, #086041, #78a88b)",
-      }}
-    />
-
-    {/* סמל */}
-    <Box
-      sx={{
-        mt: 1,
-        mb: 2,
-        width: 66,
-        height: 66,
-        borderRadius: "22px",
-        backgroundColor: "#e1efe6",
-        color: "#236247",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "inset 0 0 0 1px #cfe2d5",
-      }}
-    >
-      <RestaurantMenuIcon sx={{ fontSize: 36 }} />
-    </Box>
-
-    <Typography
-      variant="overline"
-      sx={{
-        color: "#397456",
-        fontWeight: 800,
-        letterSpacing: 1,
-        fontSize: "0.8rem",
-      }}
-    >
-      מזמינים בקלות ובנוחות
-    </Typography>
-
-    <Typography
-      variant="h5"
-      sx={{
-        fontWeight: 800,
-        color: "#203d30",
-        mt: 1,
-        mb: 2,
-        fontSize: { xs: "1.45rem", md: "1.8rem" },
-      }}
-    >
-      הזמנות תפריטים אונליין
-    </Typography>
-
-    <Box
-      sx={{
-        width: 55,
-        height: 3,
-        borderRadius: 5,
-        backgroundColor: "#78a88b",
-        mb: 2.5,
-      }}
-    />
-
-    <Typography
-      sx={{
-        textAlign: "center",
-        mb: 3,
-        fontSize: { xs: "0.95rem", md: "1rem" },
-        lineHeight: 1.9,
-        color: "#59665f",
-      }}
-    >
-      רוצים להזמין אוכל לאירוע שלכם בלי לצאת מהבית?
-      אצלנו תוכלו לבחור תפריט מתאים, למלא את הפרטים
-      ולקבל הצעת מחיר פשוטה, נוחה ומהירה
-    </Typography>
-
-    {/* אזור סוגי האירועים */}
-    <Box
-      sx={{
-        width: "100%",
-        backgroundColor: "#ffffff",
-        border: "1px solid #e0ebe3",
-        borderRadius: 3,
-        p: { xs: 2, md: 2.5 },
-        mb: 2,
-        boxSizing: "border-box",
-      }}
-    >
-      <Typography
+    {/* כרטיס 2 - הזמנות תפריטים אונליין */}
+    <Grid2 size={{ xs: 12, md: 6 }}>
+      <Card
         sx={{
-          fontWeight: 800,
-          color: "#294f3c",
-          mb: 1.5,
-          fontSize: "1.05rem",
+          position: "relative",
+          overflow: "hidden",
+          boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
+          p: { xs: 3, md: 4 },
+          height: "100%",
+          boxSizing: "border-box",
+          borderRadius: 4,
+          textAlign: "center",
+          background: "linear-gradient(180deg, #1c1c1c 0%, #0b0b0b 100%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          border: "1px solid #b89546",
+          color: "#fff",
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          "&:hover": {
+            transform: "translateY(-5px)",
+            boxShadow: "0 14px 32px rgba(198,162,75,0.18)",
+          },
         }}
       >
-      ?  לאילו אירועים אפשר להזמין
-      </Typography>
+        {/* פס עיצוב עליון בזהב */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 7,
+            background: "linear-gradient(90deg, #8c6a25, #f5df9b, #b89546)",
+          }}
+        />
 
-      <List dense sx={{ p: 0 }}>
-        {[
-          "אזכרות",
-          "ברית מילה",
-          "בר/בת מצווה",
-          "כנסים ואירועי תרבות",
-          "שמחות משפחתיות ועוד",
-        ].map((item) => (
-          <ListItem
-            key={item}
+        {/* סמל */}
+        <Box
+          sx={{
+            mt: 1,
+            mb: 2,
+            width: 66,
+            height: 66,
+            borderRadius: "22px",
+            background: "linear-gradient(135deg, #f5df9b, #b89546)",
+            color: "#17130a",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "inset 0 0 0 1px #f5df9b",
+          }}
+        >
+          <RestaurantMenuIcon sx={{ fontSize: 36 }} />
+        </Box>
+
+        <Typography
+          variant="overline"
+          sx={{
+            color: "#d4b45f",
+            fontWeight: 800,
+            letterSpacing: 1,
+            fontSize: "0.8rem",
+          }}
+        >
+          מזמינים בקלות ובנוחות
+        </Typography>
+
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 800,
+            color: "#f5df9b",
+            mt: 1,
+            mb: 2,
+            fontSize: { xs: "1.45rem", md: "1.8rem" },
+          }}
+        >
+          הזמנות תפריטים אונליין
+        </Typography>
+
+        <Box
+          sx={{
+            width: 55,
+            height: 3,
+            borderRadius: 5,
+            backgroundColor: "#c6a24b",
+            mb: 2.5,
+          }}
+        />
+
+        <Typography
+          sx={{
+            textAlign: "center",
+            mb: 3,
+            fontSize: { xs: "0.95rem", md: "1rem" },
+            lineHeight: 1.9,
+            color: "#d1d1d1",
+          }}
+        >
+          רוצים להזמין אוכל לאירוע שלכם בלי לצאת מהבית?
+          אצלנו תוכלו לבחור תפריט מתאים, למלא את הפרטים
+          ולקבל הצעת מחיר פשוטה, נוחה ומהירה.
+        </Typography>
+
+        {/* אזור סוגי האירועים */}
+        <Box
+          sx={{
+            width: "100%",
+            backgroundColor: "#171717",
+            border: "1px solid #8c6a25",
+            borderRadius: 3,
+            p: { xs: 2, md: 2.5 },
+            mb: 2,
+            boxSizing: "border-box",
+          }}
+        >
+          <Typography
             sx={{
-              py: 0.55,
-              px: 0,
-              gap: 1.2,
-              borderBottom: "1px solid #edf2ee",
-              "&:last-child": {
-                borderBottom: "none",
-              },
+              fontWeight: 800,
+              color: "#e5c46a",
+              mb: 1.5,
+              fontSize: "1.05rem",
             }}
           >
-            <CheckCircleIcon
-              sx={{
-                color: "#43845f",
-                fontSize: 21,
-                flexShrink: 0,
-              }}
-            />
+            לאילו אירועים אפשר להזמין?
+          </Typography>
 
-            <ListItemText
-              primary={item}
-              primaryTypographyProps={{
-                textAlign: "right",
-                fontSize: { xs: "0.92rem", md: "0.98rem" },
-                color: "#46564c",
-                fontWeight: 500,
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+          <List dense sx={{ p: 0 }}>
+            {[
+              "אזכרות",
+              "ברית מילה",
+              "בר/בת מצווה",
+              "כנסים ואירועי תרבות",
+              "שמחות משפחתיות ועוד",
+            ].map((item) => (
+              <ListItem
+                key={item}
+                sx={{
+                  py: 0.55,
+                  px: 0,
+                  gap: 1.2,
+                  borderBottom: "1px solid #333",
+                  "&:last-child": {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                <CheckCircleIcon
+                  sx={{
+                    color: "#d4b45f",
+                    fontSize: 21,
+                    flexShrink: 0,
+                  }}
+                />
 
-    <Typography
-      sx={{
-        color: "#68776d",
-        fontSize: "0.9rem",
-        mb: 1,
-      }}
-    >
-      התפריט המתאים לאירוע שלכם מתחיל כאן
-    </Typography>
+                <ListItemText
+                  primary={item}
+                  primaryTypographyProps={{
+                    textAlign: "right",
+                    fontSize: { xs: "0.92rem", md: "0.98rem" },
+                    color: "#e0e0e0",
+                    fontWeight: 500,
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
 
-    <Box sx={{ flexGrow: 1 }} />
+        <Typography
+          sx={{
+            color: "#bdbdbd",
+            fontSize: "0.9rem",
+            mb: 1,
+          }}
+        >
+          התפריט המתאים לאירוע שלכם מתחיל כאן
+        </Typography>
 
-    {/* כפתור בסגנון שונה מכרטיס האוכל המוכן */}
-    <Button
-      variant="contained"
-      href="/ordersOnline"
-      endIcon={<ArrowBackIcon />}
-      sx={{
-        mt: 2,
-        px: { xs: 3, md: 4 },
-        py: 1.4,
-        borderRadius: "12px",
-        backgroundColor: "#245b43",
-        color: "#fff",
-        fontWeight: 800,
-        fontSize: { xs: "0.95rem", md: "1rem" },
-        boxShadow: "0 5px 14px rgba(36, 91, 67, 0.2)",
-        "&:hover": {
-          backgroundColor: "#194631",
-          boxShadow: "0 8px 20px rgba(36, 91, 67, 0.3)",
-        },
-      }}
-    >
-      להזמנת תפריט לחצו
-    </Button>
-  </Card>
-</Grid2>
+        <Box sx={{ flexGrow: 1 }} />
 
+        {/* כפתור הזמנת תפריט */}
+        <Button
+          variant="contained"
+          href="/ordersOnline"
+          endIcon={<ArrowBackIcon />}
+          sx={{
+            mt: 2,
+            px: { xs: 3, md: 4 },
+            py: 1.4,
+            borderRadius: "12px",
+            background: "linear-gradient(135deg, #f5df9b, #c6a24b, #a47b25)",
+            color: "#17130a",
+            fontWeight: 800,
+            fontSize: { xs: "0.95rem", md: "1rem" },
+            boxShadow: "0 5px 14px rgba(198,162,75,0.22)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #ffe9a8, #d4b45f, #b89546)",
+              boxShadow: "0 8px 20px rgba(198,162,75,0.35)",
+            },
+          }}
+        >
+          להזמנת תפריט לחצו
+        </Button>
+      </Card>
+    </Grid2>
 
   </Grid2>
 </Container>
-
+```
 
 
 

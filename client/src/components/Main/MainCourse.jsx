@@ -979,7 +979,10 @@ const filteredDishes = dishes.filter(
     <Box sx={{ backgroundColor: '#f9f9f9', width: '100%',direction: 'rtl'}}>
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br/> <br/> <br/><br/>
-      <TextMove/>
+   
+     <TextMove/>
+
+     
 {/* פתיח להזמנה */}
 <Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", mt: { xs: 2, md: 4 }, mb: { xs: 3, md: 5 }, px: { xs: 2, md: 3 }, boxSizing: "border-box" }}>
   <Box sx={{ textAlign: "center", bgcolor: "#fffaf5", border: "1px solid #eadbc8", borderRadius: 3, px: { xs: 2, md: 5 }, py: { xs: 3, md: 4 }, boxShadow: "0 4px 18px rgba(100,65,30,0.06)" }}>
@@ -992,8 +995,54 @@ const filteredDishes = dishes.filter(
     <Typography sx={{ fontSize: { xs: 14, md: 16 }, color: "#6d4228", fontWeight: 600, mt: 1 }}>
       הוסיפו את המנות לסל הקניות, עברו לסיכום ההזמנה והמשיכו להשלמת הפרטים.
     </Typography>
+    <Typography sx={{ fontSize: { xs: 14, md: 16 }, color: "#940b11", fontWeight: 600, mt: 1 }}>
+     מינימום הזמנה 1500 ש'ח 
+    </Typography>
+
+<Box
+  sx={{
+    mt: 3,
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  }}
+>
+  <Box
+    component="button"
+    onClick={() => setOpenCart(true)}
+    sx={{
+      width: { xs: "100%", sm: 280 },
+      maxWidth: 320,
+      minHeight: 56,
+      px: 3,
+      py: 1.5,
+      border: "2px solid #6d4228",
+      borderRadius: 2,
+      backgroundColor: "#fffaf5",
+      color: "#6d4228",
+      fontSize: 18,
+      fontWeight: 800,
+      fontFamily: "inherit",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+      boxShadow: "0 3px 10px rgba(100,65,30,0.08)",
+
+      "&:hover": {
+        backgroundColor: "#6d4228",
+        color: "#ffffff",
+        boxShadow: "0 5px 15px rgba(100,65,30,0.2)",
+      },
+    }}
+  >
+    סל הקניות שלך
   </Box>
 </Box>
+
+  </Box>
+</Box>
+
+
+
      {/* קטגוריות */}
 <Box
   sx={{

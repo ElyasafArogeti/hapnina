@@ -4,8 +4,27 @@ const mysql = require("mysql2/promise");
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const moment = require('moment'); // לעבודה עם תאריכים
+
 const app = express();
+
+const corsOptions = {
+  origin: [
+    "https://cateringhapnina.netlify.app",
+    "https://cateringhapnina.co.il",
+    "https://www.cateringhapnina.co.il",
+    "http://localhost:3000"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+
 app.use(express.json());
+
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const fs = require('fs');
@@ -22,15 +41,6 @@ console.log("Running on Node:", process.version);
 const resend = new Resend(process.env.RESEND_API_KEY);
 console.log(process.env.RESEND_API_KEY);
 
-app.use(cors({
-  origin: [
-    "https://cateringhapnina.netlify.app",
-    "https://cateringhapnina.co.il",   // הדומיין החדש שלך
-    "http://localhost:3000"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
 
 
 console.log("🚀 שרת עלה! (נבדק פריסה חדשה)");

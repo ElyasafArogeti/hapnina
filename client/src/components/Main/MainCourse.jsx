@@ -921,8 +921,32 @@ const productsSectionRef = useRef(null);
 
 
 
+
 const addToCart = (dish, e) => {
-  if (e) e.stopPropagation();
+  e?.stopPropagation();
+
+  // מיקום תמונת המוצר שעליו לחצו
+  const productCard = e?.currentTarget?.closest(".MuiCard-root");
+  const productImage = productCard?.querySelector("img");
+
+  // אייקון סל הקניות הצף
+  const cartButton = document.getElementById("main-course-cart");
+
+  if (productImage && cartButton) {
+    const imageRect = productImage.getBoundingClientRect();
+    const cartRect = cartButton.getBoundingClientRect();
+
+    setAnimateImage({
+      id: `${dish.id}-${Date.now()}`,
+      image: dish.image,
+      top: imageRect.top,
+      left: imageRect.left,
+      width: imageRect.width,
+      height: imageRect.height,
+      targetTop: cartRect.top + cartRect.height / 2 - 18,
+      targetLeft: cartRect.left + cartRect.width / 2 - 18,
+    });
+  }
 
   const finalPrice = calculateCustomerPrice(dish.price);
   const selectedQuantity = quantities[dish.id] || 1;
@@ -953,7 +977,7 @@ const addToCart = (dish, e) => {
     ];
   });
 
-  setOpenCart(true);
+  // לא פותחים את חלון הסל אוטומטית
 };
 
 
@@ -1152,7 +1176,7 @@ const filteredDishes = dishes.filter(
 
 
     {/* כפתור סל הקניות */}
- <IconButton
+ <IconButton id="main-course-cart"
         onClick={() => setOpenCart(true)}
        sx={{ position: "fixed", left: 20, bottom: 20,  zIndex: 999,  bgcolor: "white",  boxShadow: 4,
          borderRadius: "50%",  width: 60,height: 60, display: "flex",justifyContent: "center",alignItems: "center",
@@ -1442,37 +1466,45 @@ const filteredDishes = dishes.filter(
 
 
 
-      {animateImage && (
-        <motion.img
-          src={animateImage.image}
-          alt=""
-          style={{
-            position: "fixed",
-            top: animateImage.top,
-            left: animateImage.left,
-            width: animateImage.width,
-            height: animateImage.height,
-            zIndex: 9999,
-            pointerEvents: "none",
-            borderRadius: 12
-          }}
-          initial={{
-            opacity: 1
-          }}
-          animate={{
-            top: 40,
-            left: 25,
-            width: 45,
-            height: 45,
-            opacity: 0
-          }}
-          transition={{
-            duration: 0.7,
-            ease: "easeInOut"
-          }}
-          onAnimationComplete={() => setAnimateImage(null)}
-        />
-      )}
+     
+{animateImage && (
+  <motion.img
+    key={animateImage.id}
+    src={animateImage.image}
+    alt=""
+    initial={{
+      top: animateImage.top,
+      left: animateImage.left,
+      width: animateImage.width,
+      height: animateImage.height,
+      opacity: 1,
+      scale: 1,
+      rotate: 0,
+    }}
+    animate={{
+      top: animateImage.targetTop,
+      left: animateImage.targetLeft,
+      width: 36,
+      height: 36,
+      opacity: 0.15,
+      scale: 0.35,
+      rotate: 12,
+    }}
+    transition={{
+      duration: 1.1,
+      ease: [0.22, 1, 0.36, 1],
+    }}
+    style={{
+      position: "fixed",
+      zIndex: 99999,
+      objectFit: "cover",
+      borderRadius: 12,
+      pointerEvents: "none",
+      boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+    }}
+    onAnimationComplete={() => setAnimateImage(null)}
+  />
+)}
 
 
 

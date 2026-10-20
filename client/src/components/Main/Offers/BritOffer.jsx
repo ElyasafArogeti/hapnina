@@ -94,7 +94,7 @@ const BritOffer = () => {
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
           
             <Typography variant="h5" fontWeight="bold" fontSize="1.6rem">
-              ברית מילה
+            חבילת ברית מילה 
             </Typography>
           </Box>
 

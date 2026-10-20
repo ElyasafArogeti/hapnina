@@ -103,7 +103,7 @@ const EngagementOffer = () => {
         <Box sx={{ position: "relative", zIndex: 2, maxWidth: 320 }}>
           <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
             <Typography    translate="no" variant="h5" fontWeight="bold" fontSize="1.6rem">
-              תפריט אזכרות 
+             חבילת אזכרה 
             </Typography>
           </Box>
 

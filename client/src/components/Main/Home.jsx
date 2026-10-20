@@ -10,7 +10,7 @@ import {
   Public,
   MonetizationOn,
 } from "@mui/icons-material";
-import { Divider } from "@mui/material";
+import { Divider, IconButton} from "@mui/material";
 
 import styles from "../../assets/stylesMain/home.module.css";
 import Grid2 from '@mui/material/Grid2';
@@ -21,13 +21,13 @@ import OffersSection from "../Main/Offers/OffersSection";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 
-
-
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PhoneIcon from "@mui/icons-material/Phone";
 
 
 const images = [
   // כאן תכניס כתובות של תמונות (תמונות אוכל)
-  "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157503/manager_images/salads/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA%20%D7%97%D7%A6%D7%99%D7%9C%20%D7%A4%D7%A7%D7%A0%D7%98%D7%99.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_sspqpy.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157676/manager_images/main_courses/%D7%A9%D7%99%D7%A4%D7%95%D7%93%D7%99%20%D7%A7%D7%91%D7%91%20%D7%9E%D7%96%D7%A8%D7%97%D7%99.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157436/manager_images/main_courses/%D7%A9%D7%A0%D7%99%D7%A6%D7%9C%20%D7%A2%D7%95%D7%A3.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
@@ -42,7 +42,7 @@ const images = [
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0146_csvwdl.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0140_hlcl56.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0141_edsu2v.jpg",
-  "https://res.cloudinary.com/dhkegagjk/image/upload/v1738157676/manager_images/main_courses/%D7%A9%D7%99%D7%A4%D7%95%D7%93%D7%99%20%D7%A7%D7%91%D7%91%20%D7%9E%D7%96%D7%A8%D7%97%D7%99.jpg",
+  "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%A1%D7%9C%D7%98_%D7%91%D7%98%D7%98%D7%94_t9vgji.webp",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0129_vrhw3n.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411442/IMG-20250713-WA0094_z5u8r2.jpg",
   "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411744/IMG-20250713-WA0133_qjb810.jpg",
@@ -68,7 +68,7 @@ const Home = () => {
 
        <TextMove/> 
 
-{/* פתיח יוקרתי – קייטרינג הפנינה */}
+{/*סרטון התחלתי פתיח יוקרתי – קייטרינג הפנינה */}
 <Box
   sx={{
     width: "100%",
@@ -337,8 +337,8 @@ const Home = () => {
       }
     `}
   </style>
+  
 </Box>
-
 
 
 
@@ -764,12 +764,12 @@ const Home = () => {
 
   </Grid2>
 </Container>
-```
 
 
 
 {/* קטע החבילות  */}
 <OffersSection />
+
 
 
 
@@ -1120,6 +1120,68 @@ const Home = () => {
       </Box>
       
 
+
+{/* כפתורי קשר צפים - וואטסאפ וטלפון */}
+<Box
+  sx={{
+    position: "fixed",
+    right: { xs: 14, md: 24 },
+    bottom: { xs: 60, md: 60 },
+    zIndex: 1500,
+    display: "flex",
+    flexDirection: "column",
+    gap: 1.5,
+    alignItems: "center",
+  }}
+>
+  {/* WhatsApp */}
+  <IconButton
+    component="a"
+    href="https://wa.me/972548520195"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="שלחו לנו הודעה בוואטסאפ"
+    sx={{
+      width: { xs: 52, md: 58 },
+      height: { xs: 52, md: 58 },
+      color: "#fff",
+      bgcolor: "#25D366",
+      boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+      border: "2px solid #fff",
+      transition: "transform .25s ease, box-shadow .25s ease",
+      "&:hover": {
+        bgcolor: "#1ebe5d",
+        transform: "scale(1.08)",
+        boxShadow: "0 8px 22px rgba(37,211,102,0.35)",
+      },
+    }}
+  >
+    <WhatsAppIcon sx={{ fontSize: { xs: 29, md: 33 } }} />
+  </IconButton>
+
+  {/* שיחת טלפון */}
+  <IconButton
+    component="a"
+    href="tel:+972548520195"
+    aria-label="התקשרו אלינו"
+    sx={{
+      width: { xs: 52, md: 58 },
+      height: { xs: 52, md: 58 },
+      color: "#17130a",
+      background: "linear-gradient(135deg, #f5df9b, #c6a24b)",
+      boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+      border: "2px solid #fff",
+      transition: "transform .25s ease, box-shadow .25s ease",
+      "&:hover": {
+        background: "linear-gradient(135deg, #ffe9a8, #d4b45f)",
+        transform: "scale(1.08)",
+        boxShadow: "0 8px 22px rgba(198,162,75,0.35)",
+      },
+    }}
+  >
+    <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
+  </IconButton>
+</Box>
 
     </Box>
   );

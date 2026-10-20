@@ -262,6 +262,8 @@ console.log(error);
  <Grid container spacing={4} alignItems="flex-start">
    <Grid size={{ xs: 12, md: 8 }}>
 
+
+
   {/* רשימת מוצרים */}
 <Paper elevation={0} sx={{ background: "#fff", borderRadius: 2, p: { xs: 2, md: 3 }, boxShadow: "0 3px 15px rgba(0,0,0,.15)" }}>
   <Typography fontWeight="bold" fontSize={22} mb={3}>המוצרים שבחרת</Typography>

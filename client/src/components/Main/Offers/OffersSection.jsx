@@ -40,24 +40,22 @@ const OffersSection = () => {
         }}
       >
         <Grid container spacing={3} alignItems="stretch">
-          {/* חתונה */}
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-            <WeddingOffer />
-          </Grid>
-
+         
           {/* בר מצווה */}
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <BarMitzvahOffer />
           </Grid>
-
-          {/* אירוסין */}
+           {/* ברית */}
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <BritOffer />
+          </Grid>
+          {/* אזכרה  */}
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <EngagementOffer />
           </Grid>
-
-          {/* ברית */}
+           {/* חתונה */}
           <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-            <BritOffer />
+            <WeddingOffer />
           </Grid>
         </Grid>
       </Box>

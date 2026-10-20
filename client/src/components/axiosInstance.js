@@ -1,15 +1,13 @@
 
 import axios from 'axios';
 
-const baseURL =  process.env.NODE_ENV === 'development'
+const baseURL =
+  process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : 'https://1ksadbt3.up.railway.app'; // כתובת Railway שלך
-
-// const baseURL = process.env.REACT_APP_API_URL;
+    : '';
 
 const axiosInstance = axios.create({
   baseURL,
-
   headers: {
     'Content-Type': 'application/json',
   },

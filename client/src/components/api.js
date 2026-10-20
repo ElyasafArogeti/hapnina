@@ -1,24 +1,25 @@
 
-const baseURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3001'
-  : 'https://1ksadbt3.up.railway.app';
-
-// const baseURL = process.env.REACT_APP_API_URL;
-
-
+const baseURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3001'
+    : '';
 
 export const apiFetch = async (endpoint, options = {}) => {
-  const response = await fetch(`${baseURL}${endpoint}`, {
-    ...options,
+  const normalizedEndpoint = endpoint.startsWith('/')
+    ? endpoint
+    : `/${endpoint}`;
 
+  const response = await fetch(`${baseURL}${normalizedEndpoint}`, {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
-    }
+    },
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    const errorBody = await response.text();
+    throw new Error(`API error: ${response.status} - ${errorBody}`);
   }
 
   return response.json();

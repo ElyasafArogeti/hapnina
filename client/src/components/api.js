@@ -2,7 +2,7 @@
 const baseURL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : '';
+    : 'https://1ksadbt3.up.railway.app';
 
 export const apiFetch = async (endpoint, options = {}) => {
   const normalizedEndpoint = endpoint.startsWith('/')
@@ -17,10 +17,21 @@ export const apiFetch = async (endpoint, options = {}) => {
     },
   });
 
+  const contentType = response.headers.get('content-type') || '';
+  const body = await response.text();
+
+  console.log('API URL:', `${baseURL}${normalizedEndpoint}`);
+  console.log('API Status:', response.status);
+  console.log('API Content-Type:', contentType);
+  console.log('API Response:', body.slice(0, 500));
+
   if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`API error: ${response.status} - ${errorBody}`);
+    throw new Error(`API error: ${response.status} - ${body.slice(0, 200)}`);
   }
 
-  return response.json();
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Expected JSON but received: ${contentType}. Response: ${body.slice(0, 200)}`);
+  }
+
+  return JSON.parse(body);
 };

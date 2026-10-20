@@ -2,7 +2,7 @@
 const baseURL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : 'https://1ksadbt3.up.railway.app';
+    : 'https://api.cateringhapnina.co.il';
 
 export const apiFetch = async (endpoint, options = {}) => {
   const normalizedEndpoint = endpoint.startsWith('/')

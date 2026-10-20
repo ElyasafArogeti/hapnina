@@ -25,6 +25,8 @@ app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 
 
+
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const fs = require('fs');

@@ -1460,7 +1460,7 @@ const filteredDishes = dishes.filter(
       </Grid>
     ))}
   </Grid>
-</Box>
+  </Box>
 
 
 

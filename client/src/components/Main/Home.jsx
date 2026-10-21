@@ -780,135 +780,286 @@ const Home = () => {
  <Box sx={{ width: "100%",  overflowX: "hidden",  boxSizing: "border-box",  padding: 0,  margin: 0, }}>
    
 
- {/* כרטיס ותמונה מיוחדות שלנו  */}
-<Container sx={{ py: { xs: 2, md: 4 }, width: "100%" }}>
-  <Grid2 container spacing={2} alignItems="stretch">
-    {/* כרטיס התוכן */}
-    <Grid2 size={{ xs: 12, sm: 6 }} md={6} order={{ md: 1 }}>
-      <Card
+
+
+{/* כרטיס המיוחדות שלנו - עיצוב שחור וזהב */}
+<Container
+  maxWidth="xl"
+  sx={{
+    py: { xs: 3, md: 6 },
+    direction: "rtl",
+  }}
+>
+
+  <Grid2
+    container
+    spacing={{ xs: 2, md: 0 }}
+    alignItems="stretch"
+    sx={{
+      overflow: "hidden",
+      borderRadius: { xs: 3, md: 5 },
+      background:
+        "linear-gradient(145deg, #1c1c1c 0%, #090909 65%, #17130b 100%)",
+      border: "1px solid rgba(212,175,98,0.35)",
+      boxShadow: "0 12px 40px rgba(0,0,0,0.3)",
+    }}
+  >
+
+    {/* התמונה */}
+    <Grid2 size={{ xs: 12, md: 6 }} order={{ xs: 2, md: 1 }}>
+      <Box
         sx={{
-          boxShadow: 2,
-          padding: { xs: 3, md: 4 },
-          borderRadius: 3,
+          position: "relative",
           textAlign: "center",
-          backgroundColor: "#fff",
+          alignItems: "center",
+          height: { xs: 250, sm: 350, md: "100%" },
+          minHeight: { md: 560 },
+          overflow: "hidden",
+          "&:hover img": {
+            transform: "scale(1.04)",
+          },
         }}
       >
-        <Typography
-          variant="overline"
-          display="block"
-          fontWeight="bold"
-          gutterBottom
+        <Box
+          component="img"
+          src="https://res.cloudinary.com/dhkegagjk/image/upload/v1755027385/pexels-elina-sazonova-1838607_wj6n0u.jpg"
+          alt="אירוע יוקרתי מבית קייטרינג הפנינה"
+          loading="lazy"
+          sx={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            minHeight: { md: 560 },
+            objectFit: "cover",
+            objectPosition: "center",
+            transition: "transform 0.6s ease",
+          }}
+        />
+
+        {/* הצללה הדרגתית בגווני שחור וזהב */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background: {
+              xs: "linear-gradient(180deg, transparent 60%, rgba(9,9,9,0.65) 100%)",
+              md: "linear-gradient(270deg, transparent 60%, rgba(9,9,9,0.5) 100%)",
+            },
+          }}
+        />
+
+        {/* תווית על התמונה */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: { xs: 16, md: 24 },
+            right: { xs: 16, md: 24 },
+            px: 2,
+            py: 1,
+            borderRadius: 2,
+            color: "#f5df9b",
+            background: "rgba(10,10,10,0.78)",
+            border: "1px solid rgba(212,175,98,0.4)",
+            backdropFilter: "blur(8px)",
+          }}
         >
-          DESIGN
+          <Typography sx={{ fontSize: "0.85rem", fontWeight: 800 }}>
+            קייטרינג הפנינה | חוויה של טעם
+          </Typography>
+        </Box>
+      </Box>
+    </Grid2>
+
+    {/* אזור התוכן */}
+    <Grid2 size={{ xs: 12, md: 6 }} order={{ xs: 1, md: 2 }}>
+      <Box
+        sx={{
+          height: "100%",
+          minHeight: { md: 560 },
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+          p: { xs: 2.5, sm: 4, md: 5 },
+          color: "#fff",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* כותרת קטנה */}
+        <Typography
+          sx={{
+            color: "#d4af62",
+            fontSize: "0.8rem",
+            fontWeight: 800,
+            letterSpacing: 3,
+            mb: 1.5,
+          }}
+        >
+          THE PEARL EXPERIENCE
         </Typography>
 
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-          <Box sx={{ width: "50px", height: "2px", backgroundColor: "#333" }} />
-        </Box>
-
-        <Typography variant="h5" gutterBottom fontWeight="bold">
+        {/* כותרת ראשית */}
+        <Typography
+          component="h2"
+          sx={{
+            fontSize: { xs: "2rem", md: "2.6rem" },
+            fontWeight: 900,
+            lineHeight: 1.25,
+            mb: 1.5,
+            background:
+              "linear-gradient(135deg, #fff1bd 0%, #d4af62 55%, #f5df9b 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
           המיוחדות שלנו
         </Typography>
 
- <Box
-  sx={{
-    textAlign: "right",
-    mx: "auto",    
-    direction: "rtl", 
-    maxWidth: "600px",
-    fontSize: { xs: "0.95rem", md: "1rem" },
-  }}
-  // מלל בתוך הכרטיס 
->
-  <Typography variant="body1" sx={{ mb: 3 }}>
-    בקייטרינג הפנינה אנו מציעים הרבה מעבר לאוכל – אנחנו מביאים איתנו ניסיון,
-    הקפדה על כל פרט, וגישה שממקדת את האירוע סביבכם:
-  </Typography>
+        {/* קו זהב */}
+        <Box
+          sx={{
+            width: 75,
+            height: 3,
+            borderRadius: 5,
+            mb: 2.5,
+            background:
+              "linear-gradient(90deg, #a47b25, #f5df9b, #a47b25)",
+          }}
+        />
+        {/* כל התוכן  */}
+        <Typography
+          sx={{
+            color: "#d0d0d0",
+            fontSize: { xs: "0.95rem", md: "1.05rem" },
+            lineHeight: 1.9,
+            mb: 3,
+          }}
+        >
+          בקייטרינג הפנינה כל אירוע מקבל יחס אישי,
+          אוכל עשיר ושירות מוקפד — מהתכנון ועד הרגע האחרון.
+        </Typography>
 
-  {/* אמינות */}
-  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-    <CheckCircleOutline color="success" sx={{ mr: 1 }} />
-    <Typography fontWeight="bold">אמינות מלאה:</Typography>
-  </Box>
-  <Typography sx={{ mb: 1 }}>
-    שקיפות מלאה בתהליך – החל משיחת ההיכרות ועד סיום האירוע.
-  </Typography>
-  <Divider sx={{ my: 2 }} />
+        {/* היתרונות שלנו */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2.2,
+          }}
+        >
+          {[
+            {
+              icon: <CheckCircleOutline />,
+              title: "אמינות ושקיפות",
+              text: "ליווי אישי ותיאום ציפיות לאורך כל הדרך.",
+            },
+            {
+              icon: <RestaurantMenu />,
+              title: "אוכל ברמה גבוהה",
+              text: "תפריטים מגוונים, מנות טריות והגשה מוקפדת.",
+            },
+            {
+              icon: <SupportAgent />,
+              title: "שירות מכל הלב",
+              text: "אנחנו כאן בשבילכם, משלב התכנון ועד האירוע.",
+            },
+            {
+              icon: <MonetizationOn />,
+              title: "הזמנה פשוטה אונליין",
+              text: "בוחרים חבילה ומקבלים הצעת מחיר בקלות.",
+            },
+          ].map((item, index) => (
+            <Box
+              key={item.title}
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 1.5,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 2,
+                  color: "#e1c27a",
+                  background: "rgba(212,175,98,0.10)",
+                  border: "1px solid rgba(212,175,98,0.25)",
+                  "& svg": { fontSize: 21 },
+                }}
+              >
+                {item.icon}
+              </Box>
 
-  {/* אוכל */}
-  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-    <RestaurantMenu color="error" sx={{ mr: 1 }} />
-    <Typography fontWeight="bold">אוכל עשיר וטעים:</Typography>
-  </Box>
-  <Typography sx={{ mb: 1 }}>
-    תפריטים מגוונים עם מנות טריות, יצירתיות ואסתטיות.
-  </Typography>
-  <Divider sx={{ my: 2 }} />
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  sx={{
+                    color: "#f0d58f",
+                    fontWeight: 800,
+                    fontSize: "1rem",
+                    mb: 0.3,
+                  }}
+                >
+                  {item.title}
+                </Typography>
 
-  {/* שירות */}
-  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-    <SupportAgent color="info" sx={{ mr: 1 }} />
-    <Typography fontWeight="bold">שירות מקיף:</Typography>
-  </Box>
-  <Typography sx={{ mb: 1 }}>
-    ליווי אישי וצמוד בכל שלב – מהתכנון ועד סיום האירוע בשטח.
-  </Typography>
-  <Divider sx={{ my: 2 }} />
+                <Typography
+                  sx={{
+                    color: "#c5c5c5",
+                    fontSize: "0.88rem",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {item.text}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+        </Box>
 
-  {/* דיגיטל */}
-  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-    <Public color="primary" sx={{ mr: 1 }} />
-    <Typography fontWeight="bold">שירותים דיגיטליים:</Typography>
-  </Box>
-  <Typography sx={{ mb: 1 }}>
-    תיאומים, בחירת תפריט ומענה – הכל אונליין, בצורה פשוטה.
-  </Typography>
-  <Divider sx={{ my: 2 }} />
-
-  {/* הצעת מחיר */}
-  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-    <MonetizationOn color="warning" sx={{ mr: 1 }} />
-    <Typography fontWeight="bold">הצעת מחיר מיידית באתר:</Typography>
-  </Box>
-  <Typography>
-    בחרו את סוג האירוע, מספר המשתתפים – וקבלו הערכת מחיר במקום.
-  </Typography>
-</Box>
+        {/* כפתור יצירת קשר */}
         <Button
           variant="contained"
-          color="warning"
           endIcon={<ArrowBackIcon />}
-          sx={{
-            marginTop: 4,
-            paddingX: 4,
-            paddingY: 1.5,
-            fontSize: "1rem",
-            fontWeight: "bold",
-            borderRadius: 8,
-          }}
           href="/contact"
+          sx={{
+           alignSelf: "center",
+            mt: 4,
+            px: 4,
+            py: 1.4,
+            textAlign: "center",
+             alignItems: "center",
+            borderRadius: 2,
+            fontWeight: 900,
+            fontSize: "0.95rem",
+            color: "#17130a",
+            background:
+              "linear-gradient(135deg, #f5df9b 0%, #d4af62 55%, #a47b25 100%)",
+            boxShadow: "0 5px 18px rgba(198,162,75,0.18)",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              background:
+                "linear-gradient(135deg, #fff0b5, #dfbd62, #b58b32)",
+              transform: "translateY(-2px)",
+              boxShadow: "0 8px 24px rgba(198,162,75,0.3)",
+            },
+          }}
         >
-          <Typography variant="button">צור קשר</Typography>
+          בואו נתכנן את האירוע שלכם
         </Button>
-      </Card>
+      </Box>
     </Grid2>
 
-    {/* תמונה */}
-    <Grid2 size={{ xs: 12, sm: 6 }} md={6} order={{ md: 2 }}>
-      <img
-        src="https://res.cloudinary.com/dhkegagjk/image/upload/v1755027385/pexels-elina-sazonova-1838607_wj6n0u.jpg"
-        alt="תמונת אירוע"
-        style={{
-          width: "100%",
-        
-          maxHeight: "718px",
-          objectFit: "cover",
-          borderRadius: "8px",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-        }}
-      />
-    </Grid2>
+    
+
+
   </Grid2>
 </Container>
 
@@ -926,109 +1077,154 @@ const Home = () => {
     display: "flex",
     alignItems: "center", // מרכז אנכי
     justifyContent: "center", // מרכז אופקי
-    textAlign: "center"
+    textAlign: "center",
+      pointerEvents: "none",
   }}
 >
-  <Typography variant="h3" sx={{ color: "#FFF", px: 2 }}>
-    חוויה בלתי נשכחת
-  </Typography>
+ <Typography
+      component="h2"
+      sx={{
+        fontSize: { xs: "1.8rem", md: "3rem" },
+        fontWeight: 900,
+        lineHeight: 1.4,
+        background:
+          "linear-gradient(110deg, #fff1bd, #d4af62 50%, #a47b25)",
+        backgroundClip: "text",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        mb: 2,
+      }}
+    >
+    ״חוויה בלתי נשכחת״
+    </Typography>
 </Box>
 
 
-{/* ---------------------------------------------------------- */}
+{/* -----------קטע מבדיל----------------------------------------------- */}
 <br /><br />
+
 <Box
   sx={{
     width: "100%",
-    minHeight: "40vh",
+    minHeight: { xs: 320, md: 390 },
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
     px: 2,
-   background: "#f5f5f5",
+    py: 7,
     position: "relative",
     overflow: "hidden",
+    boxSizing: "border-box",
+    background:
+      "radial-gradient(ellipse at center, #191610 0%, #0b0b0b 60%, #050505 100%)",
+    "@keyframes pearlGlow": {
+      "0%,100%": { opacity: 0.25, transform: "scale(1)" },
+      "50%": { opacity: 0.5, transform: "scale(1.08)" },
+    },
+    "@keyframes pearlFade": {
+      from: { opacity: 0, transform: "translateY(18px)" },
+      to: { opacity: 1, transform: "translateY(0)" },
+    },
   }}
->
-  {/* אפקט אור רקע עדין */}
+ >
+  {/* הילה זהובה */}
   <Box
     sx={{
       position: "absolute",
-      top: "-30%",
-      left: "-30%",
-      width: "200%",
-      height: "200%",
-      background: "radial-gradient(circle at center, rgba(86, 82, 82, 0.08), transparent 60%)",
-      animation: "pulse 6s infinite ease-in-out",
-      zIndex: 0,
+      width: 500,
+      height: 500,
+      borderRadius: "50%",
+      background:
+        "radial-gradient(circle, rgba(212,175,98,.13), transparent 70%)",
+      animation: "pearlGlow 7s ease-in-out infinite",
+      pointerEvents: "none",
     }}
   />
 
-  {/* תוכן קדמי */}
+  {/* מסגרת */}
   <Box
     sx={{
+      position: "absolute",
+      inset: { xs: 12, md: 22 },
+      border: "1px solid rgba(212,175,98,.18)",
+      pointerEvents: "none",
+    }}
+  />
+
+  {/* תוכן */}
+  <Box
+    sx={{
+      maxWidth: 760,
       width: "100%",
-      maxWidth: "600px",
-      mx: "auto",
-      px: 2,
-      zIndex: 1,
-      animation: "fadeIn 2s ease-in-out",
+      position: "relative",
+      animation: "pearlFade 1.2s ease-out both",
     }}
   >
     <Typography
-      variant="h3"
       sx={{
+        color: "#d4af62",
+        fontSize: ".75rem",
         fontWeight: 800,
-         fontSize: { xs: "1.6rem", md: "2.5rem" },
-        color: "#black",
-    
+        letterSpacing: 4,
+        mb: 3,
+      }}
+    >
+     DREAMY CATERING
+    </Typography>
+
+    <Typography
+      component="h2"
+      sx={{
+        fontSize: { xs: "1.8rem", md: "3rem" },
+        fontWeight: 900,
         lineHeight: 1.4,
+        background:
+          "linear-gradient(110deg, #fff1bd, #d4af62 50%, #a47b25)",
+        backgroundClip: "text",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
         mb: 2,
       }}
     >
       ״תנו לנו לשדרג לכם את החלום״
     </Typography>
 
+    {/* קו הפרדה זהוב */}
     <Box
       sx={{
-        width: "80px",
-        height: "4px",
-        background: "linear-gradient(90deg, #fff176, #1b1813ff)",
-        borderRadius: 2,
+        width: 120,
+        height: 2,
         mx: "auto",
         my: 3,
+        background:
+          "linear-gradient(90deg, transparent, #fff1bd, #a47b25, transparent)",
+        boxShadow: "0 0 14px rgba(212,175,98,.25)",
       }}
     />
 
     <Typography
-      variant="h6"
       sx={{
-        color: "black",
-         fontSize: { xs: "0.95rem", md: "1.1rem" }, 
-        fontWeight: 400,
-   
-        letterSpacing: "0.5px",
+        color: "#ded8ca",
+        fontSize: { xs: ".95rem", md: "1.15rem" },
+        lineHeight: 1.9,
       }}
     >
-      ⭐ תכנון האירוע המושלם מתחיל כאן ⭐
+      תכנון האירוע המושלם מתחיל כאן
+    </Typography>
+
+    <Typography
+      sx={{
+        color: "#d4af62",
+        fontSize: ".7rem",
+        fontWeight: 700,
+        letterSpacing: 3,
+        mt: 3,
+      }}
+    >
+      ✦ קייטרינג הפנינה ✦
     </Typography>
   </Box>
-
-  {/* keyframes */}
-  <style>
-    {`
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 0.3; }
-        50% { transform: scale(1.1); opacity: 0.1; }
-      }
-    `}
-  </style>
 </Box>
 
 
@@ -1039,13 +1235,13 @@ const Home = () => {
 
 {/* ------------------------------------------------------------ */}
 {/* גלריה משודרגת */}
-<Box sx={{ py: 8, px: { xs: 2, md: 6 }, backgroundColor: "#fdfdfd" }}>
+<Box sx={{ py: 8, px: { xs: 2, md: 6 }, backgroundColor: "#000000" }}>
   <Box sx={{ textAlign: "center", mb: 6 }}>
     <Typography
       variant="h4"
       fontWeight="bold"
       sx={{
-        color: "#333",
+        color: "#d4af62",
         fontSize: { xs: "1.8rem", md: "2.5rem" },
         mb: 1,
       }}

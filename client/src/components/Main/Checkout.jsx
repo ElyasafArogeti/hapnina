@@ -218,9 +218,9 @@ console.log(error);
       <NavbarHome />
       <br /><br /><br /><br />
       <TextMove />
-<br />
-{/* כפתור חזרה לעריכת ההזמנה */}
-<Box
+      <br />
+   {/* כפתור חזרה לעריכת ההזמנה */}
+    <Box
   sx={{
     display: "flex",
     justifyContent: "flex-start",
@@ -248,7 +248,7 @@ console.log(error);
   >
     חזרה לעריכת ההזמנה
   </Button>
-</Box>
+    </Box>
 
       <Box sx={{ pt: 1, px: { xs: 2, md: 5 } }}>
         <Typography variant="h3" textAlign="center" fontWeight={700} sx={{ mt: 4, mb: 5, color: "#444", fontSize: { xs: 34, md: 52 } }}>
@@ -256,6 +256,9 @@ console.log(error);
         </Typography>
         <Typography variant="h5" textAlign="center" fontWeight={700} sx={{ mt: 4, mb: 5, color: "#8c6a25", fontSize: { xs: 16, md: 25 } }}>
         מינימום הזמנה 1500 ש'ח 
+        </Typography>
+        <Typography variant="h5" textAlign="center" fontWeight={500} sx={{ mt: 4, mb: 5, color: "##444", fontSize: { xs: 16, md: 25 } }}>
+        שימו לב: מחיר ההזמנה אינו כולל דמי משלוח.
         </Typography>
      
        {/* מלוי פרטים לשליחה  */} 

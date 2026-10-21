@@ -24,7 +24,6 @@ import axiosInstance from '../axiosInstance';
 const KitchenOrder = () => {
   const location = useLocation();
   const { orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber , email , event_location , address,shippingCost,serviceCost,toolsType,eventType} = location.state || {};
-  console.log(eventType);
   
   const name = "ארוגטי";
    const EventDate = new Date(eventDate).toLocaleDateString('he-IL');
@@ -285,12 +284,19 @@ const currentDate = new Date().toLocaleDateString('he-IL');
 
   <h2 style="text-align: center; font-weight: bold;">קייטרינג הפנינה - ארוגטי</h2>
   <div style="font-size: 16px; text-align: center;">תאריך ביצוע הזמנה: ${EventDate}</div>
+    <br/>
+  <span style="display:inline-block; font-size:10px; border:0.7px solid black; padding:4px 10px; border-radius:6px;">
+    <strong>שם לקוח:</strong> ${eventOwner} 
+  </span>
+
   ${pickupTime ? `<div style="font-size: 15px; text-align: center; margin-top: 8px;"><strong>מוכן לשעה :</strong> ${pickupTime}</div>` : ''}
+
 ${driverName ? `
 <div style="text-align:center; margin-top:5px;">
   <span style="display:inline-block; font-size:10px; border:0.7px solid black; padding:4px 10px; border-radius:6px;">
     <strong>נהג:</strong>  ${driverName} &nbsp;&nbsp;|&nbsp;&nbsp;  <strong>טלפון:</strong>  ${driverPhone}
   </span>
+
 </div>` : ''}
 
 `;

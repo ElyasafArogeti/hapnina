@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Link,
@@ -7,15 +7,14 @@ import {
   List,
   ListItem,
   ListItemButton,
+  Typography,
   ListItemText
 } from "@mui/material";
 import {
-  BsWhatsapp,
-  BsTelephoneOutbound,
   BsPersonCircle
 } from "react-icons/bs";
 import MenuIcon from "@mui/icons-material/Menu";
-import logo from "../../assets/imgs/logonew.png";
+import logo from "../../assets/imgs/logo444.png";
 import logokoshr from "../../assets/imgs/logokoshr.png";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,8 +33,25 @@ const NavbarHome = () => {
   };
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+useEffect(() => {
+  const handleScroll = () => {
+    setIsScrolled(window.scrollY > 20);
+  };
+
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, {
+    passive: true,
+  });
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
 
+// בתוך הקומפוננטה, לפני ה-return:
+const [isScrolled, setIsScrolled] = useState(false);
 
 
   //  שליחת הנתונים לתפריט הגנרי
@@ -190,17 +206,60 @@ const handleNavigateToRentals = () => { //אזכרות
   ];
 
 
+//  <Box  אם אני לא רוצה שקיפות בזמן גלילה להחזיר את הקוד הזה 
+//    dir="rtl"
+//      sx={{
+//      position: "absolute",
+//      top: 0,
+//      left: 0,
+//      width: "100%",
+//      height: "90px",
+//      backgroundColor: "black",
+//      zIndex: 1000,
+//      display: "flex",
+//      alignItems: "center",
+//      justifyContent: "space-between",
+//      boxSizing: "border-box",
+//      px: { xs: 1, md: 2 },
+//    }}
+//  >
+
 
 return (
   <Box
-    dir="rtl"
+    dir="rtl"  // שקיפות הנבבר בשעת גלילה 
     sx={{
-      position: "absolute",
+      position: "fixed",
       top: 0,
       left: 0,
       width: "100%",
       height: "90px",
-      backgroundColor: "black",
+
+      // שחור מלא בראש העמוד, שקיפות בגלילה
+      backgroundColor: isScrolled
+        ? "rgba(0, 0, 0, 0.55)"
+        : "#000000",
+
+      // אפקט זכוכית עדין בגלילה
+      backdropFilter: isScrolled
+        ? "blur(12px)"
+        : "blur(0px)",
+      WebkitBackdropFilter: isScrolled
+        ? "blur(12px)"
+        : "blur(0px)",
+
+      // צל משתנה לפי מצב הגלילה
+      boxShadow: isScrolled
+        ? "0 5px 25px rgba(0, 0, 0, 0.25)"
+        : "0 3px 18px rgba(0, 0, 0, 0.65)",
+
+      borderBottom: isScrolled
+        ? "1px solid rgba(255, 215, 0, 0.12)"
+        : "1px solid rgba(255, 255, 255, 0.06)",
+
+      transition:
+        "background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease",
+
       zIndex: 1000,
       display: "flex",
       alignItems: "center",
@@ -209,6 +268,7 @@ return (
       px: { xs: 1, md: 2 },
     }}
   >
+
     {/* לוגו ראשי - מרכז בטלפון, צד שמאל במחשב */}
     <Box
       sx={{
@@ -277,8 +337,10 @@ return (
           sx={{
             color: "#FFF",
             fontSize: { md: "0.85rem", lg: "0.95rem" },
-            transition: "color 0.3s",
-            "&:hover": { color: "#FFD700" },
+            transition: "color 0.3s ease",
+            "&:hover": {
+              color: "#FFD700",
+            },
           }}
         >
           {link.label}
@@ -299,7 +361,10 @@ return (
             color: "#FFF",
             fontSize: { md: "0.85rem", lg: "0.95rem" },
             cursor: "pointer",
-            "&:hover": { color: "#FFD700" },
+            transition: "color 0.3s ease",
+            "&:hover": {
+              color: "#FFD700",
+            },
           }}
         >
           הזמנות אונליין
@@ -317,8 +382,8 @@ return (
                 top: "100%",
                 right: 0,
                 paddingTop: 12,
-                backgroundColor: "black",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+                backgroundColor: "#080808",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
                 borderRadius: "0 0 8px 8px",
                 overflow: "hidden",
                 zIndex: 999,
@@ -334,6 +399,7 @@ return (
                     } else {
                       navigate(item.to);
                     }
+
                     setIsDropdownOpen(false);
                   }}
                   sx={{
@@ -341,7 +407,8 @@ return (
                     color: "#FFF",
                     fontSize: "0.95rem",
                     cursor: "pointer",
-                    transition: "background-color 0.3s",
+                    transition:
+                      "background-color 0.3s ease, color 0.3s ease",
                     "&:hover": {
                       backgroundColor: "#222",
                       color: "#FFD700",
@@ -359,28 +426,29 @@ return (
 
     {/* לוגו כשרות - הכי ימינה במחשב */}
     <Box
-  component="img"
-  src={logokoshr}
-  alt="כשר בהשגחת הרב מחפוד"
-  sx={{
-    display: { xs: "none", md: "block" },
-    position: "absolute",
-    right: { md: 8, lg: 12 },
-    top: "50%",
-    transform: "translateY(-50%)",
-    width: 90,
-    height: 100,
-    objectFit: "contain",
-    zIndex: 6,
-  }}
-   />
+      component="img"
+      src={logokoshr}
+      alt="כשר בהשגחת הרב מחפוד"
+      sx={{
+        display: { xs: "none", md: "block" },
+        position: "absolute",
+        right: { md: 8, lg: 12 },
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: 130,
+        height: 140,
+        objectFit: "contain",
+        zIndex: 6,
+      }}
+    />
 
+  
 {/* אייקונים - משמאל ללוגו הכשרות במחשב */}
 <Box
   sx={{
     display: { xs: "none", md: "flex" },
     position: "absolute",
-    right: { md: 100, lg: 115 },
+    right: { md: 120, lg: 150 },
     top: "50%",
     transform: "translateY(-50%)",
     alignItems: "center",
@@ -389,91 +457,96 @@ return (
   }}
 >
   <IconButton
-    component="a"
-    href="tel:+972548520195"
-    aria-label="התקשרו אלינו"
-    sx={{ color: "#FFF", p: 0.75, "&:hover": { color: "#FFD700" } }}
-  >
-    <BsTelephoneOutbound size={18} />
-  </IconButton>
-
-  <IconButton
-    component="a"
-    href="https://wa.me/972548520195"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="WhatsApp"
-    sx={{ color: "#FFF", p: 0.75, "&:hover": { color: "#FFD700" } }}
-  >
-    <BsWhatsapp size={18} />
-  </IconButton>
-
-  <IconButton
     component={RouterLink}
     to="/PersonalAreaLogin"
     aria-label="אזור אישי"
-    sx={{ color: "#FFF", p: 0.75, "&:hover": { color: "#FFD700" } }}
+    sx={{
+      color: "#FFF",
+      p: 0.75,
+      display: "flex",
+      flexDirection: "column",
+      gap: 0.2,
+      "&:hover": { color: "#FFD700" },
+    }}
   >
     <BsPersonCircle size={18} />
+
+    <Typography
+      sx={{
+        textAlign: "center",
+        color: "#FFF",
+        fontSize: "8px",
+        lineHeight: 1,
+        letterSpacing: "0px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      אזור אישי
+    </Typography>
   </IconButton>
 </Box>
 
 
-    {/* אייקונים ולוגו כשרות - טלפון בצד שמאל */}
-    <Box
+
+
+{/* אייקונים ולוגו כשרות - טלפון בצד שמאל */}
+<Box
+  sx={{
+    display: { xs: "flex", md: "none" },
+    position: "absolute",
+    left: 4,
+    top: "50%",
+    transform: "translateY(-50%)",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 0,
+    zIndex: 6,
+  }}
+>
+  <IconButton
+    component={RouterLink}
+    to="/PersonalAreaLogin"
+    aria-label="אזור אישי"
+    sx={{
+      color: "#FFF",
+      p: 0.4,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 0.2,
+      "&:hover": { color: "#FFD700" },
+    }}
+  >
+    <BsPersonCircle size={16} />
+
+    <Typography
       sx={{
-        display: { xs: "flex", md: "none" },
-        position: "absolute",
-        left: 4,
-        top: "50%",
-        transform: "translateY(-50%)",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 0,
-        zIndex: 6,
+        textAlign: "center",
+        color: "#FFF",
+        fontSize: "8px",
+        lineHeight: 1,
+        letterSpacing: "0px",
+        whiteSpace: "nowrap",
       }}
     >
-      <IconButton
-        component="a"
-        href="tel:+972548520195"
-        aria-label="התקשרו אלינו"
-        sx={{ color: "#FFF", p: 0.4, "&:hover": { color: "#FFD700" } }}
-      >
-        <BsTelephoneOutbound size={16} />
-      </IconButton>
+      אזור אישי
+    </Typography>
+  </IconButton>
 
-      <IconButton
-        component="a"
-        href="https://wa.me/972548520195"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="WhatsApp"
-        sx={{ color: "#FFF", p: 0.4, "&:hover": { color: "#FFD700" } }}
-      >
-        <BsWhatsapp size={16} />
-      </IconButton>
+  <Box
+    component="img"
+    src={logokoshr}
+    alt="כשר בהשגחת הרב מחפוד"
+    sx={{
+      width: 70,
+      height: 80,
+      objectFit: "contain",
+      ml: 1,
+    }}
+  />
+</Box>
 
-      <IconButton
-        component={RouterLink}
-        to="/PersonalAreaLogin"
-        aria-label="אזור אישי"
-        sx={{ color: "#FFF", p: 0.4, "&:hover": { color: "#FFD700" } }}
-      >
-        <BsPersonCircle size={16} />
-      </IconButton>
-
-      <Box
-        component="img"
-        src={logokoshr}
-        alt="כשר בהשגחת הרב מחפוד"
-        sx={{
-          width: 50,
-          height:70,
-          objectFit: "contain",
-          ml: 0.25,
-        }}
-      />
-    </Box>
 
     {/* תפריט מובייל - שלושת הפסים בצד ימין */}
     <Box
@@ -553,11 +626,25 @@ return (
                 color: "#FFD700",
               }}
             >
-              <Box sx={{ flex: 1, height: "1px", bgcolor: "#555" }} />
+              <Box
+                sx={{
+                  flex: 1,
+                  height: "1px",
+                  bgcolor: "#555",
+                }}
+              />
+
               <Box sx={{ px: 2, fontWeight: "bold" }}>
                 סוגי חבילות
               </Box>
-              <Box sx={{ flex: 1, height: "1px", bgcolor: "#555" }} />
+
+              <Box
+                sx={{
+                  flex: 1,
+                  height: "1px",
+                  bgcolor: "#555",
+                }}
+              />
             </Box>
 
             {dropdownItems.map((item) => (
@@ -566,7 +653,10 @@ return (
                   component={item.to ? RouterLink : "div"}
                   to={item.to}
                   onClick={() => {
-                    if (item.onClick) item.onClick();
+                    if (item.onClick) {
+                      item.onClick();
+                    }
+
                     toggleDrawer(false)();
                   }}
                   sx={{

@@ -228,8 +228,6 @@ const validateFinalForm = () => {// בדיקת הלקוח
     }
 
     const orderSummary = createOrderSummary();
-
-    console.log(orderSummary);
     
     const total = pricePerDish * guestCount ;
     

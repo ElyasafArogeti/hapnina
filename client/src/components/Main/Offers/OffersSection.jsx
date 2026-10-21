@@ -26,18 +26,16 @@ const OffersSection = () => {
 
       {/* מעטפת שחור וזהב לכל ארבע החבילות */}
       <Box
-        sx={{
-          position: "relative",
-          overflow: "hidden",
-          boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
-          p: { xs: 2, md: 3 },
-          borderRadius: 4,
-          background:
-            "linear-gradient(180deg, #1c1c1c 0%, #0b0b0b 100%)",
-          border: "1px solid #b89546",
-          color: "#fff",
-          boxSizing: "border-box",
-        }}
+      sx={{
+  position: "relative",
+  p: { xs: 1, md: 2 },
+  borderRadius: 4,
+  background: "linear-gradient(180deg, #141414, #080808)",
+  border: "1px solid rgba(212,175,98,0.18)",
+  boxShadow: "0 10px 35px rgba(0,0,0,0.3)",
+  color: "#fff",
+  boxSizing: "border-box",
+}}
       >
         <Grid container spacing={3} alignItems="stretch">
          

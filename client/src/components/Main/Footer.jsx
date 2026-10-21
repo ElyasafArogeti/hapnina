@@ -4,7 +4,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { FaWaze } from "react-icons/fa";
 import { BsTelephoneOutbound } from "react-icons/bs";
 import { Link } from 'react-router-dom';
-import logo from "../../assets/imgs/logo.jpg";
+import logo from "../../assets/imgs/logonew.png";
 
 const Footer = () => {
   return (

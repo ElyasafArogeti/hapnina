@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Card, CardContent, CardMedia, Typography, Paper, Divider, TextField, Stack, Chip } from "@mui/material";
+import { Box, Button, Card, CardContent, CardMedia, Typography, Paper, Divider, TextField, Stack, Chip , IconButton,} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useLocation } from "react-router-dom";
 import NavbarHome from "./NavbarHome";
@@ -14,6 +14,9 @@ import {
 import Confetti from "react-confetti";
 import { useNavigate } from "react-router-dom";
 import Footer from './Footer';
+import HomeIcon from "@mui/icons-material/Home";
+
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export default function Checkout() {
   const { state } = useLocation();
@@ -44,8 +47,9 @@ const vatAmount = totalIncludingVat - priceBeforeVat;
 const navigate = useNavigate();
 const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
-// עמוד סיכום הזמנה באוכל מוכן 
 
+
+// עמוד סיכום הזמנה באוכל מוכן 
 
 
 
@@ -108,8 +112,6 @@ const createOrderSummary = () => {
 
   return order;
 };
-
-
 
 // בדיקת תיבות הלקוח 
   const validateFinalForm = () => {
@@ -215,10 +217,145 @@ console.log(error);
 
   return (
     <Box sx={{ direction: "rtl", background: "#f5f5f5", minHeight: "100vh", pb: 8 }}>
+
       <NavbarHome />
       <br /><br /><br /><br />
       <TextMove />
-      <br />
+
+
+{/* סרגל עליון – סיכום הזמנה בעיצוב שחור וזהב */}
+<Box
+  dir="rtl"
+  sx={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    px: { xs: 1, sm: 2, md: 4 },
+    py: 1,
+    boxSizing: "border-box",
+    bgcolor: "#171614",
+    borderBottom: "1px solid #51432D",
+    minHeight: 48,
+  }}
+>
+  {/* שלבי ההזמנה */}
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      gap: { xs: 0.5, sm: 1 },
+      minWidth: 0,
+      overflow: "hidden",
+    }}
+  >
+    {[
+      { number: 1, label: "בחירה" },
+      { number: 2, label: "סיכום" },
+      { number: 3, label: "פרטים ושליחה" },
+    ].map((step, index) => {
+      const activeStep = 2;
+      const active = step.number === activeStep;
+      const completed = step.number < activeStep;
+
+      return (
+        <React.Fragment key={step.number}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.6,
+              flexShrink: 0,
+            }}
+          >
+            {/* עיגול שלב */}
+            <Box
+              sx={{
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 10,
+                fontWeight: 800,
+                bgcolor: active ? "#C9A96E" : "transparent",
+                color: active ? "#171614" : completed
+                  ? "#D9BD86"
+                  : "#8D8980",
+                border: active
+                  ? "1px solid #E4CC9D"
+                  : completed
+                    ? "1px solid #9C7B47"
+                    : "1px solid #514735",
+                boxSizing: "border-box",
+                transition: "all 0.2s ease",
+              }}
+            >
+              {step.number}
+            </Box>
+
+            {/* כיתוב שלב */}
+            <Typography
+              sx={{
+                fontSize: { xs: 10, sm: 11 },
+                fontWeight: active ? 800 : 500,
+                color: active
+                  ? "#F1D7A5"
+                  : completed
+                    ? "#C9A96E"
+                    : "#8D8980",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {step.label}
+            </Typography>
+          </Box>
+
+          {/* קו בין השלבים */}
+          {index < 2 && (
+            <Box
+              sx={{
+                width: { xs: 7, sm: 18, md: 28 },
+                height: "1px",
+                background: completed
+                  ? "#C9A96E"
+                  : "#40392E",
+                flexShrink: 1,
+              }}
+            />
+          )}
+        </React.Fragment>
+      );
+    })}
+  </Box>
+
+  {/* כפתור חזרה לעמוד הבית – צד שמאל */}
+  <IconButton
+    aria-label="חזרה לעמוד הראשי"
+    onClick={() => navigate("/")}
+    sx={{
+      width: 30,
+      height: 30,
+      minWidth: 30,
+      color: "#D9BD86",
+      bgcolor: "#29251E",
+      border: "1px solid #51432D",
+      borderRadius: "8px",
+      flexShrink: 0,
+      "&:hover": {
+        bgcolor: "#3A3021",
+        color: "#F5DDAA",
+        borderColor: "#C9A96E",
+      },
+    }}>
+    <HomeIcon sx={{ fontSize: 17 }} />
+  </IconButton>
+</Box>
+
+
+ <br/>
+
    {/* כפתור חזרה לעריכת ההזמנה */}
     <Box
   sx={{
@@ -250,6 +387,9 @@ console.log(error);
   </Button>
     </Box>
 
+
+
+    {/* תוכן העמוד  */}
       <Box sx={{ pt: 1, px: { xs: 2, md: 5 } }}>
         <Typography variant="h3" textAlign="center" fontWeight={700} sx={{ mt: 4, mb: 5, color: "#444", fontSize: { xs: 34, md: 52 } }}>
           סיכום ההזמנה
@@ -261,8 +401,18 @@ console.log(error);
         שימו לב: מחיר ההזמנה אינו כולל דמי משלוח.
         </Typography>
      
+
+
+
+     
        {/* מלוי פרטים לשליחה  */} 
- <Grid container spacing={4} alignItems="flex-start">
+ <Grid
+  container
+  spacing={4}
+  direction="column"
+  alignItems="center"
+  sx={{ width: "100%", mx: "auto" }}
+>
    <Grid size={{ xs: 12, md: 8 }}>
 
 
@@ -331,11 +481,218 @@ console.log(error);
   </Box>
 </Paper>
 
+<br/>
+
+
+  {/* סרגל שלבי הזמנה – שחור וזהב יוקרתי */}
+  <Box
+  dir="rtl"
+  sx={{
+    width: "100%",
+    boxSizing: "border-box",
+    px: { xs: 1.5, sm: 3, md: 4 },
+    py: { xs: 2, sm: 2.5 },
+    background:
+      "linear-gradient(135deg, #111111 0%, #1d1b18 55%, #111111 100%)",
+    border: "1px solid #393024",
+    borderRadius: "14px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
+    overflow: "hidden",
+  }}
+>
+  {/* כותרת הסרגל */}
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      mb: 3,
+      gap: 1,
+    }}
+  >
+    <Box>
+      <Typography
+        sx={{
+          color: "#C9A96E",
+          fontSize: 10,
+          letterSpacing: 2,
+          fontWeight: 700,
+          mb: 0.5,
+        }}
+      >
+        HAPNINA CATERING
+      </Typography>
+
+      <Typography
+        sx={{
+          color: "#F5E9D0",
+          fontSize: { xs: 16, sm: 19 },
+          fontWeight: 700,
+        }}
+      >
+        תהליך ההזמנה
+      </Typography>
+    </Box>
+
+    <Box
+      sx={{
+        border: "1px solid #6F5936",
+        borderRadius: "20px",
+        px: 1.5,
+        py: 0.7,
+        flexShrink: 0,
+      }}
+    >
+      <Typography
+        sx={{
+          color: "#D9BD86",
+          fontSize: 11,
+          fontWeight: 600,
+        }}
+      >
+        שלב 3 מתוך 3
+      </Typography>
+    </Box>
+  </Box>
+
+  {/* שלבי ההזמנה */}
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "flex-start",
+      width: "100%",
+    }}
+  >
+    {[
+      { number: 1, label: "בחירה" },
+      { number: 2, label: "סיכום" },
+      { number: 3, label: "פרטים ושליחה" },
+    ].map((step, index) => {
+      const activeStep = 3;
+      const active = step.number === activeStep;
+      const completed = step.number < activeStep;
+
+      return (
+        <React.Fragment key={step.number}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1,
+              flex: "0 0 auto",
+              minWidth: 0,
+            }}
+          >
+            <Box
+              sx={{
+                width: active ? 38 : 32,
+                height: active ? 38 : 32,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxSizing: "border-box",
+                bgcolor: active ? "#C9A96E" : "transparent",
+                border: active
+                  ? "1px solid #E4CC9D"
+                  : completed
+                    ? "1px solid #9C7B47"
+                    : "1px solid #514735",
+                color: active ? "#17130D" : "#D9BD86",
+                boxShadow: active
+                  ? "0 0 18px rgba(201,169,110,0.18)"
+                  : "none",
+                transition: "all 0.25s ease",
+              }}
+            >
+              {completed ? (
+                <CheckCircleIcon sx={{ fontSize: 18 }} />
+              ) : (
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 800,
+                    color: "inherit",
+                  }}
+                >
+                  {step.number}
+                </Typography>
+              )}
+            </Box>
+
+            <Typography
+              sx={{
+                color: active
+                  ? "#F1D7A5"
+                  : completed
+                    ? "#C9A96E"
+                    : "#8D8980",
+                fontSize: { xs: 10, sm: 12, md: 13 },
+                fontWeight: active ? 700 : 500,
+                textAlign: "center",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {step.label}
+            </Typography>
+          </Box>
+
+          {index < 2 && (
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: { xs: 12, sm: 24 },
+                height: "1px",
+                mt: `${activeStep === step.number ? 19 : 16}px`,
+                mx: { xs: 0.75, sm: 1.5 },
+                background: completed
+                  ? "linear-gradient(90deg, #C9A96E, #8C6A3B)"
+                  : "#40392E",
+              }}
+            />
+          )}
+        </React.Fragment>
+      );
+    })}
+  </Box>
+
+  {/* הודעה לשלב האחרון */}
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      gap: 1,
+      mt: 2.5,
+      pt: 2,
+      borderTop: "1px solid #393024",
+    }}
+  >
+    <CheckCircleIcon
+      sx={{ color: "#C9A96E", fontSize: 18, flexShrink: 0 }}
+    />
+
+    <Typography
+      sx={{
+        color: "#C7BDAA",
+        fontSize: { xs: 11, sm: 12 },
+        lineHeight: 1.7,
+      }}
+    >
+      כמעט סיימנו — מלאו את הפרטים והשלימו את שליחת ההזמנה.
+    </Typography>
+  </Box>
+  </Box>
+
+
+
 
 
   </Grid>
-         {/* פרטי משתמש */}
-      <Grid size={{ xs: 12, md: 4 }}>
+
+    {/* פרטי משתמש */}
+      <Grid size={{ xs: 12, md: 8 }}>
+
             <Paper
               elevation={0}
               sx={{
@@ -347,9 +704,56 @@ console.log(error);
                 top: 100
               }}
             >
-              <Typography fontWeight="bold" fontSize={22} mb={3}>
-                מילוי פרטים לפני שליחה
+             {/* כותרת מלוי פרטים */}
+            <Box sx={{ mb: 3, textAlign: "right" }}>
+              <Typography
+                sx={{
+                  color: "#8c6a25",
+                  fontSize: 13,
+                  fontWeight: 800,
+                  mb: 1,
+                }}
+              >
+                שלב  3 — השלב האחרון
               </Typography>
+            
+              <Typography
+                fontWeight="bold"
+                fontSize={24}
+                sx={{ color: "#333", mb: 1 }}
+              >
+                פרטים לשליחת ההזמנה
+              </Typography>
+            
+              <Typography
+                fontSize={14}
+                sx={{ color: "#666", lineHeight: 1.7 }}
+              >
+                מלאו את הפרטים שלכם ונחזור אליכם להמשך תהליך
+                ההזמנה ולאישור הפרטים.
+              </Typography>
+            
+              <Box
+                sx={{
+                  mt: 2,
+                  height: 4,
+                  width: "100%",
+                  bgcolor: "#e8e8e8",
+                  borderRadius: 5,
+                  overflow: "hidden",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    bgcolor: "#8c6a25",
+                    borderRadius: 5,
+                  }}
+                />
+              </Box>
+            </Box>
+
 
               <Typography color="success.main" fontSize={15} mb={2}>
                 לאחר שליחת ההזמנה נציגנו יחזור אלייך להמשך תהליך ההזמנה
@@ -407,14 +811,39 @@ console.log(error);
                 helperText={errors.eventLocation}
                 sx={{ mb: 3 }}
               />
-                            <Button
+          
+              <Button
                 variant="contained"
                 fullWidth
                 onClick={handleFinalSubmit}
                 disabled={sending}
+                sx={{
+                  width: "100%",
+                  minHeight: 50,
+                  bgcolor: "#8c6a25",
+                  color: "#131313",
+                  border: "1px solid #C9A96E",
+                  borderRadius: "10px",
+                  fontWeight: 800,
+                  fontSize: 18,
+                  boxShadow: "0 4px 12px rgba(201,169,110,0.2)",
+                  transition: "all 0.25s ease",
+              
+                  "&:hover": {
+                    bgcolor: "#B89555",
+                    borderColor: "#E4CC9D",
+                    boxShadow: "0 6px 16px rgba(201,169,110,0.3)",
+                  },
+              
+                  "&.Mui-disabled": {
+                    bgcolor: "#D8C6A5",
+                    color: "#6B6252",
+                  },
+                }}
               >
                 {sending ? "שולח..." : "שלח הזמנה"}
               </Button>
+              
 
               {errorMessage && (
                 <Typography color="error" sx={{ mt: 2 }}>
@@ -533,6 +962,7 @@ console.log(error);
 </Dialog>
 
   <Footer />
-    </Box>
+   </Box>
+
   );
 }

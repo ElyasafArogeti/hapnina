@@ -10,7 +10,8 @@ import {
   IconButton,
   Drawer,
   Badge,
-  Divider
+  Divider,
+  createTheme, ThemeProvider
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Footer from './Footer';
@@ -23,6 +24,10 @@ import TextMove from "./textMove";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import HomeIcon from "@mui/icons-material/Home";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+
 
 
 
@@ -894,6 +899,7 @@ const [addingToCart, setAddingToCart] = useState(null);
   const [openCart, setOpenCart] = useState(false);
 
   const [animateImage, setAnimateImage] = useState(null);
+const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -920,7 +926,19 @@ const productsSectionRef = useRef(null);
   };
 
 
-
+const theme = React.useMemo(
+  () =>
+    createTheme({
+      palette: {
+        mode: darkMode ? "dark" : "light",
+        background: {
+          default: darkMode ? "#121212" : "#ffffff",
+          paper: darkMode ? "#1e1e1e" : "#ffffff",
+        },
+      },
+    }),
+  [darkMode]
+);
 
 const addToCart = (dish, e) => {
   e?.stopPropagation();
@@ -1000,69 +1018,297 @@ const filteredDishes = dishes.filter(
 
 
 
-  return (
-    <Box sx={{ backgroundColor: '#f9f9f9', width: '100%',direction: 'rtl'}}>
+  return ( 
+     <ThemeProvider theme={theme}>
+    <Box
+  sx={{
+    minHeight: "100vh",
+    width: "100%",
+    direction: "rtl",
+    bgcolor: "background.default",
+    color: "text.primary",
+  }}
+>
+      
+         
+
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
       <br/> <br/> <br/><br/>
    
      <TextMove/>
 
-     
-{/* פתיח להזמנה */}
-<Box sx={{ width: "100%", maxWidth: 1000, mx: "auto", mt: { xs: 2, md: 4 }, mb: { xs: 3, md: 5 }, px: { xs: 2, md: 3 }, boxSizing: "border-box" }}>
-  <Box sx={{ textAlign: "center", bgcolor: "#fffaf5", border: "1px solid #eadbc8", borderRadius: 3, px: { xs: 2, md: 5 }, py: { xs: 3, md: 4 }, boxShadow: "0 4px 18px rgba(100,65,30,0.06)" }}>
-    <Typography sx={{ fontSize: { xs: 23, md: 32 }, fontWeight: 800, color: "#6d4228", mb: 1 }}>
-      הטעם הטוב מתחיל כאן
-    </Typography>
-    <Typography sx={{ fontSize: { xs: 14, md: 17 }, color: "#62564d", lineHeight: 1.9, maxWidth: 700, mx: "auto" }}>
-      ברוכים הבאים להזמנת האוכל המוכן שלנו. בחרו ממגוון המנות האהובות עליכם, לפי קילוגרמים או יחידות, בהתאם לאופן שבו כל מנה מוצגת בתפריט.
-    </Typography>
-    <Typography sx={{ fontSize: { xs: 14, md: 16 }, color: "#6d4228", fontWeight: 600, mt: 1 }}>
-      הוסיפו את המנות לסל הקניות, עברו לסיכום ההזמנה והמשיכו להשלמת הפרטים.
-    </Typography>
-    <Typography sx={{ fontSize: { xs: 14, md: 16 }, color: "#940b11", fontWeight: 600, mt: 1 }}>
-     מינימום הזמנה 1500 ש'ח 
-    </Typography>
 
+    {/* סרגל עליון: בית, מצב תצוגה ושלבי הזמנה */}
 <Box
-  sx={{
-    mt: 3,
-    display: "flex",
-    justifyContent: "center",
+  dir="rtl"
+ sx={{
     width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    px: { xs: 1, sm: 2, md: 4 },
+    py: 1,
+    boxSizing: "border-box",
+    bgcolor: "#171614",
+    borderBottom: "1px solid #51432D",
+    minHeight: 48,
   }}
 >
+  {/* שלבי ההזמנה */}
   <Box
-    component="button"
-    onClick={() => setOpenCart(true)}
     sx={{
-      width: { xs: "100%", sm: 280 },
-      maxWidth: 320,
-      minHeight: 56,
-      px: 3,
-      py: 1.5,
-      border: "2px solid #6d4228",
-      borderRadius: 2,
-      backgroundColor: "#fffaf5",
-      color: "#6d4228",
-      fontSize: 18,
-      fontWeight: 800,
-      fontFamily: "inherit",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-      boxShadow: "0 3px 10px rgba(100,65,30,0.08)",
-
-      "&:hover": {
-        backgroundColor: "#6d4228",
-        color: "#ffffff",
-        boxShadow: "0 5px 15px rgba(100,65,30,0.2)",
-      },
+      display: "flex",
+      alignItems: "center",
+      gap: { xs: 0.5, sm: 1 },
+      minWidth: 0,
+      overflow: "hidden",
     }}
   >
-    סל הקניות שלך
+    {[
+      { number: 1, label: "בחירה" },
+      { number: 2, label: "סיכום" },
+     { number: 3, label: "פרטים ושליחה" }
+    ].map((step, index) => {
+      const activeStep = 1;
+      const active = step.number === activeStep;
+      const completed = step.number < activeStep;
+
+      return (
+        <React.Fragment key={step.number}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.6,
+              flexShrink: 0,
+            }}
+          >
+            <Box
+                         sx={{
+                           width: 18,
+                           height: 18,
+                           borderRadius: "50%",
+                           display: "flex",
+                           alignItems: "center",
+                           justifyContent: "center",
+                           fontSize: 10,
+                           fontWeight: 800,
+                           bgcolor: active ? "#C9A96E" : "transparent",
+                           color: active ? "#171614" : completed
+                             ? "#D9BD86"
+                             : "#8D8980",
+                           border: active
+                             ? "1px solid #E4CC9D"
+                             : completed
+                               ? "1px solid #9C7B47"
+                               : "1px solid #514735",
+                           boxSizing: "border-box",
+                           transition: "all 0.2s ease",
+                         }}
+                       >
+                         {step.number}
+                       </Box>
+
+            <Typography
+              sx={{
+                fontSize: { xs: 10, sm: 11 },
+                fontWeight: active ? 800 : 500,
+                color: active ? "#fff" : "#b8b8b8",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {step.label}
+            </Typography>
+          </Box>
+
+          {index < 2 && (
+            <Box
+              sx={{
+                width: { xs: 8, sm: 20 },
+                height: "1px",
+                bgcolor: "#414141",
+                flexShrink: 0,
+              }}
+            />
+          )}
+        </React.Fragment>
+      );
+    })}
+  </Box>
+
+
+
+  {/* כפתורי בית ומצב תצוגה */}
+  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    {/* חזרה לעמוד הראשי */}
+      <IconButton
+        aria-label="חזרה לעמוד הראשי"
+        onClick={() => navigate("/")}
+        sx={{
+          width: 30,
+          height: 30,
+          minWidth: 30,
+          color: "#D9BD86",
+          bgcolor: "#29251E",
+          border: "1px solid #51432D",
+          borderRadius: "8px",
+          flexShrink: 0,
+          "&:hover": {
+            bgcolor: "#3A3021",
+            color: "#F5DDAA",
+            borderColor: "#C9A96E",
+          },
+        }}
+      >
+        <HomeIcon sx={{ fontSize: 17 }} />
+      </IconButton>
+
+    {/* החלפת מצב בהיר / חשוך */}
+    <IconButton
+      aria-label="שינוי מצב תצוגה"
+      onClick={() => setDarkMode((prev) => !prev)}
+     sx={{
+          width: 30,
+          height: 30,
+          minWidth: 30,
+          color: "#D9BD86",
+          bgcolor: "#29251E",
+          border: "1px solid #51432D",
+          borderRadius: "8px",
+          flexShrink: 0,
+          "&:hover": {
+            bgcolor: "#3A3021",
+            color: "#F5DDAA",
+            borderColor: "#C9A96E",
+          },
+        }}
+    >
+      {darkMode ? (
+        <LightModeIcon sx={{ fontSize: 17 }} />
+      ) : (
+        <DarkModeIcon sx={{ fontSize: 17 }} />
+      )}
+    </IconButton>
   </Box>
 </Box>
 
+
+
+
+{/* פתיח להזמנה - מצב בהיר וחשוך */}
+<Box
+  sx={{
+    width: "100%",
+    maxWidth: 1000,
+    mx: "auto",
+    mt: { xs: 2, md: 4 },
+    mb: { xs: 3, md: 5 },
+    px: { xs: 2, md: 3 },
+    boxSizing: "border-box",
+  }}
+>
+  <Box
+    sx={{
+      textAlign: "center",
+      bgcolor: darkMode ? "#1e1e1e" : "#fffaf5",
+      border: `1px solid ${darkMode ? "#3a3a3a" : "#eadbc8"}`,
+      borderRadius: 3,
+      px: { xs: 2, md: 5 },
+      py: { xs: 3, md: 4 },
+      boxShadow: darkMode
+        ? "0 4px 18px rgba(0,0,0,0.25)"
+        : "0 4px 18px rgba(100,65,30,0.06)",
+      transition: "background-color 0.3s, border-color 0.3s",
+    }}
+  >
+    <Typography
+      sx={{
+        fontSize: { xs: 23, md: 32 },
+        fontWeight: 800,
+        color: darkMode ? "#e8c99b" : "#6d4228",
+        mb: 1,
+      }}
+    >
+      הטעם הטוב מתחיל כאן
+    </Typography>
+
+    <Typography
+      sx={{
+        fontSize: { xs: 14, md: 17 },
+        color: darkMode ? "#d0d0d0" : "#62564d",
+        lineHeight: 1.9,
+        maxWidth: 700,
+        mx: "auto",
+      }}
+    >
+      ברוכים הבאים להזמנת האוכל המוכן שלנו. בחרו ממגוון המנות האהובות עליכם,
+      לפי קילוגרמים או יחידות, בהתאם לאופן שבו כל מנה מוצגת בתפריט.
+    </Typography>
+
+    <Typography
+      sx={{
+        fontSize: { xs: 14, md: 16 },
+        color: darkMode ? "#e8c99b" : "#6d4228",
+        fontWeight: 600,
+        mt: 1,
+      }}
+    >
+      הוסיפו את המנות לסל הקניות, עברו לסיכום ההזמנה והמשיכו להשלמת הפרטים.
+    </Typography>
+
+    <Typography
+      sx={{
+        fontSize: { xs: 14, md: 16 },
+        color: darkMode ? "#ff7777" : "#940b11",
+        fontWeight: 600,
+        mt: 1,
+      }}
+    >
+      מינימום הזמנה 1500 ש"ח
+    </Typography>
+
+    <Box
+      sx={{
+        mt: 3,
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+      }}
+    >
+      <Box
+        component="button"
+        onClick={() => setOpenCart(true)}
+        sx={{
+          width: { xs: "100%", sm: 280 },
+          maxWidth: 320,
+          minHeight: 56,
+          px: 3,
+          py: 1.5,
+          border: `2px solid ${darkMode ? "#d6b77c" : "#6d4228"}`,
+          borderRadius: 2,
+          backgroundColor: darkMode ? "#292929" : "#fffaf5",
+          color: darkMode ? "#e8c99b" : "#6d4228",
+          fontSize: 18,
+          fontWeight: 800,
+          fontFamily: "inherit",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: darkMode
+            ? "0 3px 10px rgba(0,0,0,0.2)"
+            : "0 3px 10px rgba(100,65,30,0.08)",
+
+          "&:hover": {
+            backgroundColor: darkMode ? "#d6b77c" : "#6d4228",
+            color: darkMode ? "#171717" : "#ffffff",
+            boxShadow: darkMode
+              ? "0 5px 15px rgba(0,0,0,0.3)"
+              : "0 5px 15px rgba(100,65,30,0.2)",
+          },
+        }}
+      >
+        סל הקניות שלך
+      </Box>
+    </Box>
   </Box>
 </Box>
 
@@ -1150,15 +1396,17 @@ const filteredDishes = dishes.filter(
 <Box
   sx={{
     textAlign: "center",
-    my: 2
+    my: 2,
+    color: "text.primary",
+    transition: "0.3s",
   }}
 >
   <Typography
     variant="h5"
     fontWeight="bold"
     sx={{
-      color: "#111",
-      transition: "0.3s"
+      color: darkMode ? "#e8c99b" : "#111",
+      transition: "color 0.3s",
     }}
   >
     {selectedCategory}
@@ -1167,7 +1415,8 @@ const filteredDishes = dishes.filter(
   <Typography
     variant="body2"
     sx={{
-      color: "gray"
+      color: darkMode ? "#bdbdbd" : "gray",
+      transition: "color 0.3s",
     }}
   >
     מציג מוצרים מקטגוריית {selectedCategory}
@@ -1175,25 +1424,22 @@ const filteredDishes = dishes.filter(
 </Box>
 
 
-    {/* כפתור סל הקניות */}
- <IconButton id="main-course-cart"
-        onClick={() => setOpenCart(true)}
-       sx={{ position: "fixed", left: 20, bottom: 20,  zIndex: 999,  bgcolor: "white",  boxShadow: 4,
-         borderRadius: "50%",  width: 60,height: 60, display: "flex",justifyContent: "center",alignItems: "center",
-         "&:hover": {
-           bgcolor: "#f5f5f5"
-         }
-       }}  >
-        <Badge
-          badgeContent={totalItems}
-          color="error" >
-         <ShoppingCartIcon fontSize="large" />
-        </Badge>
+{/* כפתור סל הקניות */}
+<IconButton id="main-course-cart" onClick={() => setOpenCart(true)} sx={{
+  position: "fixed", left: 20, bottom: 20, zIndex: 999,
+  bgcolor: "#fff",
+  color: darkMode ? "#000" : "#555",
+  boxShadow: 4, borderRadius: "50%", width: 60, height: 60,
+  display: "flex", justifyContent: "center", alignItems: "center",
+  "&:hover": { bgcolor: "#eee" }
+}}>
+  <Badge badgeContent={totalItems} color="error"><ShoppingCartIcon fontSize="large" /></Badge>
+</IconButton>
 
-    </IconButton>
+
+
 
 {/* כרטיסי מוצרים - עיצוב יוקרתי */}
-
   <Box 
    ref={productsSectionRef}
   sx={{
@@ -1305,6 +1551,7 @@ const filteredDishes = dishes.filter(
               "&:last-child": {
                 pb: 2.2,
               },
+              
             }}
           >
             {/* שם המוצר והמחיר */}
@@ -1426,6 +1673,7 @@ const filteredDishes = dishes.filter(
             </Box>
             <Box sx={{ flexGrow: 1 }} />
             {/* הוספה לסל */}
+
             <Button
               fullWidth
               onClick={(e) => addToCart(dish, e)}
@@ -1508,7 +1756,8 @@ const filteredDishes = dishes.filter(
 
 
 
-{/* סל הקניות  */}
+ 
+{/*מודול סל הקניות   */}
    <Drawer
   anchor="left"
   open={openCart}
@@ -1516,7 +1765,7 @@ const filteredDishes = dishes.filter(
  PaperProps={{
   sx: {
     width: {
-      xs: "88%", // בטלפון משאיר חלק מהמסך גלוי
+      xs: "85%", // בטלפון משאיר חלק מהמסך גלוי
       sm: 380,
       md: 420,
     },
@@ -1544,6 +1793,7 @@ const filteredDishes = dishes.filter(
     sx={{
       p: 3,
       bgcolor: "#fff",
+      color: darkMode ? "#000" : "#555",
       borderBottom: "1px solid #eee",
       flexShrink: 0,
     }}
@@ -1572,6 +1822,7 @@ const filteredDishes = dishes.filter(
     </Box>
   ) : (
     <>
+
       {/* רשימת המוצרים */}
       <Box
         sx={{
@@ -1579,6 +1830,7 @@ const filteredDishes = dishes.filter(
           overflowY: "auto",
           px: 2,
           py: 2,
+          
 
           "&::-webkit-scrollbar": {
             width: "8px",
@@ -1600,6 +1852,8 @@ const filteredDishes = dishes.filter(
               alignItems: "center",
               mb: 2,
               p: 1.5,
+              bgcolor: "#fff",
+              color: "#222",
               borderRadius: 4,
               boxShadow: "0 5px 15px rgba(0,0,0,.08)",
             }}
@@ -1707,8 +1961,8 @@ const filteredDishes = dishes.filter(
       <Box
         sx={{
           p: 3,
-          bgcolor: "#fff",
-          borderTop: "1px solid #eee",
+          color: darkMode ? "#ffffff" : "#000000",
+
           flexShrink: 0,
         }}
       >
@@ -1746,7 +2000,7 @@ const filteredDishes = dishes.filter(
        })
          }
         >
-          מעבר לסל הקניות
+       מעבר לסיכום הזמנה 
         </Button>
       </Box>
     </>
@@ -1779,6 +2033,8 @@ const filteredDishes = dishes.filter(
 
 
   <Footer />
-    </Box>
+ 
+    </Box> 
+    </ThemeProvider>
   );
 }

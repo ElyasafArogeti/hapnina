@@ -11,7 +11,7 @@ import {
   MonetizationOn,
 } from "@mui/icons-material";
 import { Divider, IconButton} from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 import styles from "../../assets/stylesMain/home.module.css";
 import Grid2 from '@mui/material/Grid2';
 import Footer from './Footer';
@@ -23,6 +23,13 @@ import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PhoneIcon from "@mui/icons-material/Phone";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 
 
 const images = [
@@ -61,6 +68,7 @@ const Home = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
 
+const navigate = useNavigate();
 
   return (
     <Box className={styles.mainHome}>
@@ -352,6 +360,7 @@ const Home = () => {
     boxSizing: "border-box",
   }}
 >
+
   <Grid2 container spacing={3} alignItems="stretch">
 
     {/* כרטיס 1 - אוכל מוכן */}
@@ -764,6 +773,134 @@ const Home = () => {
 
   </Grid2>
 </Container>
+
+
+
+{/* שאלות נפוצות – עמוד הבית */}
+<Box
+  dir="rtl"
+  sx={{
+    py: { xs: 5, md: 7 },
+    px: 2,
+    background: "linear-gradient(135deg, #171614, #252019)",
+  }}
+>
+  <Box sx={{ maxWidth: 850, mx: "auto" }}>
+    <Typography
+      sx={{
+        color: "#C9A96E",
+        textAlign: "center",
+        fontSize: 12,
+        letterSpacing: 2,
+        mb: 1,
+        fontWeight: 700,
+      }}
+    >
+      HAPNINA CATERING
+    </Typography>
+
+    <Typography
+      component="h2"
+      sx={{
+        color: "#F5E9D0",
+        textAlign: "center",
+        fontSize: { xs: 26, md: 34 },
+        fontWeight: 800,
+        mb: 1,
+      }}
+    >
+      שאלות נפוצות
+    </Typography>
+
+    <Typography
+      sx={{
+        color: "#C7BDAA",
+        textAlign: "center",
+        mb: 4,
+        fontSize: 14,
+      }}
+    >
+      כל מה שחשוב לדעת לפני שמזמינים
+    </Typography>
+
+    {[
+      {
+        question: "איזו כשרות יש לקייטרינג הפנינה?",
+        answer:
+          'האוכל בכשרות בד"ץ "יורה דעה" של הרב מחפוד שליט"א.',
+      },
+      {
+        question: "כמה זמן מראש צריך להזמין?",
+        answer:
+          "יש לתאם את ההזמנה לפחות 72 שעות מראש.",
+      },
+      {
+        question: "לאילו אזורים אתם מבצעים משלוחים?",
+        answer:
+          "המשלוחים מתבצעים מאזור באר שבע ועד אזור הרצליה, כפר סבא וצפון רמת השרון. עלות המשלוח נקבעת בהתאם לאזור.",
+      },
+    ].map((faq, index) => (
+      <Accordion
+        key={index}
+        disableGutters
+        elevation={0}
+        sx={{
+          mb: 1.5,
+          color: "#F5E9D0",
+          backgroundColor: "#211F1B",
+          border: "1px solid #51432D",
+          borderRadius: "10px !important",
+          "&::before": { display: "none" },
+          "&:hover": { borderColor: "#C9A96E" },
+        }}
+      >
+        <AccordionSummary
+          expandIcon={
+            <ExpandMoreIcon sx={{ color: "#C9A96E" }} />
+          }
+          sx={{ px: 2.5, py: 0.5 }}
+        >
+          <Typography sx={{ fontWeight: 700, fontSize: 15 }}>
+            {faq.question}
+          </Typography>
+        </AccordionSummary>
+
+        <AccordionDetails sx={{ px: 2.5, pb: 2.5 }}>
+          <Typography
+            sx={{
+              color: "#D0C7B7",
+              lineHeight: 1.9,
+              fontSize: 14,
+            }}
+          >
+            {faq.answer}
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+    ))}
+
+    <Box sx={{ textAlign: "center", mt: 3 }}>
+      <Button
+        onClick={() => navigate("/FAQAccordion")}
+        variant="outlined"
+        sx={{
+          color: "#D9BD86",
+          borderColor: "#9C7B47",
+          borderRadius: "10px",
+          px: 4,
+          py: 1.2,
+          fontWeight: 700,
+          "&:hover": {
+            borderColor: "#E4CC9D",
+            backgroundColor: "rgba(201,169,110,0.08)",
+          },
+        }}
+      >
+        לכל השאלות והתשובות
+      </Button>
+    </Box>
+  </Box>
+</Box>
 
 
 

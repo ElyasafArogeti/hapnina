@@ -173,8 +173,8 @@ const formatDisplayWeight = (weight, dishWeight) => {
             side_dishes: selectedSidesData
         };
 
-        // הוספת רווח של 40%
-          const profitRate = 0.4; // 40%
+        // 70%
+          const profitRate = 0.70; // 70%
           const profitAmount = total * profitRate; // שיעור רווח 
           total += profitAmount; // הוספת הרווח
     

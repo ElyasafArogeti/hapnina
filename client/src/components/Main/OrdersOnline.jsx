@@ -213,8 +213,8 @@ const removeNonHebrew = (text) => {
   }
 
   // בדיקה רק אם כמות האורחים קטנה מ-30
-  if (guestCount < 30) {
-    setErrorMessage(".המערכת מיועדת לאירועים של 30 אורחים ומעלה");
+  if (guestCount < 60) {
+    setErrorMessage(".המערכת מיועדת לאירועים של 60 אורחים ומעלה");
     setTimeout(() => {
       setErrorMessage(null);
     }, 7000);
@@ -727,7 +727,7 @@ return (
         textAlign: 'center',
       }}
     >
-      מינימום הזמנה 30 מנות !!
+      מינימום הזמנה 60 מנות !!
     </Typography>
   
   </Container>

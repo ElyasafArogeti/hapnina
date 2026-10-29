@@ -130,8 +130,8 @@ const validateFinalForm = () => {// בדיקת הלקוח
   }
 
   // בדיקת מספר מוזמנים
-  if (!guestCount || guestCount < 30) {
-    newErrors.guestCount = 'יש להזין לפחות 30 מוזמנים';
+  if (!guestCount || guestCount < 60) {
+    newErrors.guestCount = 'יש להזין לפחות 60 מוזמנים';
     hasFinalError = true;
   }
 
@@ -476,7 +476,7 @@ const createOrderSummary = () => {
         fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" },
       }}
     >
-      מינימום הזמנה הינו <strong>30 מנות</strong>, אשר יוגשו בחלוקה שווה של <strong>שליש מכל סוג </strong>   עבור כלל האורחים.
+      מינימום הזמנה הינו <strong>60 מנות</strong>, אשר יוגשו בחלוקה שווה של <strong>שליש מכל סוג </strong>   עבור כלל האורחים.
     </Typography>
 
     <Typography
@@ -486,7 +486,7 @@ const createOrderSummary = () => {
         fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.9rem" },
       }}
     >
-      מחיר למנה: {pricePerDish} ₪ אינו כולל מע'מ 
+      מחיר למנה: {pricePerDish} ₪  כולל מע'מ 
     </Typography>
 
     <Typography

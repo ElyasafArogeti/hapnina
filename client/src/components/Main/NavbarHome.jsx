@@ -18,7 +18,7 @@ import logo from "../../assets/imgs/logo444.png";
 import logokoshr from "../../assets/imgs/logokoshr.png";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-
+import barmitzvah from "../../assets/imgs/barmitzvah.png";
 
 
 
@@ -56,18 +56,18 @@ const [isScrolled, setIsScrolled] = useState(false);
 
   //  שליחת הנתונים לתפריט הגנרי
 const handleNavigateToBarMitzvah = () => {  //בר מצווה 
+    const eventImage = barmitzvah;
     navigate("/GenericOrder", {
       state: {
-        eventName: "בר מצווה",
-        pricePerDish: 70,
+        eventName: "בר/בת מצווה",
+        pricePerDish: 110,
         selectionLimits: {
           salads: 5,
           first_courses: 3,
           main_courses: 3,
           side_dishes: 2,
         },
-        eventImage:
-          "https://res.cloudinary.com/dhkegagjk/image/upload/v1752413870/%D7%91%D7%A8_%D7%9E%D7%A6%D7%95%D7%95%D7%94_4_ij29kz.jpg",
+       eventImage, 
         hiddenItems: {
           salads: [
            "חסה, שרי ונבטים ברוטב",
@@ -100,7 +100,7 @@ const handleNavigateToBarMitzvah = () => {  //בר מצווה
           side_dishes: [
             "זיתים מרוקאים",
           "ארטישוק ופטריות",
-            "קוסקוס עם ירקות",
+           "קוסקוס + מרק ירקות",
             "טנזיה",
           ],
         },
@@ -111,38 +111,43 @@ const handleNavigateToBrit = () => { //ברית
   navigate("/GenericOrder", {
     state: {
       eventName: " ברית מילה  ",
-      pricePerDish: 65,
+      pricePerDish: 89,
       selectionLimits: {
         salads: 8,
-        main_courses: 3,
+        main_courses: 2,
         side_dishes: 3,
       },
       eventImage:
         "https://res.cloudinary.com/dhkegagjk/image/upload/v1752409193/%D7%91%D7%A8%D7%99%D7%AA_3_i9lfck.jpg",
-      hiddenItems: {
-        salads: [
-         "חסה, שרי ונבטים ברוטב",
-          "מטבוחה",
-          "שרי בבזיליקום",
-          "פלפל מתוק בצבעים",
-          "סלט בטטה",
-          "סלט ירוק",
-        ],
-        main_courses: [
-          "כרעיים עוף ממולא",
-          "חזה עוף ממולא",
-            "אצבעות אסאדו בסגנון השף",
+       hiddenItems: {
+          salads: [
+             "קינואה",
+           "גזר מרוקאי מבושל",
+           "תפו'א במיונז",
+            "חסה, שרי ונבטים ברוטב",
+            "שרי בבזיליקום",
+            "פלפל מתוק בצבעים",
+            "סלט ירוק",
+          ],
+          main_courses: [
+            "כרעיים עוף ממולא",
+            "חזה עוף ממולא",
             "צלי בקר מספר 5",
             "בשר ראש עם חומוס",
             "פרגית ממולא",
-        ],
-        side_dishes: [
-          "זיתים מרוקאים",
-        "ארטישוק ופטריות",
-          "קוסקוס עם ירקות",
-          "טנזיה",
-        ],
-      },
+            "רוסטביף",
+  
+
+          ],
+          side_dishes: [
+            "זיתים מרוקאים",
+            "ארטישוק ופטריות",
+            "טנזיה",
+            "פטוצ'יני"  ,
+               "קוסקוס עם ירקות",
+
+          ],
+        },
     },
   });
 };
@@ -150,46 +155,39 @@ const handleNavigateToRentals = () => { //אזכרות
    navigate("/GenericOrder", {
     state: {
       eventName: " אזכרות  ",
-      pricePerDish: 60,
+      pricePerDish: 77,
       selectionLimits: {
         salads: 5,
-        main_courses: 3,
+        main_courses: 2,
         side_dishes: 2,
       },
       eventImage:
         "https://res.cloudinary.com/dhkegagjk/image/upload/v1754379285/%D7%A0%D7%A8_jokrfy.webp",
       hiddenItems: {
-        salads: [
-         "חסה, שרי ונבטים ברוטב",
-          "מטבוחה",
-          "שרי בבזיליקום",
-          "פלפל מתוק בצבעים",
-          "סלט בטטה",
-          "סלט ירוק",
-        ],
-        first_courses: [
-          "נסיכת הנילוס מזרחי",
-         "ארטישוק ממולא בשר",
-         "כבדי עוף מוקפצים",
-         "פילה סלמון ברוטב פסטו",
-          "מוסקה בשרית",
-        ],
-        main_courses: [
-          "כרעיים עוף ממולא",
-          "חזה עוף ממולא",
+          salads: [
+            "חסה, שרי ונבטים ברוטב",
+            "סלט ירוק",
+           "קינואה",
+           "גזר מרוקאי מבושל",
+           "תפו'א במיונז",
+             "סלט בטטה",
+          ],
+          main_courses: [
+            "כרעיים עוף ממולא",
+            "חזה עוף ממולא",
             "אצבעות אסאדו בסגנון השף",
             "צלי בקר מספר 5",
             "צלי בקר מספר 6",
             "בשר ראש עם חומוס",
             "פרגית ממולא",
-        ],
-        side_dishes: [
-          "זיתים מרוקאים",
-        "ארטישוק ופטריות",
-          "קוסקוס עם ירקות",
-          "טנזיה",
-        ],
-      },
+            "רוסטביף",
+          ],
+          side_dishes: [   
+            "ארטישוק ופטריות",
+            "טנזיה",
+            "פטוצ'יני"
+          ],
+        },
     },
 });
 };
@@ -199,10 +197,10 @@ const handleNavigateToRentals = () => { //אזכרות
 
 // קישורים לסוגים בתצוגת מובייל
   const dropdownItems = [
-    {label: "תפריט מורחב ", to: "/OrdersOnline"},
-    { label: "תפריט לבר מצווה", onClick: handleNavigateToBarMitzvah },
-    { label: "תפריט לברית",  onClick: handleNavigateToBrit },
-    { label: "תפריט לאזכרות",  onClick: handleNavigateToRentals },
+    {label: "תפריט GOLD ", to: "/OrdersOnline"},
+    { label: "חבילת בר/בת מצווה", onClick: handleNavigateToBarMitzvah },
+    { label: "חבילת ברית מילה",  onClick: handleNavigateToBrit },
+    { label: "חבילת אזכרה",  onClick: handleNavigateToRentals },
   ];
 
 

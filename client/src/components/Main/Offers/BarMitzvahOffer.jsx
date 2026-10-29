@@ -3,19 +3,19 @@ import React from "react";
 import { Card, Typography, Button, Box } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
+import barmitzvah from "../../../assets/imgs/barmitzvah.png";
 
 const BarMitzvahOffer = () => {
   const navigate = useNavigate();
 
-  const eventImage =
-    "https://res.cloudinary.com/dhkegagjk/image/upload/v1752413870/%D7%91%D7%A8_%D7%9E%D7%A6%D7%95%D7%95%D7%94_4_ij29kz.jpg";
+   const eventImage = barmitzvah;
 
   // נתוני ההזמנה נשמרו ללא שינוי
   const handleClick = () => {
     navigate("/GenericOrder", {
       state: {
-        eventName: "בר מצווה",
-        pricePerDish: 70,
+        eventName: "בר/בת מצווה",
+        pricePerDish: 110,
         selectionLimits: {
           salads: 5,
           first_courses: 3,
@@ -25,7 +25,7 @@ const BarMitzvahOffer = () => {
         eventImage,
         hiddenItems: {
           salads: [
-            "חסה, שרי ונבטים ברוטב",
+           "חסה, שרי ונבטים ברוטב",
             "מטבוחה",
             "שרי בבזיליקום",
             "פלפל מתוק בצבעים",
@@ -34,10 +34,10 @@ const BarMitzvahOffer = () => {
           ],
           first_courses: [
             "נסיכת הנילוס מזרחי",
-            "ארטישוק ממולא בשר",
-            "כבדי עוף מוקפצים",
-            "פילה סלמון ברוטב פסטו",
-            "פילה סלמון ברוטב אדם",
+           "ארטישוק ממולא בשר",
+           "כבדי עוף מוקפצים",
+           "פילה סלמון ברוטב פסטו",
+           "פילה סלמון ברוטב אדם",
             "מוסקה בשרית",
             "מאפה פילו במילוי פרגית",
             "קרואסון אסאדו",
@@ -46,16 +46,16 @@ const BarMitzvahOffer = () => {
           main_courses: [
             "כרעיים עוף ממולא",
             "חזה עוף ממולא",
-            "אצבעות אסאדו בסגנון השף",
-            "צלי בקר מספר 5",
-            "צלי בקר מספר 6",
-            "בשר ראש עם חומוס",
-            "פרגית ממולא",
+              "אצבעות אסאדו בסגנון השף",
+              "צלי בקר מספר 5",
+              "צלי בקר מספר 6",
+              "בשר ראש עם חומוס",
+              "פרגית ממולא",
           ],
           side_dishes: [
             "זיתים מרוקאים",
-            "ארטישוק ופטריות",
-            "קוסקוס עם ירקות",
+          "ארטישוק ופטריות",
+          "קוסקוס + מרק ירקות",
             "טנזיה",
           ],
         },
@@ -63,9 +63,10 @@ const BarMitzvahOffer = () => {
     });
   };
 
+
   const features = [
     <>
-      5 סוגי סלטים לבחירה
+      8 סוגי סלטים לבחירה
     </>,
     <>
       2 מנות ראשונות
@@ -148,7 +149,7 @@ const BarMitzvahOffer = () => {
             color: "#e1c27a",
           }}
         >
-          חבילת בר מצווה
+         חבילת בר/בת מצווה 
         </Typography>
 
         <Typography
@@ -158,7 +159,7 @@ const BarMitzvahOffer = () => {
             fontSize: "0.85rem",
           }}
         >
-          חוגגים בר מצווה עם תפריט עשיר ומגוון
+          חוגגים  בר/בת מצווה  עם תפריט עשיר ומגוון
         </Typography>
 
         {/* פירוט החבילה */}
@@ -222,7 +223,7 @@ const BarMitzvahOffer = () => {
               fontWeight: 900,
             }}
           >
-            ₪70 למנה
+            ₪110 למנה
           </Typography>
         </Box>
 
@@ -247,7 +248,7 @@ const BarMitzvahOffer = () => {
             },
           }}
         >
-          בחירת חבילת בר מצווה
+        בחירת חבילת בר/בת מצווה 
         </Button>
       </Box>
     </Card>

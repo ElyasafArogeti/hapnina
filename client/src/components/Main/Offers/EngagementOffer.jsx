@@ -5,6 +5,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
 
 // תפריט אזכרות
+
 const EngagementOffer = () => {
   const navigate = useNavigate();
 
@@ -16,28 +17,21 @@ const EngagementOffer = () => {
     navigate("/GenericOrder", {
       state: {
         eventName: " אזכרות  ",
-        pricePerDish: 60,
+        pricePerDish: 77,
         selectionLimits: {
           salads: 5,
-          main_courses: 3,
+          main_courses: 2,
           side_dishes: 2,
         },
         eventImage,
         hiddenItems: {
           salads: [
             "חסה, שרי ונבטים ברוטב",
-            "מטבוחה",
-            "שרי בבזיליקום",
-            "פלפל מתוק בצבעים",
-            "סלט בטטה",
             "סלט ירוק",
-          ],
-          first_courses: [
-            "נסיכת הנילוס מזרחי",
-            "ארטישוק ממולא בשר",
-            "כבדי עוף מוקפצים",
-            "פילה סלמון ברוטב פסטו",
-            "מוסקה בשרית",
+           "קינואה",
+           "גזר מרוקאי מבושל",
+           "תפו'א במיונז",
+             "סלט בטטה",
           ],
           main_courses: [
             "כרעיים עוף ממולא",
@@ -47,12 +41,12 @@ const EngagementOffer = () => {
             "צלי בקר מספר 6",
             "בשר ראש עם חומוס",
             "פרגית ממולא",
+            "רוסטביף",
           ],
           side_dishes: [
-            "זיתים מרוקאים",
             "ארטישוק ופטריות",
-            "קוסקוס עם ירקות",
             "טנזיה",
+            "פטוצ'יני"
           ],
         },
       },
@@ -61,7 +55,7 @@ const EngagementOffer = () => {
 
   const features = [
     "5 סוגי סלטים לבחירה",
-    "3 מנות עיקריות לבחירה",
+    "2 מנות עיקריות לבחירה",
     "2 תוספות לבחירה",
   ];
 
@@ -192,7 +186,7 @@ const EngagementOffer = () => {
               fontWeight: 900,
             }}
           >
-            ₪60 למנה
+            ₪77 למנה
           </Typography>
         </Box>
 

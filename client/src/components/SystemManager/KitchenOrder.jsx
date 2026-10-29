@@ -24,6 +24,7 @@ import axiosInstance from '../axiosInstance';
 const KitchenOrder = () => {
   const location = useLocation();
   const { orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber , email , event_location , address,shippingCost,serviceCost,toolsType,eventType} = location.state || {};
+  console.log(orderSummary, eventDate, guestCount, totalPrice, eventOwner, phoneNumber , email , event_location , address,shippingCost,serviceCost,toolsType,eventType);
   
   const name = "ארוגטי";
    const EventDate = new Date(eventDate).toLocaleDateString('he-IL');
@@ -342,14 +343,47 @@ ${driverName ? `
     html2pdf().from(content).set(options).save();
   };
 
-// תצוגת יחידות קילו גרם או גרם 
-const formatDisplayWeight = (weight, dishWeight) => {
-  // dishWeight === משקל של מנה אחת מהדאטהבייס
-  const isUnits = dishWeight > 0 && dishWeight < 2;
 
- if (isUnits) return `${parseInt(weight)} מנות`;
-  if (weight >= 1000) return `${(weight / 1000).toFixed(3)} ק"ג`;
-  return `${parseInt(weight)} גרם`;
+
+// תצוגת יחידות קילו גרם או גרם 
+const formatDisplayWeight = (
+  weight,
+  dishWeight,
+  category,
+  unitType
+) => {
+  if (weight == null || !Number.isFinite(Number(weight))) {
+    return "—";
+  }
+
+  const value = Number(weight);
+
+  // סוג היחידה המפורש של המנה גובר על ברירת המחדל
+  const type =
+    unitType ||
+    (category === "salads"
+      ? "kg"
+      : category === "main_courses"
+      ? "units"
+      : "grams");
+
+  if (type === "units") {
+    return `${value} ${value === 1 ? "מנה" : "מנות"}`;
+  }
+
+  if (type === "kg") {
+    return `${value.toLocaleString("he-IL", {
+      maximumFractionDigits: 3,
+    })} ק"ג`;
+  }
+
+  if (type === "grams") {
+    return `${value.toLocaleString("he-IL", {
+      maximumFractionDigits: 0,
+    })} גרם`;
+  }
+
+  return `${value} ${type}`;
 };
 
 
@@ -808,6 +842,7 @@ const currentDate = new Date().toLocaleDateString('he-IL');
     {/* הוספת מנה מודול*/}
  {editAddDish && (
 <div className="add-dish">
+
 <h3>הוסף מנה חדשה</h3>  
   <select
       onChange={(e) => setNewDish({ ...newDish, category: e.target.value })}
@@ -819,6 +854,7 @@ const currentDate = new Date().toLocaleDateString('he-IL');
         <option value="main_courses">מנות עיקריות</option>
         <option value="side_dishes">תוספות</option>
       </select>
+
   {/* הצגת המנות לפי הקטגוריה */}
   <select
       onChange={(e) => {
@@ -859,6 +895,10 @@ const currentDate = new Date().toLocaleDateString('he-IL');
  
 
 <br />
+
+
+
+{/* תצוגת פרטי מנות שנבחר */}
    {parsedOrderMenu && Object.keys(parsedOrderMenu).map((category) => (
           <div key={category} className="kitchen-order-category">
             <h4 className="kitchen-order-category-title">
@@ -881,7 +921,14 @@ const currentDate = new Date().toLocaleDateString('he-IL');
                   <tr key={`${item.dish_name}-${index}`}>
                     <td>{item.dish_name}</td>
                     <td>{item.totalPrice}</td>
-                    <td> {formatDisplayWeight(item.totalWeight, item.dishWeight)}</td>
+                   <td>
+  {formatDisplayWeight(
+    item.totalWeight,
+    item.dishWeight,
+    category,
+    item.unitType
+  )}
+</td>
                     <td>
                     <button className='kitchen-order-edit-button' onClick={() => handleShowEditModal(item.dish_name, item.totalPrice, item.totalWeight)}>ערוך</button>
                     </td>
@@ -895,6 +942,10 @@ const currentDate = new Date().toLocaleDateString('he-IL');
             </table>
           </div>
    ))}
+
+
+
+
   </div>
 
       <label className='kitchen-order-label-button'><TbArrowBadgeDown/> מנהל <TbArrowBadgeDown/></label>

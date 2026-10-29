@@ -113,29 +113,60 @@ const createOrderSummary = () => {
   return order;
 };
 
-// בדיקת תיבות הלקוח 
-  const validateFinalForm = () => {
-    const newErrors = {};
+// בדיקת  הלקוח לפני שליחה 
+const validateFinalForm = () => {
+  const newErrors = {};
 
-    if (!guestName.trim() || guestName.trim().length < 2)
-      newErrors.guestName = "יש להזין שם מלא תקין";
+  // בדיקת שם מלא
+  if (!guestName.trim() || guestName.trim().length < 2) {
+    newErrors.guestName = "יש להזין שם מלא תקין";
+  }
 
-    if (!/^05\d{8}$/.test(phoneNumber))
-      newErrors.phoneNumber = "מספר פלאפון לא תקין";
+  // בדיקת מספר טלפון ישראלי
+  if (!/^05\d{8}$/.test(phoneNumber.trim())) {
+    newErrors.phoneNumber = "יש להזין מספר פלאפון תקין, לדוגמה 0501234567";
+  }
 
-    if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email))
-      newErrors.email = "כתובת מייל לא תקינה";
+  // בדיקת כתובת Gmail בלבד
+  if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/i.test(email.trim())) {
+    newErrors.email = "יש להזין כתובת Gmail תקינה המסתיימת ב-@gmail.com";
+  }
 
-    if (!eventDate)
-      newErrors.eventDate = "יש לבחור תאריך";
+  // תאריך מינימלי: שלושה ימים קלנדריים מהיום
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    if (!eventLocation.trim())
-      newErrors.eventLocation = "יש להזין כתובת";
+  const minDate = new Date(today);
+  minDate.setDate(minDate.getDate() + 3);
 
-    setErrors(newErrors);
+  // המרת התאריך שנבחר לתאריך מקומי
+  const selectedDate = eventDate
+    ? new Date(`${eventDate}T00:00:00`)
+    : null;
 
-    return Object.keys(newErrors).length === 0;
-  };
+  // בדיקת תאריך
+  if (!eventDate) {
+    newErrors.eventDate = "יש לבחור תאריך לאירוע";
+  } else if (
+    !selectedDate ||
+    Number.isNaN(selectedDate.getTime())
+  ) {
+    newErrors.eventDate = "התאריך שהוזן אינו תקין";
+  } else if (selectedDate < minDate) {
+    newErrors.eventDate =
+      "לא ניתן לבצע הזמנה בהתראה קצרה. יש להזמין לפחות 2 ימי עסקים מראש, ולכן ניתן לבחור תאריך החל משלושה ימים מהיום";
+  }
+
+  // בדיקת כתובת משלוח
+  if (!eventLocation.trim()) {
+    newErrors.eventLocation = "יש להזין כתובת משלוח";
+  }
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
+
 
 //  שליחת סיכום הזמנה לשרת למסד נתונים
 const handleFinalSubmit = async () => {
@@ -209,8 +240,17 @@ console.log(error);
   }
 };
 
+// אומר שגיאה ללקוח שתאריך לפני 2 ימי עסקים
+const minEventDate = (() => {
+  const date = new Date();
+  date.setDate(date.getDate() + 3);
 
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
+  return `${year}-${month}-${day}`;
+})();
 
 
 
@@ -795,8 +835,9 @@ console.log(error);
                 label="תאריך ביצוע ההזמנה"
                 type="date"
                 InputLabelProps={{ shrink: true }}
+                inputProps={{ min: minEventDate }}
                 value={eventDate}
-                onChange={e => setEventDate(e.target.value)}
+                onChange={(e) => setEventDate(e.target.value)}
                 error={Boolean(errors.eventDate)}
                 helperText={errors.eventDate}
                 sx={{ mb: 2 }}

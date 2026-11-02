@@ -60,6 +60,7 @@ const handleNavigateToBarMitzvah = () => {  //בר מצווה
     navigate("/GenericOrder", {
       state: {
         eventName: "בר/בת מצווה",
+         minGuests: 60,  
         pricePerDish: 110,
         selectionLimits: {
           salads: 5,
@@ -111,6 +112,7 @@ const handleNavigateToBrit = () => { //ברית
   navigate("/GenericOrder", {
     state: {
       eventName: " ברית מילה  ",
+        minGuests: 30,          // <-- השורה החדשה
       pricePerDish: 89,
       selectionLimits: {
         salads: 8,
@@ -155,6 +157,7 @@ const handleNavigateToRentals = () => { //אזכרות
    navigate("/GenericOrder", {
     state: {
       eventName: " אזכרות  ",
+        minGuests: 30,          // <--  מינימום המנות 
       pricePerDish: 77,
       selectionLimits: {
         salads: 5,
@@ -162,7 +165,7 @@ const handleNavigateToRentals = () => { //אזכרות
         side_dishes: 2,
       },
       eventImage:
-        "https://res.cloudinary.com/dhkegagjk/image/upload/v1754379285/%D7%A0%D7%A8_jokrfy.webp",
+        "https://res.cloudinary.com/dhkegagjk/image/upload/v1793523780/%D7%90%D7%95%D7%94%D7%9C_%D7%90%D7%96%D7%9B%D7%A8%D7%94_%D7%95%D7%A0%D7%A8_%D7%96%D7%99%D7%9B%D7%A8%D7%95%D7%9F_cnyrla.png",
       hiddenItems: {
           salads: [
             "חסה, שרי ונבטים ברוטב",

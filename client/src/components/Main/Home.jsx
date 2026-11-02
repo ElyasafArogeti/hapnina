@@ -364,11 +364,12 @@ const navigate = useNavigate();
   <Grid2 container spacing={3} alignItems="stretch">
 
     {/* כרטיס 1 - אוכל מוכן */}
-    <Grid2 size={{ xs: 12, md: 6 }}>
+    <Grid2 size={{ xs: 12, md: 12 }}>
       <Card
         sx={{
           position: "relative",
           height: "100%",
+          
           boxSizing: "border-box",
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
@@ -561,9 +562,11 @@ const navigate = useNavigate();
         </Box>
       </Card>
     </Grid2>
+{/* קטע החבילות  */}
+<OffersSection />
 
     {/* כרטיס 2 - הזמנות תפריטים אונליין */}
-    <Grid2 size={{ xs: 12, md: 6 }}>
+    <Grid2 size={{ xs: 12, md: 12 }}>
       <Card
         sx={{
           position: "relative",
@@ -657,7 +660,7 @@ const navigate = useNavigate();
           sx={{
             textAlign: "center",
             mb: 3,
-            fontSize: { xs: "0.95rem", md: "1rem" },
+            fontSize: { xs: "0.1rem", md: "1rem" },
             lineHeight: 1.9,
             color: "#d1d1d1",
           }}
@@ -904,8 +907,6 @@ const navigate = useNavigate();
 
 
 
-{/* קטע החבילות  */}
-<OffersSection />
 
 
 
@@ -1495,7 +1496,7 @@ const navigate = useNavigate();
   {/* שיחת טלפון */}
   <IconButton
     component="a"
-    href="tel:+972548520195"
+    href="tel:+0975152820"
     aria-label="התקשרו אלינו"
     sx={{
       width: { xs: 52, md: 58 },
@@ -1515,6 +1516,8 @@ const navigate = useNavigate();
     <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
   </IconButton>
 </Box>
+
+
 
     </Box>
   );

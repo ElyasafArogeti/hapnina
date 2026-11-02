@@ -19,6 +19,7 @@ const BritOffer = () => {
     navigate("/GenericOrder", {
       state: {
         eventName: "ברית מילה",
+          minGuests: 30,          // <-- השורה החדשה
         pricePerDish: 89,
         selectionLimits: {
           salads: 8,
@@ -128,7 +129,7 @@ const BritOffer = () => {
           variant="body2"
           sx={{ color: "#bdbdbd", fontSize: "0.85rem" }}
         >
-          כל מה שצריך לאירוע מושלם
+          כל מה שצריך לאירוע ברית מושלם
         </Typography>
 
         {/* רשימת מה כלול בחבילה */}

@@ -39,6 +39,7 @@ const OrdersOnline = () => {
         salads: [],
         side_dishes: []
     });
+   
     
     const [onlineOrderMain, setOnlineOrderMain] = useState(true);//התפריט הראשי
 
@@ -127,6 +128,7 @@ const formSectionRef = useRef(null);
             try {
                  const data = await apiFetch('/api/inventoryAll');
                 setInventoryAll(data);
+                 console.log(data);
             } catch (error) {
                 console.error('Failed to fetch inventory:', error);
             }
@@ -142,6 +144,7 @@ const removeNonHebrew = (text) => {
   //------------תמונות התפריט---------------------------------------------------------------
   useEffect(() => {
     setLoading(true);
+    
     const fetchImages = async () => {
       try {
         const data = await apiFetch('/api/getUploadedImages');
@@ -701,7 +704,7 @@ return (
         color: '#333',
       }}
     >
-      פלאפון: <strong>  054-8520-195 </strong> |  מייל: <strong> hpnina6600200@gmail.com</strong>
+      פלאפון: <strong>  0975152820 </strong> |  מייל: <strong> hpnina6600200@gmail.com</strong>
     </Typography>
 
     <Typography

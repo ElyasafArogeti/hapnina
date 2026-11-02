@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import {
   Box,
@@ -11,10 +11,12 @@ import {
   Drawer,
   Badge,
   Divider,
-  createTheme, ThemeProvider
+  Dialog,
+  createTheme,
+  ThemeProvider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import Footer from './Footer';
+import Footer from "./Footer";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -28,13 +30,21 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import HomeIcon from "@mui/icons-material/Home";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
- import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
- import ArrowBackIcon from "@mui/icons-material/ArrowBack";
- import CheckIcon from "@mui/icons-material/Check";
- import LinearProgress from "@mui/material/LinearProgress";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CheckIcon from "@mui/icons-material/Check";
+import LinearProgress from "@mui/material/LinearProgress";
 
+// ---- ייבואים חדשים ----
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CloseIcon from "@mui/icons-material/Close";
+import DownloadIcon from "@mui/icons-material/Download";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import StarIcon from "@mui/icons-material/Star";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PhoneIcon from "@mui/icons-material/Phone";
 
-//   דף סל הקניות 
+//   דף סל הקניות
 
 
 
@@ -47,843 +57,121 @@ const calculateCustomerPrice = (price) => {
 
 
 
+
 // תפריט קייטרינג הפנינה
 const dishes = [
   // =========================
   // דגים
   // =========================
-  {
-    id: 1,
-    name: "פילה מושט מזרחי מרוקאי ",
-    price: 14,
-    unit: "למנה",
-    category: "דגים",
-    details: "מטוגן או מבושל",
-    image: "",
-  },
-  {
-    id: 2,
-    name: "פילה סלמון ברוטב פסטו",
-    price: 17,
-    unit: "למנה",
-    category: "דגים",
-    details: "כל הטעמים",
-    image: "",
-  },
-  {
-    id: 86,
-    name:   "פילה מושט ברוטב לימון ושקדים",
-    price: 17,
-    unit: "למנה",
-    category: "דגים",
-    details: "כל הטעמים",
-    image: "",
-  },
-  {
-    id: 87,
-    name:  "פילה סלמון ברוטב אדם",
-    price: 17,
-    unit: "למנה",
-    category: "דגים",
-    details: "כל הטעמים",
-    image: "",
-  },
-
-  {
-    id: 3,
-    name: "פילה לברק",
-    price: null,
-    unit: "",
-    category: "דגים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 4,
-    name: "קציצות דגים",
-    price: 55,
-    unit: "לק״ג",
-    category: "דגים",
-    details: "כ-50 גרם לקציצה",
-    image: "",
-  },
+  { id: 1, name: "פילה מושט מזרחי מרוקאי ", price: 14, unit: "למנה", category: "דגים", details: "מטוגן או מבושל", image: "" },
+    { id: 86, name: "פילה מושט ברוטב לימון ושקדים", price: 14, unit: "למנה", category: "דגים", details: "כל הטעמים", image: "" },
+  { id: 2, name: "פילה סלמון ברוטב פסטו", price: 17, unit: "למנה", category: "דגים", details: "כל הטעמים", image: "" },
+  { id: 87, name: "פילה סלמון ברוטב אדם", price: 17, unit: "למנה", category: "דגים", details: "כל הטעמים", image: "" },
+  // { id: 3, name: "פילה לברק", price: null, unit: "", category: "דגים", details: "", image: "" },
+  { id: 4, name: "קציצות דגים", price: 55, unit: "לק״ג", category: "דגים", details: "כ-50 גרם לקציצה", image: "" },
+  
 
   // =========================
   // בשרים
   // =========================
-  {
-    id: 5,
-    name: "מעורב ירושלמי + פירה ",
-    price: 105,
-    unit: "קילו מכל אחד",
-    category: "בשרים",
-    details: "קילו מעורב וקילו פירה",
-    image: "",
-  },
-
-  {
-    id: 6,
-    name: "כבדים מוקפצים + פירה",
-    price: 90,
-    unit: "קילו מכל אחד",
-    category: "בשרים",
-    details: "קילו מעורב וקילו פירה",
-    image: "",
-  },
-  {
-    id: 7,
-    name: "מאפה פילו בשר + רוטב",
-    price: 15,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "מוגש עם רוטב",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1755026786/manager_images/first_courses/%D7%9E%D7%90%D7%A4%D7%94%20%D7%A4%D7%99%D7%9C%D7%95%20%D7%91%D7%A9%D7%A8%20%D7%A2%D7%9D%20%D7%A8%D7%95%D7%98%D7%91.jpg",
-  },
-  {
-    id: 8,
-    name: "טורטיה בשר",
-    price: 15,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "מוגשת עם רוטב",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0115_jsponj.jpg",
-  },
-  {
-    id: 9,
-    name: "ארטישוק ממולא בשר",
-    price: 15,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  // {
-  //   id: 10,
-  //   name: "מאפה קדאיף בשר",
-  //   price: null,
-  //   unit: "",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
-  // {
-  //   id: 11,
-  //   name: "קוראסון אסאדו",
-  //   price: null,
-  //   unit: "",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
-  // {
-  //   id: 12,
-  //   name: "קרפצ'יו בקר",
-  //   price: null,
-  //   unit: "",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
-  {
-    id: 13,
-    name: "צלי בשר מספר 5",
-    price: 26,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 14,
-    name: "צלי בשר מספר 6",
-    price: 20,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 15,
-    name: "פרוסות אסאדו בסגנון השף",
-    price: 22,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 16,
-    name: "אסאדו גוש",
-    price: 180,
-    unit: "לגוש",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  // {
-  //   id: 17,
-  //   name: "אסאדו מפורק לקוראסון",
-  //   price: null,
-  //   unit: "",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
-  {
-    id: 18,
-    name: "שיפודי קבב",
-    price: 14,
-    unit: "לשני שיפודים",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 19,
-    name: "קבבונים",
-    price: 80,
-    unit: "לק״ג",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  // {
-  //   id: 20,
-  //   name: "בשר לחמין",
-  //   price: 80,
-  //   unit: "לק״ג",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
-  {
-    id: 21,
-    name: "קציצות בשר ברוטב",
-    price: 80,
-    unit: "לק״ג",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 95,
-    name: "קציצות בשר קבב",
-    price: 80,
-    unit: "לק״ג",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 22,
-    name: "קציצות עוף ברוטב",
-    price: 45,
-    unit: "לק״ג",
-    category: "עופות",
-    details: "",
-    image: "",
-  },
-  // {
-  //   id: 23,
-  //   name: "בשר ראש",
-  //   price: null,
-  //   unit: "",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
-
-    // {
-  //   id: 54,
-  //   name: "קרפצ'יו סלק",
-  //   price: null,
-  //   unit: "לק״ג",
-  //   category: "בשרים",
-  //   details: "",
-  //   image: "",
-  // },
+  { id: 5, name: "מעורב ירושלמי + פירה ", price: 105, unit: "קילו מכל אחד", category: "בשרים", details: "קילו מעורב וקילו פירה", image: "" },
+  { id: 6, name: "כבדים מוקפצים + פירה", price: 90, unit: "קילו מכל אחד", category: "בשרים", details: "קילו מעורב וקילו פירה", image: "" },
+  { id: 7, name: "מאפה פילו בשר + רוטב", price: 15, unit: "ליחידה", category: "בשרים", details: "מוגש עם רוטב", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1755026786/manager_images/first_courses/%D7%9E%D7%90%D7%A4%D7%94%20%D7%A4%D7%99%D7%9C%D7%95%20%D7%91%D7%A9%D7%A8%20%D7%A2%D7%9D%20%D7%A8%D7%95%D7%98%D7%91.jpg" },
+  { id: 8, name: "טורטיה בשר", price: 15, unit: "ליחידה", category: "בשרים", details: "מוגשת עם רוטב", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0115_jsponj.jpg" },
+  { id: 9, name: "ארטישוק ממולא בשר", price: 15, unit: "ליחידה", category: "בשרים", details: "", image: "" },
+  // { id: 10, name: "מאפה קדאיף בשר", price: null, unit: "", category: "בשרים", details: "", image: "" },
+  // { id: 11, name: "קוראסון אסאדו", price: null, unit: "", category: "בשרים", details: "", image: "" },
+  // { id: 12, name: "קרפצ'יו בקר", price: null, unit: "", category: "בשרים", details: "", image: "" },
+  { id: 13, name: "צלי בקר מספר 5", price: 26, unit: "ליחידה", category: "בשרים", details: "מינימום 120 גרם", image: "" },
+  { id: 14, name: "צלי בקר מספר 6", price: 20, unit: "ליחידה", category: "בשרים", details: "מינימום 120 גרם", image: "" },
+  { id: 15, name: "פרוסות אסאדו בסגנון השף", price: 22, unit: "ליחידה", category: "בשרים", details: "מינימום 120 גרם", image: "" },
+  { id: 16, name: "גוש אסאדו ", price: 180, unit: "גוש=ק״ג ", category: "בשרים", details: "", image: "" },
+  // { id: 17, name: "אסאדו מפורק לקוראסון", price: null, unit: "", category: "בשרים", details: "", image: "" },
+  { id: 18, name: "שיפודי קבב מזרחי 2 שיפודים", price: 14, unit: "לשני שיפודים", category: "בשרים", details: "", image: "" },
+  { id: 19, name: "קבבונים", price: 80, unit: "לק״ג", category: "בשרים", details: "", image: "" },
+  // { id: 20, name: "בשר לחמין", price: 80, unit: "לק״ג", category: "בשרים", details: "", image: "" },
+  { id: 21, name: "קציצות בשר ברוטב", price: 80, unit: "לק״ג", category: "בשרים", details: "", image: "" },
+  // { id: 23, name: "בשר ראש", price: null, unit: "", category: "בשרים", details: "", image: "" },
+  // { id: 54, name: "קרפצ'יו סלק", price: null, unit: "לק״ג", category: "בשרים", details: "", image: "" },
+  { id: 39, name: "מוסקה בשרית", price: 19, unit: "ליחידה", category: "בשרים", details: "", image: "" },
+  { id: 88, name: "טורטיה בשר + רוטב ", price: 15, unit: "ליחידה", category: "בשרים", details: "מוגשת עם רוטב", image: "" },
+  { id: 95, name: "קציצות בשר קבב", price: 80, unit: "לק״ג", category: "בשרים", details: "", image: "" },
 
   // =========================
   // עופות
   // =========================
-  {
-    id: 24,
-    name: "פרגית ממולאת",
-    price: 22,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 25,
-    name: "פרגית על האש",
-    price: 17,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1755026551/manager_images/main_courses/%D7%A1%D7%98%D7%99%D7%99%D7%A7%20%D7%A4%D7%A8%D7%92%D7%99%D7%AA.jpg",
-  },
-  // {
-  //   id: 26,
-  //   name: "פסטיה פרגית",
-  //   price: null,
-  //   unit: "",
-  //   category: "עופות",
-  //   details: "",
-  //   image: "",
-  // },
-  {
-    id: 27,
-    name: "עוף ברוטב שזיפים",
-    price: 20,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 28,
-    name: "עוף בגריל",
-    price: 20,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 29,
-    name: "חזה עוף ממולא",
-    price: 16,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 30,
-    name: "חזה עוף על האש",
-    price: 13,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 31,
-    name: "שניצל עוף",
-    price: 14,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מינימום 120 גרם",
-    image: "",
-  },
-  {
-    id: 32,
-    name: "שיפודי עוף וירקות",
-    price: 14,
-    unit: "לשני שיפודים",
-    category: "עופות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 33,
-    name: "שניצלונים",
-    price: 80,
-    unit: "לק״ג",
-    category: "עופות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 34,
-    name: "מוקפץ סיני עם רצועות עוף",
-    price: 80,
-    unit: "לק״ג",
-    category: "עופות",
-    details: "",
-    image: "",
-  },
-  // {
-  //   id: 35,
-  //   name: "שווארמה מוקפצת עם בצל",
-  //   price: 80,
-  //   unit: "לק״ג",
-  //   category: "עופות",
-  //   details: "",
-  //   image: "",
-  // },
-  {
-    id: 36,
-    name: "קציצות עוף ברוטב",
-    price: 45,
-    unit: "לק״ג",
-    category: "עופות",
-    details: "",
-    image: "",
-  },
+  { id: 22,name: "מוקפץ תאילנדי + פירה", price: 80, unit: "לק״ג", category: "עופות", details: "קילו מוקפץ וקילו פירה", image: "" },
+   { id: 23, name: "שניצל עוף", price: 14, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
+  { id: 24, name: "פרגית עוף ממולא", price: 22, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
+  { id: 25, name: "פרגית על האש", price: 17, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1755026551/manager_images/main_courses/%D7%A1%D7%98%D7%99%D7%99%D7%A7%20%D7%A4%D7%A8%D7%92%D7%99%D7%AA.jpg" },
+  // { id: 26, name: "פסטיה פרגית", price: null, unit: "", category: "עופות", details: "", image: "" },
+  { id: 27, name: "עוף בתנור בשזיפים", price: 20, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
+  { id: 28, name: "עוף בגריל", price: 20, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
+  { id: 29, name: "חזה עוף ממולא", price: 16, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
+  { id: 30, name: "סטייק חזה עוף על האש", price: 13, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
+  { id: 31, name: "טורטיה צמחונית", price: 15, unit: "ליחידה", category: "עופות", details: "מוגשת עם רוטב", image: "" },
+  { id: 32, name: "שיפודי עוף וירקות", price: 14, unit: "לשני שיפודים", category: "עופות", details: "", image: "" },
+  { id: 33, name: "שניצלונים", price: 80, unit: "לק״ג", category: "עופות", details: "", image: "" },
+  { id: 34, name: "מוקפץ סיני עם רצועות עוף", price: 80, unit: "לק״ג", category: "עופות", details: "", image: "" },
+  // { id: 35, name: "שווארמה מוקפצת עם בצל", price: 80, unit: "לק״ג", category: "עופות", details: "", image: "" },
+  { id: 36, name: "קציצות עוף ברוטב", price: 45, unit: "לק״ג", category: "עופות", details: "", image: "" },
+  { id: 37, name: "טורטיה צמחונית", price: 15, unit: "ליחידה", category: "עופות", details: "מוגשת עם רוטב", image: "" },
 
   // =========================
   // תוספות
   // =========================
-  {
-    id: 37,
-    name: "מוקפץ תאילנדי + פירה",
-    price: 80,
-    unit: "לק״ג",
-    category: "עופות",
-    details: "קילו מוקפץ וקילו פירה",
-    image: "",
-  },
- 
-  {
-    id: 88,
-    name: "טורטיה בשר + רוטב ",
-    price: 15,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "מוגשת עם רוטב",
-    image: "",
-  },
-  {
-    id: 39,
-    name: "מוסקה בשרית",
-    price: 19,
-    unit: "ליחידה",
-    category: "בשרים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 40,
-    name: "אורז עם שקדים וצימוקים",
-    price: 16,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 41,
-    name: "אורז צהוב",
-    price: 16,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940128/manager_images/side_dishes/%D7%90%D7%95%D7%A8%D7%96%20%D7%A6%D7%94%D7%95%D7%91.jpg",
-  },
-  {
-    id: 42,
-    name: "אורז אשפלו עם ירקות",
-    price: 16,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 43,
-    name: "אפונה, ארטישוק וסלרי",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 44,
-    name: "שעועית ארוכה מוקפצת",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 45,
-    name: "שעועית ארוכה ברוטב עגבניות",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 46,
-    name: "ירקות מאודים בתנור",
-    price: 22,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 47,
-    name: "ירקות סיני מוקפץ",
-    price: 22,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940187/manager_images/side_dishes/%D7%99%D7%A8%D7%A7%D7%95%D7%AA%20%D7%A1%D7%99%D7%A0%D7%99%20%D7%9E%D7%95%D7%A7%D7%A4%D7%A5.jpg",
-  },
-  {
-    id: 48,
-    name: "ארטישוק ופטריות שלמות",
-    price: 30,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 89,
-    name: "תפו'א פרוס אנה",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
-  },
-  {
-    id: 90,
-    name: "תפו'א סירות",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
-  },
-  {
-    id:91,
-    name: "דואט תפו'א ובטטה",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
-  },
-  {
-    id:92,
-    name:"תפו'א פריזיאן שלם",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
-  },
-  {
-    id:93,
-    name: "בטטה בשמן זית ורוזמרין",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg",
-  },
-  {
-    id: 51,
-    name: "קוסקוס + מרק קוסקוס",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-  {
-    id: 50,
-    name: "פירה לבד ",
-    price: 20,
-    unit: "לק״ג",
-    category: "תוספות",
-    details: "",
-    image: "",
-  },
-   {
-    id: 38,
-    name: "טורטיה צמחונית",
-    price: 15,
-    unit: "ליחידה",
-    category: "עופות",
-    details: "מוגשת עם רוטב",
-    image: "",
-  },
-
+  { id: 40, name: "אורז עם שקדים וצימוקים", price: 16, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 41, name: "אורז צהוב", price: 16, unit: "לק״ג", category: "תוספות", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940128/manager_images/side_dishes/%D7%90%D7%95%D7%A8%D7%96%20%D7%A6%D7%94%D7%95%D7%91.jpg" },
+  { id: 42, name: "אורז אשפלו עם ירקות", price: 16, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 43, name: "אפונה, ארטישוק וסלרי", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 44, name: "שעועית ארוכה מוקפצת", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 45, name: "שעועית ארוכה ברוטב עגבניות", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757941450/manager_images/side_dishes/%D7%A9%D7%A2%D7%95%D7%A2%D7%99%D7%AA%20%D7%90%D7%A8%D7%95%D7%9B%D7%94%20%D7%91%D7%A8%D7%95%D7%98%D7%91%20%D7%A2%D7%92%D7%91%D7%A0%D7%99%D7%95%D7%AA.jpg" },
+  { id: 46, name: "ירקות מאודים בתנור", price: 22, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 47, name: "ירקות סיני מוקפץ", price: 22, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 48, name: "ארטישוק ופטריות שלמות", price: 30, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 50, name: "פירה לבד ", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 51, name: "קוסקוס + מרק ירקות", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 89, name: "תפו'א פרוס אנה", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 90, name: "תפו'א סירות", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
+  { id: 91, name: "דואט תפו'א ובטטה", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757939647/manager_images/side_dishes/%D7%93%D7%95%D7%90%D7%98%20%D7%AA%D7%A4%D7%95%27%D7%90%20%D7%95%D7%91%D7%98%D7%98%D7%94.jpg" },
+  { id: 92, name: "תפו'א פריזיאן שלם", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411438/IMG-20250713-WA0110_qsz1ry.jpg" },
+  { id: 93, name: "בטטה בשמן זית ורוזמרין", price: 20, unit: "לק״ג", category: "תוספות", details: "", image: "" },
 
   // =========================
   // סלטים
   // =========================
-  {
-    id: 55,
-    name: "גזר מרוקאי חי",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0123_oqu4hr.jpg",
-  },
-  {
-    id: 57,
-    name: "טחינה מתובלת",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%98%D7%97%D7%99%D7%A0%D7%94_%D7%9E%D7%AA%D7%95%D7%91%D7%9C%D7%AA_vahf3p.webp",
-  },
-  {
-    id: 58,
-    name: "חמוצי הבית",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100669/manager_images/salads/%D7%97%D7%9E%D7%95%D7%A6%D7%99%20%D7%94%D7%91%D7%99%D7%AA.jpg",
-  },
-  {
-    id: 59,
-    name: "מבחר חמוצים",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 60,
-    name: "ירקות חיים טריים ועשירים",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 61,
-    name: "חציל בטחינה",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940059/manager_images/salads/%D7%97%D7%A6%D7%99%D7%9C%20%D7%91%D7%98%D7%97%D7%99%D7%A0%D7%94.jpg",
-  },
-  {
-    id: 62,
-    name: "חציל יווני",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%97%D7%A6%D7%99%D7%9C_%D7%99%D7%95%D7%95%D7%A0%D7%99_wyh4q0.webp",
-  },
-  {
-    id: 63,
-    name: "חציל טבעי על האש",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 64,
-    name: "חציל במיונז",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 65,
-    name: "קוביות חציל פיקנטי",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0129_vrhw3n.jpg",
-  },
-  {
-    id: 66,
-    name: "כרוב ושמיר",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 67,
-    name: "כרוב וגזר במיונז",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_r8xpo4.jpg",
-  },
-  {
-    id: 68,
-    name: "כרוב וגזר מתובל",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 69,
-    name: "כרוב אדום במיונז",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%90%D7%93%D7%95%D7%9D_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_wrftkh.jpg",
-  },
-  {
-    id: 70,
-    name: "סלט עגבניות חריף",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_7_bqk4r4.jpg",
-  },
-  {
-    id: 71,
-    name: "מטבוחה",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9E%D7%98%D7%91%D7%95%D7%97%D7%94_ziwlal.jpg",
-  },
-  {
-    id: 72,
-    name: "סלט מלפפון בשמיר",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 73,
-    name: "שרי בבזיליקום",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 74,
-    name: "פלפל מתוק בצבעים",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0141_edsu2v.jpg",
-  },
-  {
-    id: 75,
-    name: "סלט טבולה",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757938815/manager_images/salads/%D7%A1%D7%9C%D7%98%20%D7%98%D7%91%D7%95%D7%9C%D7%94.jpg",
-  },
-  {
-    id: 76,
-    name: "שורש סלרי",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 77,
-    name: "תירס מקסיקני",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100721/manager_images/salads/%D7%AA%D7%99%D7%A8%D7%A1%20%D7%9E%D7%A7%D7%A1%D7%99%D7%A7%D7%A0%D7%99.jpg",
-  },
-  {
-    id: 78,
-    name: "תפוחי אדמה במיונז",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100613/manager_images/salads/%D7%AA%D7%A4%D7%95%27%D7%90%20%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96.jpg",
-  },
-  {
-    id: 79,
-    name: "קוביות סלק",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887467/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA_%D7%A1%D7%9C%D7%A7_bkcjei.webp",
-  },
-  {
-    id: 80,
-    name: "סלט בטטה",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%A1%D7%9C%D7%98_%D7%91%D7%98%D7%98%D7%94_t9vgji.webp",
-  },
-  {
-    id: 81,
-    name: "סלט ירוק",
-    price: 29,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_sspqpy.jpg",
-  },
-  {
-    id: 82,
-    name: "חומוס ישראלי",
-    price: 23,
-    unit: "לק״ג ",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%97%D7%95%D7%9E%D7%95%D7%A1_%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99_boq1zc.jpg",
-  },
-  {
-    id: 83,
-    name: "חסה, שרי ונבטים ברוטב",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 84,
-    name: "קינואה",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "",
-  },
-  {
-    id: 85,
-    name: "פלפל חריף",
-    price: 23,
-    unit: "לק״ג",
-    category: "סלטים",
-    details: "",
-    image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411746/IMG-20250713-WA0108_noob7d.jpg",
-  },
+  { id: 55, name: "גזר מרוקאי חי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0123_oqu4hr.jpg" },
+  { id: 57, name: "טחינה מתובלת", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%98%D7%97%D7%99%D7%A0%D7%94_%D7%9E%D7%AA%D7%95%D7%91%D7%9C%D7%AA_vahf3p.webp" },
+  { id: 58, name: "חמוצי הבית", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100669/manager_images/salads/%D7%97%D7%9E%D7%95%D7%A6%D7%99%20%D7%94%D7%91%D7%99%D7%AA.jpg" },
+  { id: 59, name: "מבחר חמוצים", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 60, name: "ירקות חי טרי ועשיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 61, name: "חציל בטחינה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 62, name: "חציל יווני", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 63, name: "חציל טבעי על האש", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 64, name: "חציל במיונז", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 65, name: "קוביות חציל פיקנטי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0129_vrhw3n.jpg" },
+  { id: 66, name: "כרוב ושמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940314/manager_images/salads/%D7%9B%D7%A8%D7%95%D7%91%20%D7%95%D7%A9%D7%9E%D7%99%D7%A8.jpg" },
+  { id: 67, name: "כרוב וגזר במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_r8xpo4.jpg" },
+  { id: 68, name: "כרוב וגזר מתובל", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 69, name: "כרוב אדום במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%90%D7%93%D7%95%D7%9D_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_wrftkh.jpg" },
+  { id: 70, name: "סלט עגבניות חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_7_bqk4r4.jpg" },
+  { id: 71, name: "מטבוחה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9E%D7%98%D7%91%D7%95%D7%97%D7%94_ziwlal.jpg" },
+  { id: 72, name: "סלט מלפפון בשמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 73, name: "שרי בבזיליקום", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 74, name: "פלפל מתוק בצבעים", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0141_edsu2v.jpg" },
+  { id: 75, name: "סלט טבולה", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 76, name: "שורש סלרי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 77, name: "תירס מקסיקני", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100721/manager_images/salads/%D7%AA%D7%99%D7%A8%D7%A1%20%D7%9E%D7%A7%D7%A1%D7%99%D7%A7%D7%A0%D7%99.jpg" },
+  { id: 78, name: "תפוחי אדמה במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100613/manager_images/salads/%D7%AA%D7%A4%D7%95%27%D7%90%20%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96.jpg" },
+  { id: 79, name: "קוביות סלק", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887467/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA_%D7%A1%D7%9C%D7%A7_bkcjei.webp" },
+  { id: 80, name: "סלט בטטה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%A1%D7%9C%D7%98_%D7%91%D7%98%D7%98%D7%94_t9vgji.webp" },
+  { id: 81, name: "סלט ירוק", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_sspqpy.jpg" },
+  { id: 82, name: "חומוס ישראלי", price: 23, unit: "לק״ג ", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%97%D7%95%D7%9E%D7%95%D7%A1_%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99_boq1zc.jpg" },
+  { id: 83, name: "חסה, שרי ונבטים ברוטב", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  // { id: 84, name: "קינואה", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 85, name: "פלפל חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411746/IMG-20250713-WA0108_noob7d.jpg" },
 ];
+
 
 // קטגוריות
 const categories = [
@@ -921,39 +209,20 @@ const categories = [
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ============================================================
-// MainCourse.jsx - חוויית הזמנה בשלבים (קטגוריה אחרי קטגוריה)
-// הייבואים (React, MUI, motion, NavbarHome, TextMove, Footer, dishes,
-// categories, calculateCustomerPrice, defaultDishImage ...) נשארים
-// בדיוק כמו בקובץ המקורי שלך - הוספתי רק את האייקונים החדשים למטה.
+// MainCourse - חוויית הזמנה בשלבים (קטגוריה אחרי קטגוריה)
+// סדר השלבים נקבע לפי הסדר של המערך `categories` למעלה.
 // ============================================================
-//
-// הוסף לייבואים (אם עוד אין):
-// import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-// import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-// import CheckIcon from "@mui/icons-material/Check";
-// import LinearProgress from "@mui/material/LinearProgress";
-//
-// חשוב: סדר הקטגוריות בשלבים נקבע לפי הסדר של המערך `categories`.
-// ודא ש"סלטים" הוא הראשון בו, ושאר הקטגוריות מסודרות כפי שתרצה.
 
 const MIN_ORDER = 1500;
 
-// ניפוי לפי קטגוריה למטבח - הועבר מחוץ לקומפוננטה כדי שלא ייווצר מחדש בכל רינדור
+// תשלומים: כרגע עד 5 תשלומים בכל סכום (לשינוי בעתיד - רק כאן)
+const MAX_INSTALLMENTS = 5;
+
+// מספר הלקוחות להצגה בסל  <-- עדכן למספר האמיתי שלכם
+const CUSTOMERS_COUNT = 500;
+
+// ניפוי לפי קטגוריה למטבח - מחוץ לקומפוננטה כדי שלא ייווצר מחדש בכל רינדור
 const SALAD_ITEMS = [
   "גזר מרוקאי חי", "גזר מרוקאי מבושל", "טחינה מתובלת", "חמוצי הבית", "מבחר חמוצים",
   "ירקות חי טרי ועשיר", "חציל בטחינה", "חציל יווני", "חציל טבעי על האש", "חציל במיונז",
@@ -1040,8 +309,10 @@ export default function MainCourse() {
   const [openCart, setOpenCart] = useState(false);
   const [animateImage, setAnimateImage] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [stepsDialogOpen, setStepsDialogOpen] = useState(false); // מודול כל השלבים (טלפון)
+  const [zoomImage, setZoomImage] = useState(null); // זום על תמונה מהסל: { src, name }
 
-  const productsSectionRef = useRef(null);
+  const introSectionRef = useRef(null); // תחילת העמוד של השלב (כולל "עכשיו הולכים על...")
   const activeStepRef = useRef(null);
   const firstRender = useRef(true);
 
@@ -1063,13 +334,13 @@ export default function MainCourse() {
     setStepIndex(index);
   };
 
-  // בכל מעבר שלב: גלילה לראש אזור המוצרים + הצגת השלב הפעיל בסרגל
+  // בכל מעבר שלב: גלילה לתחילת הפתיח של השלב (כולל הכותרת "עכשיו הולכים על...")
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
-    productsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    introSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     activeStepRef.current?.scrollIntoView({
       behavior: "smooth",
       inline: "center",
@@ -1155,6 +426,9 @@ export default function MainCourse() {
   const missingForMinimum = Math.max(0, MIN_ORDER - totalPrice);
   const reachedMinimum = missingForMinimum === 0;
 
+  // תשלומים: עד MAX_INSTALLMENTS בכל סכום
+  const perPayment = totalPrice / MAX_INSTALLMENTS;
+
   // כמה מוצרים בסל מהקטגוריה הנוכחית
   const countInCategory = (catName) =>
     cart.filter((item) => item.category === catName).length;
@@ -1172,6 +446,27 @@ export default function MainCourse() {
         })),
       },
     });
+  };
+
+  // ---------- הורדת תמונה למכשיר (מזום התמונה בסל) ----------
+  const handleDownloadImage = async () => {
+    if (!zoomImage) return;
+    try {
+      const res = await fetch(zoomImage.src);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const ext = (blob.type.split("/")[1] || "jpg").split("+")[0];
+      a.href = url;
+      a.download = `${zoomImage.name || "image"}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      // אם הדפדפן חוסם הורדה ישירה - פותחים את התמונה בלשונית חדשה
+      window.open(zoomImage.src, "_blank", "noopener");
+    }
   };
 
   // ---------- סגנונות משותפים ----------
@@ -1209,7 +504,7 @@ export default function MainCourse() {
 
         <TextMove />
 
-        {/* ===== סרגל התקדמות עליון: איפה אני ולאן התקדמתי ===== */}
+       {/* ===== סרגל התקדמות עליון: איפה אני ולאן התקדמתי ===== */}
         <Box
           dir="rtl"
           sx={{
@@ -1245,7 +540,10 @@ export default function MainCourse() {
                 whiteSpace: "nowrap",
               }}
             >
-              בונים את התפריט שלך ביחד · שלב {stepIndex + 1} מתוך {totalSteps}: {selectedCategory}
+              בונים את התפריט שלך ביחד
+              <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                {" "}· שלב {stepIndex + 1} מתוך {totalSteps}: {selectedCategory}
+              </Box>
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -1271,14 +569,50 @@ export default function MainCourse() {
             </Box>
           </Box>
 
-          {/* שלבים (קטגוריות) - אפשר ללחוץ על שלב שכבר עברנו */}
+          {/* ---- טלפון: כפתור אחד שפותח מודול עם כל השלבים ---- */}
+          <Box sx={{ display: { xs: "block", sm: "none" }, px: 1.5, py: 0.8 }}>
+            <Box
+              component="button"
+              type="button"
+              onClick={() => setStepsDialogOpen(true)}
+              aria-label="הצגת כל שלבי ההזמנה"
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 1,
+                px: 1.5,
+                py: 1,
+                bgcolor: "#29251E",
+                border: "1px solid #51432D",
+                borderRadius: "10px",
+                color: "#F5DDAA",
+                fontFamily: "inherit",
+                cursor: "pointer",
+                "&:active": { bgcolor: "#3A3021" },
+              }}
+            >
+              <Typography sx={{ fontSize: 14, fontWeight: 800, color: "inherit" }}>
+                שלב {stepIndex + 1} מתוך {totalSteps}: {selectedCategory}
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.3, color: "#D9BD86" }}>
+                <Typography sx={{ fontSize: 12, fontWeight: 600, color: "inherit" }}>
+                  כל השלבים
+                </Typography>
+                <KeyboardArrowDownIcon sx={{ fontSize: 20 }} />
+              </Box>
+            </Box>
+          </Box>
+
+          {/* ---- טאבלט ומחשב: שלבים עם שמות - אפשר ללחוץ על שלב שכבר עברנו ---- */}
           <Box
             sx={{
-              display: "flex",
+              display: { xs: "none", sm: "flex" },
               alignItems: "center",
-              gap: { xs: 0.5, sm: 1 },
+              gap: 1,
               overflowX: "auto",
-              px: { xs: 1.5, sm: 2, md: 4 },
+              px: { sm: 2, md: 4 },
               py: 0.8,
               scrollbarWidth: "none",
               "&::-webkit-scrollbar": { display: "none" },
@@ -1330,12 +664,10 @@ export default function MainCourse() {
 
                     <Typography
                       sx={{
-                        fontSize: { xs: 10, sm: 11 },
+                        fontSize: 11,
                         fontWeight: active ? 800 : 500,
                         color: active ? "#fff" : "#b8b8b8",
                         whiteSpace: "nowrap",
-                        // בטלפון מציגים שם רק לשלב הפעיל כדי שיהיה מקום
-                        display: { xs: active ? "block" : "none", md: "block" },
                       }}
                     >
                       {cat.name}
@@ -1345,7 +677,7 @@ export default function MainCourse() {
                   {index < totalSteps - 1 && (
                     <Box
                       sx={{
-                        width: { xs: 10, sm: 18 },
+                        width: 18,
                         height: "1px",
                         bgcolor: completed ? "#9C7B47" : "#414141",
                         flexShrink: 0,
@@ -1371,8 +703,114 @@ export default function MainCourse() {
           />
         </Box>
 
-        {/* ===== פתיח ===== */}
+        {/* ===== מודול כל השלבים (טלפון) ===== */}
+        <Dialog
+          open={stepsDialogOpen}
+          onClose={() => setStepsDialogOpen(false)}
+          fullWidth
+          maxWidth="xs"
+          PaperProps={{
+            dir: "rtl",
+            sx: { borderRadius: 3, m: 2, width: "calc(100% - 32px)" },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              px: 2.5,
+              pt: 2,
+              pb: 1,
+            }}
+          >
+            <Typography sx={{ fontSize: 18, fontWeight: 800 }}>
+              השלבים בהזמנה
+            </Typography>
+            <IconButton aria-label="סגירה" onClick={() => setStepsDialogOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          <Box sx={{ px: 2, pb: 2 }}>
+            {categories.map((cat, index) => {
+              const active = index === stepIndex;
+              const completed = index < stepIndex;
+              const clickable = index <= stepIndex;
+              const chosen = countInCategory(cat.name);
+
+              return (
+                <Box
+                  key={cat.name}
+                  onClick={() => {
+                    if (!clickable) return;
+                    goToStep(index);
+                    setStepsDialogOpen(false);
+                  }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    p: 1.3,
+                    mb: 0.8,
+                    borderRadius: 2,
+                    cursor: clickable ? "pointer" : "default",
+                    opacity: clickable ? 1 : 0.55,
+                    border: "1px solid",
+                    borderColor: active ? "#C9A96E" : darkMode ? "#3a3a3a" : "#eadbc8",
+                    bgcolor: active
+                      ? darkMode ? "rgba(201,169,110,0.15)" : "#fffaf5"
+                      : "transparent",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      fontWeight: 800,
+                      flexShrink: 0,
+                      bgcolor: active ? "#C9A96E" : completed ? "#294737" : "transparent",
+                      color: active ? "#171614" : completed ? "#fff" : "#8D8980",
+                      border: active || completed ? "none" : "1px solid #b5ad9d",
+                    }}
+                  >
+                    {completed ? <CheckIcon sx={{ fontSize: 16 }} /> : index + 1}
+                  </Box>
+
+                  <Typography sx={{ flex: 1, fontSize: 16, fontWeight: active ? 800 : 600 }}>
+                    {cat.name}
+                  </Typography>
+
+                  {active && (
+                    <Typography sx={{ fontSize: 12, fontWeight: 700, color: "#9B7940" }}>
+                      אתם כאן
+                    </Typography>
+                  )}
+                  {!active && chosen > 0 && (
+                    <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+                      נבחרו {chosen}
+                    </Typography>
+                  )}
+                </Box>
+              );
+            })}
+
+            <Typography
+              sx={{ mt: 1, fontSize: 12.5, textAlign: "center", color: "text.secondary" }}
+            >
+              אפשר לחזור לשלבים שכבר עברתם בכל רגע
+            </Typography>
+          </Box>
+        </Dialog>
+
+        {/* ===== פתיח (אליו חוזרים בכל מעבר שלב) ===== */}
         <Box
+          ref={introSectionRef}
           sx={{
             width: "100%",
             maxWidth: 1000,
@@ -1381,6 +819,7 @@ export default function MainCourse() {
             mb: { xs: 2, md: 3 },
             px: { xs: 2, md: 3 },
             boxSizing: "border-box",
+            scrollMarginTop: { xs: "110px", md: "120px" },
           }}
         >
           <Box
@@ -1491,7 +930,7 @@ export default function MainCourse() {
         </Box>
 
         {/* ===== כותרת השלב הנוכחי ===== */}
-        <Box ref={productsSectionRef} sx={{ textAlign: "center", my: 2, scrollMarginTop: "110px" }}>
+        <Box sx={{ textAlign: "center", my: 2 }}>
           <Typography
             variant="h5"
             fontWeight="bold"
@@ -1581,8 +1020,23 @@ export default function MainCourse() {
                     },
                   }}
                 >
+
+                
                   {/* תמונת המוצר */}
-                  <Box sx={{ position: "relative", overflow: "hidden", bgcolor: "#FFFFFF" }}>
+                  <Box
+                    onClick={() => {
+                      // זום רק כשיש תמונה אמיתית (לא תמונת ברירת המחדל)
+                      if (dish.image?.trim()) {
+                        setZoomImage({ src: dish.image.trim(), name: dish.name });
+                      }
+                    }}
+                    sx={{
+                      position: "relative",
+                      overflow: "hidden",
+                      bgcolor: "#FFFFFF",
+                      cursor: dish.image?.trim() ? "zoom-in" : "default",
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       image={dish.image?.trim() || defaultDishImage}
@@ -1606,7 +1060,27 @@ export default function MainCourse() {
                         },
                       }}
                     />
-
+                    {dish.image?.trim() && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          bottom: 10,
+                          left: 10,
+                          width: 30,
+                          height: 30,
+                          borderRadius: "50%",
+                          bgcolor: "rgba(0,0,0,0.55)",
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        <ZoomInIcon sx={{ fontSize: 19 }} />
+                      </Box>
+                    )}
+                    
                     {/* תג מחיר על התמונה */}
                     <Box
                       sx={{
@@ -1629,6 +1103,7 @@ export default function MainCourse() {
                         : `₪ ${calculateCustomerPrice(dish.price).toFixed(2)}`}
                     </Box>
                   </Box>
+
 
                   {/* פרטי המוצר */}
                   <CardContent
@@ -1985,11 +1460,55 @@ export default function MainCourse() {
                       boxShadow: "0 5px 15px rgba(0,0,0,.08)",
                     }}
                   >
-                    <CardMedia
-                      component="img"
-                      image={item.image?.trim() || defaultDishImage}
-                      sx={{ width: 80, height: 80, borderRadius: 3, objectFit: "cover" }}
-                    />
+                    {/* תמונה - בלחיצה נפתח זום במסך מלא */}
+                    <Box
+                      role="button"
+                      aria-label={`הגדלת התמונה של ${item.name}`}
+                      onClick={() =>
+                        setZoomImage({
+                          src: item.image?.trim() || defaultDishImage,
+                          name: item.name,
+                        })
+                      }
+                      sx={{
+                        position: "relative",
+                        width: 80,
+                        height: 80,
+                        flexShrink: 0,
+                        cursor: "zoom-in",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={item.image?.trim() || defaultDishImage}
+                        alt={item.name}
+                        onError={(e) => {
+                          if (e.currentTarget.src !== defaultDishImage) {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = defaultDishImage;
+                          }
+                        }}
+                        sx={{ width: 80, height: 80, borderRadius: 3, objectFit: "cover" }}
+                      />
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          bottom: 4,
+                          left: 4,
+                          width: 22,
+                          height: 22,
+                          borderRadius: "50%",
+                          bgcolor: "rgba(0,0,0,0.55)",
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        <ZoomInIcon sx={{ fontSize: 15 }} />
+                      </Box>
+                    </Box>
 
                     <Box sx={{ flex: 1, mr: 2 }}>
                       <Typography fontWeight="bold">{item.name}</Typography>
@@ -2052,20 +1571,37 @@ export default function MainCourse() {
               </Box>
 
               {/* תחתית קבועה */}
-              <Box sx={{ p: 3, color: darkMode ? "#ffffff" : "#000000", flexShrink: 0 }}>
-                <Typography textAlign="center" fontWeight="bold">
-                  סה״כ לתשלום
-                </Typography>
+              <Box
+                sx={{
+                  px: 3,
+                  pt: 2.5,
+                  pb: 2,
+                  bgcolor: "#fff",
+                  color: "#111",
+                  borderTop: "1px solid #e6e6e6",
+                  flexShrink: 0,
+                }}
+              >
+                {/* סה"כ */}
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Typography fontWeight="bold" fontSize={17}>
+                    סה״כ:
+                  </Typography>
+                  <Typography fontWeight="bold" fontSize={24} color="success.main">
+                    ₪ {totalPrice.toFixed(2)}
+                  </Typography>
+                </Box>
 
-                <Typography textAlign="center" variant="h4" color="success.main" fontWeight="bold" mt={1}>
-                  ₪ {totalPrice.toFixed(2)}
-                </Typography>
+                {/* תשלומים: עד MAX_INSTALLMENTS בכל סכום */}
+                {totalPrice > 0 && (
+                  <Typography sx={{ mt: 0.5, fontSize: 14, color: "#555" }}>
+                    או עד {MAX_INSTALLMENTS} תשלומים של ₪{perPayment.toFixed(2)}
+                  </Typography>
+                )}
 
+                {/* מינימום הזמנה */}
                 {!reachedMinimum && (
-                  <Typography
-                    textAlign="center"
-                    sx={{ mt: 1, fontSize: 13, fontWeight: 600, color: "#940b11" }}
-                  >
+                  <Typography sx={{ mt: 1, fontSize: 13, fontWeight: 600, color: "#940b11" }}>
                     מינימום הזמנה {MIN_ORDER.toLocaleString("he-IL")} ש"ח · חסרים עוד ₪
                     {missingForMinimum.toFixed(2)}
                   </Typography>
@@ -2076,7 +1612,7 @@ export default function MainCourse() {
                   variant="contained"
                   color="success"
                   disabled={!reachedMinimum}
-                  sx={{ mt: 3, height: 54, borderRadius: 4, fontWeight: "bold", fontSize: 16 }}
+                  sx={{ mt: 2, height: 54, borderRadius: 4, fontWeight: "bold", fontSize: 16 }}
                   onClick={goToCheckout}
                 >
                   מעבר לסיכום הזמנה
@@ -2085,17 +1621,181 @@ export default function MainCourse() {
                 <Button
                   fullWidth
                   onClick={() => setOpenCart(false)}
-                  sx={{ mt: 1, fontWeight: 700, color: "#555" }}
+                  sx={{ mt: 0.5, fontWeight: 700, color: "#555" }}
                 >
                   המשך בחירת מנות
                 </Button>
+
+                {/* דירוג לקוחות */}
+                <Box
+                  sx={{
+                    mt: 1.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Box sx={{ display: "flex", direction: "ltr" }} aria-label="דירוג 5 כוכבים">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <StarIcon key={n} sx={{ fontSize: 18, color: "#F5B301" }} />
+                    ))}
+                  </Box>
+                  <Typography sx={{ fontSize: 13, color: "#444" }}>
+                    מעל {CUSTOMERS_COUNT.toLocaleString("he-IL")}+ לקוחות מרוצים
+                  </Typography>
+                </Box>
               </Box>
             </>
           )}
         </Drawer>
 
+        {/* ===== זום על תמונה מהסל - מסך מלא ===== */}
+        <Dialog
+          fullScreen
+          open={!!zoomImage}
+          onClose={() => setZoomImage(null)}
+          PaperProps={{ sx: { bgcolor: "rgba(0,0,0,0.96)" } }}
+        >
+          <Box
+            onClick={() => setZoomImage(null)}
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: "100dvh",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              p: { xs: 1, md: 4 },
+              boxSizing: "border-box",
+            }}
+          >
+            {/* X ליציאה + הורדה למכשיר */}
+            <Box
+              dir="rtl"
+              sx={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                display: "flex",
+                gap: 1,
+                zIndex: 2,
+              }}
+            >
+              <IconButton
+                aria-label="יציאה מהתמונה"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomImage(null);
+                }}
+                sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.14)", "&:hover": { bgcolor: "rgba(255,255,255,0.26)" } }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              <IconButton
+                aria-label="הורדת התמונה למכשיר"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDownloadImage();
+                }}
+                sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.14)", "&:hover": { bgcolor: "rgba(255,255,255,0.26)" } }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Box>
+
+            {zoomImage && (
+              <Box
+                component="img"
+                src={zoomImage.src}
+                alt={zoomImage.name}
+                onClick={(e) => e.stopPropagation()}
+                onError={(e) => {
+                  if (e.currentTarget.src !== defaultDishImage) {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = defaultDishImage;
+                  }
+                }}
+                sx={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                  borderRadius: 2,
+                }}
+              />
+            )}
+          </Box>
+        </Dialog>
+
         <Footer />
+
+
+      </Box>{/* כפתורי קשר צפים - וואטסאפ וטלפון */}
+      <Box
+        sx={{
+          position: "fixed",
+          right: { xs: 14, md: 24 },
+          bottom: { xs: 60, md: 60 },
+          zIndex: 1500,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+          alignItems: "center",
+        }}
+      >
+        {/* WhatsApp */}
+        <IconButton
+          component="a"
+          href="https://wa.me/972548520195"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="שלחו לנו הודעה בוואטסאפ"
+          sx={{
+            width: { xs: 52, md: 58 },
+            height: { xs: 52, md: 58 },
+            color: "#fff",
+            bgcolor: "#25D366",
+            boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+            border: "2px solid #fff",
+            transition: "transform .25s ease, box-shadow .25s ease",
+            "&:hover": {
+              bgcolor: "#1ebe5d",
+              transform: "scale(1.08)",
+              boxShadow: "0 8px 22px rgba(37,211,102,0.35)",
+            },
+          }}
+        >
+          <WhatsAppIcon sx={{ fontSize: { xs: 29, md: 33 } }} />
+        </IconButton>
+      
+        {/* שיחת טלפון */}
+        <IconButton
+          component="a"
+          href="tel:+0975152820"
+          aria-label="התקשרו אלינו"
+          sx={{
+            width: { xs: 52, md: 58 },
+            height: { xs: 52, md: 58 },
+            color: "#17130a",
+            background: "linear-gradient(135deg, #f5df9b, #c6a24b)",
+            boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+            border: "2px solid #fff",
+            transition: "transform .25s ease, box-shadow .25s ease",
+            "&:hover": {
+              background: "linear-gradient(135deg, #ffe9a8, #d4b45f)",
+              transform: "scale(1.08)",
+              boxShadow: "0 8px 22px rgba(198,162,75,0.35)",
+            },
+          }}
+        >
+          <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
+        </IconButton>
+
+
       </Box>
+
     </ThemeProvider>
   );
 }

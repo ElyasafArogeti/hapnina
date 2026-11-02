@@ -10,13 +10,14 @@ const EngagementOffer = () => {
   const navigate = useNavigate();
 
   const eventImage =
-    "https://res.cloudinary.com/dhkegagjk/image/upload/v1754379285/%D7%A0%D7%A8_jokrfy.webp";
+    "https://res.cloudinary.com/dhkegagjk/image/upload/v1793523780/%D7%90%D7%95%D7%94%D7%9C_%D7%90%D7%96%D7%9B%D7%A8%D7%94_%D7%95%D7%A0%D7%A8_%D7%96%D7%99%D7%9B%D7%A8%D7%95%D7%9F_cnyrla.png";
 
   // נתוני ההזמנה המקוריים נשמרו
   const handleClick = () => {
     navigate("/GenericOrder", {
       state: {
-        eventName: " אזכרות  ",
+        eventName: " אזכרות ",
+          minGuests: 30,          // <-- מינימום ההזמנה במנות
         pricePerDish: 77,
         selectionLimits: {
           salads: 5,

@@ -200,11 +200,6 @@ const categories = [
     image:
       "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411441/IMG-20250713-WA0107_w1m5cg.jpg",
   },
-  {
-    name: "לשבתות ",
-    image:
-      "https://res.cloudinary.com/dhkegagjk/image/upload/v1791904848/%D7%AA%D7%9E%D7%95%D7%A0%D7%94_%D7%A9%D7%91%D7%AA_jmcv5t.jpg",
-  },
 ];
 
 
@@ -215,6 +210,8 @@ const categories = [
 // ============================================================
 
 const MIN_ORDER = 1500;
+
+const NAVBAR_HEIGHT = 50; // הנבר הקבוע (height: "90px" ב-NavbarHome)
 
 // תשלומים: כרגע עד 5 תשלומים בכל סכום (לשינוי בעתיד - רק כאן)
 const MAX_INSTALLMENTS = 5;
@@ -312,6 +309,11 @@ export default function MainCourse() {
   const [stepsDialogOpen, setStepsDialogOpen] = useState(false); // מודול כל השלבים (טלפון)
   const [zoomImage, setZoomImage] = useState(null); // זום על תמונה מהסל: { src, name }
 
+  // ---- נעיצת סרגל השלבים מתחת לנבר ----
+  const stepsBarRef = useRef(null);
+  const [stickyTop, setStickyTop] = useState(0); // גובה הנבר הקבוע (אם יש)
+  const [stepsBarHeight, setStepsBarHeight] = useState(0);
+
   const introSectionRef = useRef(null); // תחילת העמוד של השלב (כולל "עכשיו הולכים על...")
   const activeStepRef = useRef(null);
   const firstRender = useRef(true);
@@ -319,6 +321,39 @@ export default function MainCourse() {
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+
+  // מדידה אוטומטית: אם הנבר קבוע/דביק בראש המסך, סרגל השלבים נעוץ ממש מתחתיו
+  useEffect(() => {
+    const measure = () => {
+      let top = 0;
+      document.querySelectorAll("header, nav, .MuiAppBar-root").forEach((el) => {
+        if (stepsBarRef.current && stepsBarRef.current.contains(el)) return;
+        const pos = window.getComputedStyle(el).position;
+        if (pos === "fixed" || pos === "sticky") {
+          const r = el.getBoundingClientRect();
+          if (r.top <= 1 && r.height > 0) top = Math.max(top, r.bottom);
+        }
+      });
+      setStickyTop(Math.round(top));
+      if (stepsBarRef.current) setStepsBarHeight(stepsBarRef.current.offsetHeight);
+    };
+
+    measure();
+    const t = setTimeout(measure, 400);
+    window.addEventListener("resize", measure);
+
+    let ro;
+    if (typeof ResizeObserver !== "undefined" && stepsBarRef.current) {
+      ro = new ResizeObserver(measure);
+      ro.observe(stepsBarRef.current);
+    }
+
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", measure);
+      if (ro) ro.disconnect();
+    };
+  }, []);
 
   // ---------- שלבים ----------
   const totalSteps = categories.length;
@@ -329,24 +364,21 @@ export default function MainCourse() {
   const isLastStep = stepIndex === totalSteps - 1;
   const selectedCategory = currentCategory?.name;
 
+  // אפשר לקפוץ לכל שלב בכל רגע (קדימה או אחורה)
   const goToStep = (index) => {
     if (index < 0 || index > totalSteps - 1) return;
     setStepIndex(index);
   };
 
   // בכל מעבר שלב: גלילה לתחילת הפתיח של השלב (כולל הכותרת "עכשיו הולכים על...")
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    introSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    activeStepRef.current?.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "nearest",
-    });
-  }, [stepIndex]);
+useEffect(() => {
+  if (firstRender.current) {
+    firstRender.current = false;
+    return;
+  }
+  // בכל מעבר שלב: חזרה לראש העמוד, כך שרואים את כל המלל "עכשיו הולכים על..."
+  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+}, [stepIndex]);
 
   // ---------- כמויות ----------
   const increase = (id) =>
@@ -448,6 +480,10 @@ export default function MainCourse() {
     });
   };
 
+  // סיום ההזמנה (משמש את הכפתור התחתון והעליון בשלב האחרון)
+  const handleFinish = () =>
+    cart.length === 0 || !reachedMinimum ? setOpenCart(true) : goToCheckout();
+
   // ---------- הורדת תמונה למכשיר (מזום התמונה בסל) ----------
   const handleDownloadImage = async () => {
     if (!zoomImage) return;
@@ -504,13 +540,14 @@ export default function MainCourse() {
 
         <TextMove />
 
-       {/* ===== סרגל התקדמות עליון: איפה אני ולאן התקדמתי ===== */}
+       {/* ===== סרגל התקדמות עליון: איפה אני ולאן התקדמתי (נעוץ מתחת לנבר) ===== */}
         <Box
+          ref={stepsBarRef}
           dir="rtl"
           sx={{
             width: "100%",
             position: "sticky",
-            top: 0,
+            top: `${NAVBAR_HEIGHT}px`, 
             zIndex: 50,
             bgcolor: "#171614",
             borderBottom: "1px solid #51432D",
@@ -519,16 +556,13 @@ export default function MainCourse() {
         >
           {/* שורה עליונה: כותרת שלב + בית + מצב תצוגה */}
           <Box
+           dir="rtl"
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              px: { xs: 1.5, sm: 2, md: 4 },
-              pt: 1,
-              pb: 0.5,
-              gap: 1,
-            }}
-          >
+               display: "flex", justifyContent: "space-between", alignItems: "center",
+              px: { xs: 1.5, sm: 2, md: 4 }, py: 1, gap: 1,
+                bgcolor: "#171614", borderBottom: "1px solid #51432D",
+                  }}
+                 >
             <Typography
               sx={{
                 fontSize: { xs: 12, sm: 13 },
@@ -605,7 +639,7 @@ export default function MainCourse() {
             </Box>
           </Box>
 
-          {/* ---- טאבלט ומחשב: שלבים עם שמות - אפשר ללחוץ על שלב שכבר עברנו ---- */}
+          {/* ---- טאבלט ומחשב: שלבים עם שמות - אפשר ללחוץ על כל שלב בכל רגע ---- */}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -622,20 +656,28 @@ export default function MainCourse() {
             {categories.map((cat, index) => {
               const active = index === stepIndex;
               const completed = index < stepIndex;
-              const clickable = index <= stepIndex;
 
               return (
                 <React.Fragment key={cat.name}>
                   <Box
                     ref={active ? activeStepRef : null}
-                    onClick={() => clickable && goToStep(index)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`מעבר לשלב ${cat.name}`}
+                    onClick={() => goToStep(index)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        goToStep(index);
+                      }
+                    }}
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       gap: 0.6,
                       flexShrink: 0,
-                      cursor: clickable ? "pointer" : "default",
-                      opacity: clickable ? 1 : 0.65,
+                      cursor: "pointer",
+                      "&:hover .step-label": { color: "#fff" },
                     }}
                   >
                     <Box
@@ -663,11 +705,13 @@ export default function MainCourse() {
                     </Box>
 
                     <Typography
+                      className="step-label"
                       sx={{
                         fontSize: 11,
                         fontWeight: active ? 800 : 500,
                         color: active ? "#fff" : "#b8b8b8",
                         whiteSpace: "nowrap",
+                        transition: "color 0.2s ease",
                       }}
                     >
                       {cat.name}
@@ -736,14 +780,12 @@ export default function MainCourse() {
             {categories.map((cat, index) => {
               const active = index === stepIndex;
               const completed = index < stepIndex;
-              const clickable = index <= stepIndex;
               const chosen = countInCategory(cat.name);
 
               return (
                 <Box
                   key={cat.name}
                   onClick={() => {
-                    if (!clickable) return;
                     goToStep(index);
                     setStepsDialogOpen(false);
                   }}
@@ -754,8 +796,7 @@ export default function MainCourse() {
                     p: 1.3,
                     mb: 0.8,
                     borderRadius: 2,
-                    cursor: clickable ? "pointer" : "default",
-                    opacity: clickable ? 1 : 0.55,
+                    cursor: "pointer",
                     border: "1px solid",
                     borderColor: active ? "#C9A96E" : darkMode ? "#3a3a3a" : "#eadbc8",
                     bgcolor: active
@@ -803,7 +844,7 @@ export default function MainCourse() {
             <Typography
               sx={{ mt: 1, fontSize: 12.5, textAlign: "center", color: "text.secondary" }}
             >
-              אפשר לחזור לשלבים שכבר עברתם בכל רגע
+              אפשר לעבור לכל שלב בכל רגע
             </Typography>
           </Box>
         </Dialog>
@@ -819,7 +860,8 @@ export default function MainCourse() {
             mb: { xs: 2, md: 3 },
             px: { xs: 2, md: 3 },
             boxSizing: "border-box",
-            scrollMarginTop: { xs: "110px", md: "120px" },
+            // משאיר מקום לנבר ולסרגל השלבים הנעוצים
+            scrollMarginTop: `${stickyTop + stepsBarHeight + 8}px`,
           }}
         >
           <Box
@@ -892,6 +934,20 @@ export default function MainCourse() {
               </Typography>
             )}
 
+            {/* תשלומים: מוצג רק אחרי שהגיעו למינימום ההזמנה */}
+            {totalPrice > 0 && reachedMinimum && (
+              <Typography
+                sx={{
+                  fontSize: { xs: 13, md: 15 },
+                  mt: 0.3,
+                  fontWeight: 600,
+                  color: darkMode ? "#d0d0d0" : "#62564d",
+                }}
+              >
+                או עד {MAX_INSTALLMENTS} תשלומים של ₪{perPayment.toFixed(2)}
+              </Typography>
+            )}
+
             <Box sx={{ mt: 3, display: "flex", justifyContent: "center", width: "100%" }}>
               <Box
                 component="button"
@@ -947,6 +1003,98 @@ export default function MainCourse() {
               ? `בחרתם ${currentCategoryCount} מוצרים מהקטגוריה הזו`
               : "בחרו את המנות שמתאימות לכם, או דלגו לשלב הבא"}
           </Typography>
+        </Box>
+
+        {/* ===== כפתורי ניווט קטנים (למעלה, לפני המוצרים): חזרה / דלג / המשך ===== */}
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 1200,
+            mx: "auto",
+            px: { xs: 2, sm: 3 },
+            boxSizing: "border-box",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 1,
+          }}
+        >
+          {!isFirstStep ? (
+            <Button
+              size="small"
+              onClick={() => goToStep(stepIndex - 1)}
+              startIcon={<ArrowForwardIcon sx={{ fontSize: 16 }} />}
+              sx={{
+                height: 38,
+                px: 1.8,
+                borderRadius: "10px",
+                fontWeight: 800,
+                fontSize: 13,
+                color: darkMode ? "#e8c99b" : "#6d4228",
+                border: `1.5px solid ${darkMode ? "#d6b77c" : "#6d4228"}`,
+                bgcolor: "transparent",
+                "&:hover": {
+                  bgcolor: darkMode ? "rgba(214,183,124,0.12)" : "rgba(109,66,40,0.08)",
+                },
+              }}
+            >
+              חזרה ל{prevCategory?.name}
+            </Button>
+          ) : (
+            <Box />
+          )}
+
+          {!isLastStep ? (
+            <Button
+              size="small"
+              onClick={() => goToStep(stepIndex + 1)}
+              endIcon={<ArrowBackIcon sx={{ fontSize: 16 }} />}
+              sx={{
+                height: 38,
+                px: 1.8,
+                borderRadius: "10px",
+                fontWeight: 800,
+                fontSize: 13,
+                color: "#FFFFFF",
+                background:
+                  currentCategoryCount > 0
+                    ? "linear-gradient(135deg, #294737, #1D3529)"
+                    : "linear-gradient(135deg, #8a7a5c, #6f6148)",
+                boxShadow: "0 4px 8px rgba(41,71,55,0.16)",
+                "&:hover": {
+                  background:
+                    currentCategoryCount > 0
+                      ? "linear-gradient(135deg, #355C45, #294737)"
+                      : "linear-gradient(135deg, #9a8a6c, #7f7158)",
+                },
+              }}
+            >
+              {currentCategoryCount > 0
+                ? `המשך ל${nextCategory?.name}`
+                : `דלג ל${nextCategory?.name}`}
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              onClick={handleFinish}
+              endIcon={<ArrowBackIcon sx={{ fontSize: 16 }} />}
+              sx={{
+                height: 38,
+                px: 1.8,
+                borderRadius: "10px",
+                fontWeight: 800,
+                fontSize: 13,
+                color: "#FFFFFF",
+                background: "linear-gradient(135deg, #294737, #1D3529)",
+                boxShadow: "0 4px 8px rgba(41,71,55,0.16)",
+                "&:hover": {
+                  background: "linear-gradient(135deg, #355C45, #294737)",
+                },
+              }}
+            >
+              {reachedMinimum && cart.length > 0 ? "סיימנו, מעבר לסיכום הזמנה" : "לצפייה בסל ההזמנה"}
+            </Button>
+          )}
         </Box>
 
         {/* ===== כפתור סל צף ===== */}
@@ -1320,7 +1468,7 @@ export default function MainCourse() {
               </Button>
             ) : (
               <Button
-                onClick={() => (cart.length === 0 || !reachedMinimum ? setOpenCart(true) : goToCheckout())}
+                onClick={handleFinish}
                 endIcon={<ArrowBackIcon />}
                 sx={{
                   flex: { sm: "0 1 320px" },
@@ -1773,7 +1921,7 @@ export default function MainCourse() {
         {/* שיחת טלפון */}
         <IconButton
           component="a"
-          href="tel:+0975152820"
+          href="tel:0795152820"
           aria-label="התקשרו אלינו"
           sx={{
             width: { xs: 52, md: 58 },

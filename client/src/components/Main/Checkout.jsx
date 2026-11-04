@@ -410,6 +410,8 @@ export default function Checkout() {
     return `${year}-${month}-${day}`;
   })();
 
+
+  
   const activeAddons = ADDONS.filter((a) => a.category === addonTab);
   const addonCountInCategory = (key) =>
     selectedAddons.filter((a) => a.category === key).length;
@@ -647,7 +649,7 @@ export default function Checkout() {
           </Typography>
 
           <Typography
-            sx={{ color: "#E4CC9D", fontWeight: 700, fontSize: { xs: 14, md: 17 }, mt: 2 }}
+            sx={{ color: "#E4CC9D", fontWeight: 700, fontSize: { xs: 10, md: 17 }, mt: 2 }}
           >
             מינימום הזמנה 1500 ש'ח
           </Typography>
@@ -1500,6 +1502,7 @@ export default function Checkout() {
               </Box>
             </Box>
           </Grid>
+
         </Grid>
 
       </Box>

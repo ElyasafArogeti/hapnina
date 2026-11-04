@@ -416,15 +416,15 @@ const navigate = useNavigate();
           }}
         >
           <Typography
-            variant="h4"
+            variant="h6"
             sx={{
               fontWeight: 800,
               color: "#e5c46a",
               mb: 1.5,
-              fontSize: { xs: "1.7rem", md: "1.8rem" },
+              fontSize: { xs: "1.5rem", md: "1.8rem" },
             }}
           >
-            משלוח אוכל מוכן
+        אוכל מוכן - סל קניות אישי
           </Typography>
 
           <Divider
@@ -447,7 +447,7 @@ const navigate = useNavigate();
               fontSize: { xs: "1.1rem", md: "1.2rem" },
             }}
           >
-           ! סל הקניות המשתלם ביותר 
+        משלוח אוכל מוכן – בוחרים, שוקלים ומזמינים
           </Typography>
 
           <Typography
@@ -459,54 +459,66 @@ const navigate = useNavigate();
             }}
           >
             הוסיפו לסל הקניות מבחר מנות עשיר ומגוון מבלי לצאת מהבית
-           צפו בתפריט הכולל מנות עשירות והזמינו ישירות מהאתר
+           צפו בתפריט הוסיפו, והזמינו ישירות מהאתר
           </Typography>
 
-          <Typography
-            sx={{
-              fontSize: { xs: "1rem", md: "1.05rem" },
-              fontWeight: 800,
-              color: "#e5c46a",
-              mb: 0.5,
-            }}
-          >
-             ? לאילו אירועים אפשר להזמין
-          </Typography>
+        <Typography
+        sx={{
+          fontSize: "1.05rem",
+          fontWeight: 800,
+          color: "#e5c46a",
+          mb: 1.5,
+        }}
+      >
+        ? איך מבצעים הזמנה 
+      </Typography>
 
-          <List
-            dense
-            sx={{
-              width: "100%",
-              maxWidth: 300,
-              p: 0,
-              mb: 1,
-            }}
+      <List
+        dense
+        sx={{
+          width: "100%",
+          maxWidth: 340,
+          p: 0,
+          mb: 1,
+        }}
+      >
+        {[
+          "בוחרים את המנות שאוהבים מתוך התפריט",
+          "בוחרים את הכמות הרצויה לפי ק״ג או יחידות ",
+          "מוסיפים לסל הקניות וממשיכים לבחור מנות",
+          "פותחים את הסל, בודקים את ההזמנה ועוברים לשליחה והמשך תשלום",
+        ].map((item) => (
+          <ListItem
+            key={item}
+            sx={{ py: 0.5, px: 0, gap: 1 }}
           >
-            {[
-              "אזכרות",
-              "ברית מילה",
-              "בר/בת מצווה",
-              "כנסים ואירועי תרבות",
-              "שמחה משפחתית ועוד",
-            ].map((item) => (
-              <ListItem
-                key={item}
-                sx={{ py: 0.25, px: 0, gap: 1 }}
-              >
-                <CheckCircleIcon
-                  sx={{ color: "#d4b45f", fontSize: 21 }}
-                />
-                <ListItemText
-                  primary={item}
-                  primaryTypographyProps={{
-                    fontSize: { xs: "0.95rem", md: "0.95rem" },
-                    color: "#e0e0e0",
-                    textAlign: "right",
-                  }}
-                />
-              </ListItem>
-            ))}
-          </List>
+            <CheckCircleIcon
+              sx={{ color: "#d4b45f", fontSize: 21 ,textAlign:"right" }}
+            />
+            <ListItemText
+              primary={item}
+              primaryTypographyProps={{
+                fontSize: "0.95rem",
+                color: "#e0e0e0",
+                textAlign: "right",
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
+
+      <Box sx={{ flexGrow: 1 }} />
+
+      <Typography
+        sx={{
+          color: "#e5c46a",
+          fontWeight: 800,
+          fontSize: "1rem",
+          mb: 1,
+        }}
+      >
+       ! אתם בוחרים בדיוק כמה להזמין
+      </Typography>
 
           <Box sx={{ flexGrow: 1 }} />
 
@@ -562,6 +574,8 @@ const navigate = useNavigate();
         </Box>
       </Card>
     </Grid2>
+
+    
 {/* קטע החבילות  */}
 <OffersSection />
 
@@ -1496,7 +1510,7 @@ const navigate = useNavigate();
   {/* שיחת טלפון */}
   <IconButton
     component="a"
-    href="tel:+0975152820"
+    href="tel:0795152820"
     aria-label="התקשרו אלינו"
     sx={{
       width: { xs: 52, md: 58 },

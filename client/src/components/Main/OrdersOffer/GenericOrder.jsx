@@ -261,6 +261,19 @@ const GenericOrder = () => {
     return !hasFinalError;
   };
 
+    // אומר שגיאה ללקוח שתאריך לפני 2 ימי עסקים
+  const minEventDate = (() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 3);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  })();
+
+  
   // ----- בדיקת כמות מנות מול המגבלות (רק על קטגוריות שמוצגות בפועל) -----
   const validateSelectionLimits = () => {
     if (sections.length === 0) {
@@ -529,7 +542,7 @@ const GenericOrder = () => {
         {/* שיחת טלפון */}
         <IconButton
           component="a"
-          href="tel:+0975152820"
+          href="tel:0795152820"
           aria-label="התקשרו אלינו"
           sx={{
             width: { xs: 52, md: 58 },
@@ -642,8 +655,18 @@ const GenericOrder = () => {
           <TextField fullWidth label="מספר פלאפון" type="tel" autoComplete="tel" inputProps={{ inputMode: "tel" }} value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} sx={fieldSx} error={Boolean(errors.phoneNumber)} helperText={errors.phoneNumber || ""} />
           <TextField fullWidth label="כתובת מייל" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} sx={fieldSx} error={Boolean(errors.email)} helperText={errors.email || ""} />
           <TextField fullWidth label="מספר מוזמנים" type="number" value={guestCount === 0 ? "" : guestCount} onChange={(e) => setGuestCount(Number(e.target.value))} sx={fieldSx} error={Boolean(errors.guestCount)} helperText={errors.guestCount || `מינימום ${MIN_GUESTS} מוזמנים`} />
-          <TextField fullWidth label="תאריך האירוע" type="date" InputLabelProps={{ shrink: true }} value={eventDate} onChange={(e) => setEventDate(e.target.value)} sx={fieldSx} error={Boolean(errors.eventDate)} helperText={errors.eventDate || ""} />
-          <TextField fullWidth label="מיקום האירוע" autoComplete="street-address" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} sx={{ ...fieldSx, mb: 3 }} error={Boolean(errors.eventLocation)} helperText={errors.eventLocation || ""} />
+        <TextField
+                         fullWidth
+                         label="תאריך ביצוע ההזמנה"
+                         type="date"
+                         InputLabelProps={{ shrink: true }}
+                         inputProps={{ min: minEventDate }}
+                         value={eventDate}
+                         onChange={(e) => setEventDate(e.target.value)}
+                         error={Boolean(errors.eventDate)}
+                         helperText={errors.eventDate || "ניתן לבחור תאריך החל משלושה ימים מהיום"}
+                         sx={fieldSx}
+                       />
 
           <Button fullWidth disabled={sending} onClick={() => { if (validateFinalForm()) handleFinalSubmit(); }}
             sx={{ minHeight: 54, color: "#131313", border: "1px solid #E4CC9D", borderRadius: "12px", fontWeight: 800, fontSize: 18, background: "linear-gradient(135deg, #C9A96E 0%, #E4CC9D 50%, #C9A96E 100%)", boxShadow: "0 6px 16px rgba(201,169,110,0.35)", "&:hover": { background: "linear-gradient(135deg, #B89555 0%, #D9BD86 50%, #B89555 100%)" }, "&.Mui-disabled": { background: "#D8C6A5", color: "#6B6252" } }}>

@@ -69,7 +69,7 @@ const Footer = () => {
             <Typography variant="h6" gutterBottom>צור קשר</Typography>
             <Typography variant="body2" gutterBottom>
               גבעת שאול ירושלים <br />
-              שירות לקוחות: <MuiLink href="tel:+0975152820" color="inherit">0795152820</MuiLink><br />
+              שירות לקוחות: <MuiLink href="tel:0795152820" color="inherit">0795152820</MuiLink><br />
               אימייל: <MuiLink href="mailto:hpnina6600200@gmail.com" color="inherit">hpnina6600200@gmail.com</MuiLink>
             </Typography>
 

@@ -94,8 +94,8 @@ const Contact = () => {
     {
       icon: <Phone />,
       title: 'מספר הטלפון שלנו',
-      value: '09-75152820',
-      link: 'tel:0975152820',
+      value: '079-5152820',
+      link: "tel:0795152820",
     },
     {
       icon: <Email />,
@@ -120,7 +120,7 @@ const Contact = () => {
 
 
   return (
-    <Box sx={{ backgroundColor: cream, direction: 'rtl', minHeight: '100vh' }}>
+    <Box sx={{ backgroundColor: cream, direction: 'rtl', minHeight: '100vh'  }}>
       <NavbarHome />
       <br /><br /><br /><br />
       <TextMove />
@@ -559,7 +559,7 @@ const Contact = () => {
           backgroundColor: dark,
           textAlign: 'center',
           py: 6,
-          px: 2,
+          px: 4,
         }}
       >
 
@@ -568,20 +568,22 @@ const Contact = () => {
           sx={{
             color: '#fff',
             fontWeight: 'bold',
-            mb: 2,
+            mb: 6,
           }}
         >
           האירוע הבא שלכם מתחיל כאן
         </Typography>
 
         <Typography sx={{ color: '#ddd', lineHeight: 2 }}>
-          אולם הפנינה – כי הרגעים החשובים בחיים
+          קייטרינג הפנינה – כי הרגעים החשובים בחיים
           ראויים למקום מיוחד.
         </Typography>
 
       </Box>
 
       {/* SNACKBAR */}
+
+      <Footer />
 
       <Snackbar
         open={openSnackbar}
@@ -601,8 +603,6 @@ const Contact = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
-      <Footer />
 
     </Box>
   );

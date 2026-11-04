@@ -224,7 +224,7 @@ const About = () => {
            </Button>
          <Box display="flex" justifyContent="center" alignItems="center" gap={3} mt={2}>
                 <IconButton
-                  href="tel:+972548520195"
+                 href="tel:0795152820"
                   target="_blank"
                   sx={{
                     backgroundColor: '#0072e3',

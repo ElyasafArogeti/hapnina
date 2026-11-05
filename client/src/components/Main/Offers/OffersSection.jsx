@@ -16,7 +16,7 @@ const OffersSection = () => {
         textAlign="center"
         gutterBottom
         sx={{
-          fontWeight: 800,
+          fontWeight: 600,
           color: "#d4bc82",
           mb: 4,
         }}

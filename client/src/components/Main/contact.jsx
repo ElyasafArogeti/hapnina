@@ -16,6 +16,7 @@ import {
   Divider,
   MenuItem,
   Stack,
+   IconButton
 } from '@mui/material';
 
 import {
@@ -28,11 +29,15 @@ import {
   EventAvailable,
   Favorite,
   Instagram,
+ 
 } from '@mui/icons-material';
 
 import NavbarHome from './NavbarHome';
 import Footer from './Footer';
 import TextMove from "./textMove";
+
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PhoneIcon from "@mui/icons-material/Phone";
 
 const gold = '#b89556';
 const dark = '#25221e';
@@ -603,7 +608,67 @@ const Contact = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+        {/* כפתורי קשר צפים - וואטסאפ וטלפון */}
+<Box
+  sx={{
+    position: "fixed",
+    right: { xs: 14, md: 24 },
+    bottom: { xs: 60, md: 60 },
+    zIndex: 1500,
+    display: "flex",
+    flexDirection: "column",
+    gap: 1.5,
+    alignItems: "center",
+  }}
+>
+  {/* WhatsApp */}
+  <IconButton
+    component="a"
+    href="https://wa.me/972548520195"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="שלחו לנו הודעה בוואטסאפ"
+    sx={{
+      width: { xs: 52, md: 58 },
+      height: { xs: 52, md: 58 },
+      color: "#fff",
+      bgcolor: "#25D366",
+      boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+      border: "2px solid #fff",
+      transition: "transform .25s ease, box-shadow .25s ease",
+      "&:hover": {
+        bgcolor: "#1ebe5d",
+        transform: "scale(1.08)",
+        boxShadow: "0 8px 22px rgba(37,211,102,0.35)",
+      },
+    }}
+  >
+    <WhatsAppIcon sx={{ fontSize: { xs: 29, md: 33 } }} />
+  </IconButton>
 
+  {/* שיחת טלפון */}
+  <IconButton
+    component="a"
+    href="tel:0795152820"
+    aria-label="התקשרו אלינו"
+    sx={{
+      width: { xs: 52, md: 58 },
+      height: { xs: 52, md: 58 },
+      color: "#17130a",
+      background: "linear-gradient(135deg, #f5df9b, #c6a24b)",
+      boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+      border: "2px solid #fff",
+      transition: "transform .25s ease, box-shadow .25s ease",
+      "&:hover": {
+        background: "linear-gradient(135deg, #ffe9a8, #d4b45f)",
+        transform: "scale(1.08)",
+        boxShadow: "0 8px 22px rgba(198,162,75,0.35)",
+      },
+    }}
+  >
+    <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
+  </IconButton>
+</Box>
     </Box>
   );
 };

@@ -91,14 +91,7 @@ const Footer = () => {
                 <BsTelephoneOutbound size={20} />
               </IconButton>
 
-              <IconButton
-                href="https://wa.me/972548520195"
-                target="_blank"
-                sx={{ color: '#fff' }}
-                aria-label="WhatsApp"
-              >
-                <WhatsAppIcon />
-              </IconButton>
+              
             </Box>
           </Grid>
         </Grid>

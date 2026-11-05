@@ -420,7 +420,7 @@ const navigate = useNavigate();
             sx={{
               fontWeight: 800,
               color: "#e5c46a",
-              mb: 1.5,
+              mb: 1.3,
               fontSize: { xs: "1.5rem", md: "1.8rem" },
             }}
           >
@@ -447,7 +447,7 @@ const navigate = useNavigate();
               fontSize: { xs: "1.1rem", md: "1.2rem" },
             }}
           >
-        משלוח אוכל מוכן – בוחרים, שוקלים ומזמינים
+        משלוח אוכל מוכן – בוחרים, ומזמינים
           </Typography>
 
           <Typography
@@ -918,11 +918,6 @@ const navigate = useNavigate();
     </Box>
   </Box>
 </Box>
-
-
-
-
-
 
 
 {/* ------------------------------------------------------------------------------------- */}

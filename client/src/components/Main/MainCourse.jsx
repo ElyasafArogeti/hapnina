@@ -68,17 +68,17 @@ const dishes = [
   { id: 2, name: "פילה סלמון ברוטב פסטו", price: 17, unit: "למנה", category: "דגים", details: "כל הטעמים", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902184/%D7%A4%D7%99%D7%9C%D7%94_%D7%A1%D7%9C%D7%9E%D7%95%D7%9F_%D7%91%D7%A8%D7%95%D7%98%D7%91_%D7%A4%D7%A1%D7%98%D7%95_daz0zj.jpg" },
   { id: 87, name: "פילה סלמון ברוטב אדם", price: 17, unit: "למנה", category: "דגים", details: "כל הטעמים", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902184/%D7%A4%D7%99%D7%9C%D7%94_%D7%A1%D7%9C%D7%9E%D7%95%D7%9F_%D7%91%D7%A8%D7%95%D7%98%D7%91_%D7%90%D7%93%D7%9D_qujkul.webp" },
   // { id: 3, name: "פילה לברק", price: null, unit: "", category: "דגים", details: "", image: "" },
-  { id: 4, name: "קציצות דגים", price: 55, unit: "לק״ג", category: "דגים", details: "כ-50 גרם לקציצה", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902187/%D7%A7%D7%A6%D7%99%D7%A6%D7%95%D7%AA_%D7%93%D7%92%D7%99%D7%9D_zhzhil.webp" },
+  { id: 4, name: "קציצות דגים", price: 55, unit: "לק״ג", category: "דגים", details: "כ-50 גרם לקציצה", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902186/%D7%A7%D7%A6%D7%99%D7%A6%D7%95%D7%AA_%D7%93%D7%92%D7%99%D7%9D_jm9pmy.jpg" },
   
 
   // =========================
   // בשרים
   // =========================
-  { id: 5, name: "מעורב ירושלמי + פירה ", price: 105, unit: "קילו מכל אחד", category: "בשרים", details: "קילו מעורב וקילו פירה", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757938928/manager_images/first_courses/%D7%9E%D7%A2%D7%95%D7%A8%D7%91%20%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%9E%D7%99.jpg" },
-  { id: 6, name: "כבדים מוקפצים + פירה", price: 90, unit: "קילו מכל אחד", category: "בשרים", details: "קילו מעורב וקילו פירה", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902391/%D7%9B%D7%91%D7%93%D7%99%D7%9D_%D7%9E%D7%95%D7%A7%D7%A4%D7%A6%D7%99%D7%9D_%D7%A4%D7%99%D7%A8%D7%94_bnbttd.jpg" },
+  { id: 5, name: "מעורב ירושלמי + פירה ", price: 105, unit: "קילו מכל אחד", category: "בשרים", details: "קילו מעורב וקילו פירה", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127118/%D7%9E%D7%A2%D7%95%D7%A8%D7%91_%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%9E%D7%99_%D7%A4%D7%99%D7%A8%D7%94_xzmjhb.jpg" },
+  { id: 6, name: "כבדים מוקפצים + פירה", price: 90, unit: "קילו מכל אחד", category: "בשרים", details: "קילו מעורב וקילו פירה", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127117/%D7%9B%D7%91%D7%93%D7%99%D7%9D_%D7%9E%D7%95%D7%A7%D7%A4%D7%A6%D7%99%D7%9D_%D7%A4%D7%99%D7%A8%D7%94_miogo8.jpg" },
   { id: 7, name: "מאפה פילו בשר + רוטב", price: 15, unit: "ליחידה", category: "בשרים", details: "מוגש עם רוטב", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1755026786/manager_images/first_courses/%D7%9E%D7%90%D7%A4%D7%94%20%D7%A4%D7%99%D7%9C%D7%95%20%D7%91%D7%A9%D7%A8%20%D7%A2%D7%9D%20%D7%A8%D7%95%D7%98%D7%91.jpg" },
   { id: 8, name: "טורטיה בשר", price: 15, unit: "ליחידה", category: "בשרים", details: "מוגשת עם רוטב", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411435/IMG-20250713-WA0115_jsponj.jpg" },
-  { id: 9, name: "ארטישוק ממולא בשר", price: 15, unit: "ליחידה", category: "בשרים", details: "", image: "" },
+  { id: 9, name: "ארטישוק ממולא בשר", price: 15, unit: "ליחידה", category: "בשרים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127197/%D7%90%D7%A8%D7%98%D7%99%D7%A9%D7%95%D7%A7_%D7%9E%D7%9E%D7%95%D7%9C%D7%90_%D7%91%D7%A9%D7%A8_i83oi7.jpg" },
   // { id: 10, name: "מאפה קדאיף בשר", price: null, unit: "", category: "בשרים", details: "", image: "" },
   // { id: 11, name: "קוראסון אסאדו", price: null, unit: "", category: "בשרים", details: "", image: "" },
   // { id: 12, name: "קרפצ'יו בקר", price: null, unit: "", category: "בשרים", details: "", image: "" },
@@ -101,7 +101,7 @@ const dishes = [
   // עופות
   // =========================
   { id: 22,name: "מוקפץ תאילנדי + פירה", price: 80, unit: "לק״ג", category: "עופות", details: "קילו מוקפץ וקילו פירה", image: "" },
-   { id: 23, name: "שניצל עוף", price: 14, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793903175/%D7%A9%D7%A0%D7%99%D7%A6%D7%9C_%D7%A2%D7%95%D7%A3_ephcyd.webp" },
+   { id: 23, name: "שניצל עוף", price: 14, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794129100/%D7%A9%D7%A0%D7%99%D7%A6%D7%9C_%D7%A2%D7%95%D7%A3_w7w77j.jpg" },
   { id: 24, name: "פרגית עוף ממולא", price: 22, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "" },
   { id: 25, name: "פרגית על האש", price: 17, unit: "ליחידה", category: "עופות", details: "מינימום 120 גרם", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1755026551/manager_images/main_courses/%D7%A1%D7%98%D7%99%D7%99%D7%A7%20%D7%A4%D7%A8%D7%92%D7%99%D7%AA.jpg" },
   // { id: 26, name: "פסטיה פרגית", price: null, unit: "", category: "עופות", details: "", image: "" },
@@ -144,13 +144,14 @@ const dishes = [
    { id: 56, name: "גזר מרוקאי מבושל", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793904540/IMG-20250713-WA0134_eoik7q.jpg" },
   { id: 57, name: "טחינה מתובלת", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%98%D7%97%D7%99%D7%A0%D7%94_%D7%9E%D7%AA%D7%95%D7%91%D7%9C%D7%AA_vahf3p.webp" },
   { id: 58, name: "חמוצי הבית", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100669/manager_images/salads/%D7%97%D7%9E%D7%95%D7%A6%D7%99%20%D7%94%D7%91%D7%99%D7%AA.jpg" },
-  { id: 59, name: "מבחר חמוצים", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
-  { id: 60, name: "ירקות חי טרי ועשיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 59, name: "מבחר חמוצים", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127717/%D7%9E%D7%91%D7%97%D7%A8_%D7%97%D7%9E%D7%95%D7%A6%D7%99%D7%9D_fq6l2z.jpg" },
+  { id: 60, name: "ירקות חי טרי ועשיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127715/%D7%99%D7%A8%D7%A7%D7%95%D7%AA_%D7%97%D7%99_%D7%98%D7%A8%D7%99_%D7%95%D7%A2%D7%A9%D7%99%D7%A8_oa3g4x.jpg" },
   { id: 61, name: "חציל בטחינה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902654/%D7%97%D7%A6%D7%99%D7%9C_%D7%91%D7%98%D7%97%D7%99%D7%A0%D7%94_ggwvvv.jpg" },
-  { id: 62, name: "חציל יווני", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902655/%D7%97%D7%A6%D7%99%D7%9C_%D7%99%D7%95%D7%95%D7%A0%D7%99_pwnd2e.jpg" },
+  { id: 62, name: "חציל יווני", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127536/%D7%97%D7%A6%D7%99%D7%9C_%D7%99%D7%95%D7%95%D7%A0%D7%99_jpp2bo.jpg" },
   { id: 63, name: "חציל טבעי על האש", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 86, name: "חציל קלוי זעלוק", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902655/%D7%97%D7%A6%D7%99%D7%9C_%D7%99%D7%95%D7%95%D7%A0%D7%99_pwnd2e.jpg" },
   { id: 64, name: "חציל במיונז", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
-  { id: 65, name: "קוביות חציל פיקנטי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0129_vrhw3n.jpg" },
+  { id: 65, name: "קוביות חציל פיקנטי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127721/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA_%D7%97%D7%A6%D7%99%D7%9C_%D7%A4%D7%99%D7%A7%D7%A0%D7%98%D7%99_dgos72.jpg" },
   { id: 66, name: "כרוב ושמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940314/manager_images/salads/%D7%9B%D7%A8%D7%95%D7%91%20%D7%95%D7%A9%D7%9E%D7%99%D7%A8.jpg" },
   { id: 67, name: "כרוב וגזר במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_r8xpo4.jpg" },
   { id: 68, name: "כרוב וגזר מתובל", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902672/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%9E%D7%AA%D7%95%D7%91%D7%9C_etds51.webp" },
@@ -159,7 +160,7 @@ const dishes = [
   { id: 71, name: "מטבוחה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9E%D7%98%D7%91%D7%95%D7%97%D7%94_ziwlal.jpg" },
   { id: 72, name: "סלט מלפפון בשמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 73, name: "שרי בבזיליקום", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
-  { id: 74, name: "פלפל מתוק בצבעים", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411434/IMG-20250713-WA0141_edsu2v.jpg" },
+  { id: 74, name: "פלפל מתוק בצבעים", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127718/%D7%A4%D7%9C%D7%A4%D7%9C_%D7%9E%D7%AA%D7%95%D7%A7_%D7%91%D7%A6%D7%91%D7%A2%D7%99%D7%9D_ckdgpx.jpg" },
   { id: 75, name: "סלט טבולה", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902673/%D7%A1%D7%9C%D7%98_%D7%98%D7%91%D7%95%D7%9C%D7%94_rpqelv.jpg" },
   { id: 76, name: "שורש סלרי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 77, name: "תירס מקסיקני", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100721/manager_images/salads/%D7%AA%D7%99%D7%A8%D7%A1%20%D7%9E%D7%A7%D7%A1%D7%99%D7%A7%D7%A0%D7%99.jpg" },
@@ -168,7 +169,7 @@ const dishes = [
   { id: 80, name: "סלט בטטה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%A1%D7%9C%D7%98_%D7%91%D7%98%D7%98%D7%94_t9vgji.webp" },
   { id: 81, name: "סלט ירוק", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_sspqpy.jpg" },
   { id: 82, name: "חומוס ישראלי", price: 23, unit: "לק״ג ", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%97%D7%95%D7%9E%D7%95%D7%A1_%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99_boq1zc.jpg" },
-  { id: 83, name: "חסה, שרי ונבטים ברוטב", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
+  { id: 83, name: "חסה, שרי ונבטים ברוטב", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127715/%D7%97%D7%A1%D7%94_%D7%A9%D7%A8%D7%99_%D7%95%D7%A0%D7%91%D7%98%D7%99%D7%9D_%D7%91%D7%A8%D7%95%D7%98%D7%91_zrm3cm.jpg" },
   // { id: 84, name: "קינואה", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 85, name: "פלפל חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411746/IMG-20250713-WA0108_noob7d.jpg" },
 ];

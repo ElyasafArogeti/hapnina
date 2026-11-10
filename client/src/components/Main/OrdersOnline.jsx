@@ -1,2113 +1,329 @@
-import React, { useEffect, useState, useMemo ,useRef } from 'react';
-import { apiFetch } from '../api'; 
+import React,{useEffect,useState,useMemo,useRef} from 'react';
+import {apiFetch} from '../api';
 import '../../assets/stylesMain/OrdersOnline.css';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import Confetti from 'react-confetti';
 import dayjs from 'dayjs';
-// import html2pdf from 'html2pdf.js';
 import Footer from './Footer';
-import  Grid  from '@mui/material/Grid2';
-import { Card, CardContent, CardMedia, Checkbox } from "@mui/material";
-
-import { Snackbar, Alert ,Modal, Box,Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Typography } from '@mui/material';
 import NavbarHome from './NavbarHome';
-import LinearProgress from '@mui/material/LinearProgress';
+import Grid from '@mui/material/Grid2';
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PhoneIcon from "@mui/icons-material/Phone";
+import TextMove from "./textMove";
+import {Card, IconButton,CardContent,CardMedia,Checkbox,Snackbar,Alert,Modal,Box,Dialog,DialogActions,DialogContent,DialogTitle,TextField,Button,Typography,LinearProgress,Stack,CircularProgress,Paper,FormControl,InputLabel,Select,MenuItem,Divider,List,ListItem,ListItemText,Container} from '@mui/material';
 
-import Stack from '@mui/material/Stack';
+/* ---------- עיצוב שחור-זהב ---------- */
+const G='#D4AF37',BK='#0d0d0d',PN='#161616',TX='#f5f0e1',MU='#b9a566';
+const paperSx={bgcolor:PN,color:TX,border:`1px solid ${G}`,borderRadius:3,boxShadow:`0 0 28px ${G}33`};
+const fieldSx={'& .MuiOutlinedInput-root':{color:TX,'& fieldset':{borderColor:'#6b5a1f'},'&:hover fieldset':{borderColor:G},'&.Mui-focused fieldset':{borderColor:G}},'& label':{color:MU},'& label.Mui-focused':{color:G},'& .MuiFormHelperText-root':{color:MU},'& .MuiFormHelperText-root.Mui-error':{color:'#ff7b7b'},'& .MuiSelect-icon':{color:G}};
+const goldBtn={bgcolor:G,color:BK,fontWeight:700,borderRadius:2,px:3,'&:hover':{bgcolor:'#f0d77b'},'&.Mui-disabled':{bgcolor:'#4a4120',color:'#8a7a40'}};
+const menuProps={PaperProps:{sx:{bgcolor:PN,color:TX,border:`1px solid ${G}`}}};
 
-import CircularProgress from '@mui/material/CircularProgress';
-import Paper from '@mui/material/Paper';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import { Container } from '@mui/material';
+/* ---------- קטגוריות ומכסות (בדיוק!) ---------- */
+const CATS=[{k:'salads',t:'סלטים',n:'סלטים',max:8},{k:'first_courses',t:'מנה ראשונה',n:'מנות ראשונות',max:3},{k:'main_courses',t:'מנה עיקרית',n:'מנות עיקריות',max:3},{k:'side_dishes',t:'תוספות',n:'תוספות',max:3}];
+const REGIONS={'ירושלים והסביבה':300,'בית שמש והסביבה':250,'תל אביב והמרכז':300,'קרית גת, אשקלון, אשדוד':150,'באר שבע והדרום':300,'אזור בנימין':400,'גוש עציון':350,'הרצליה והסביבה':400,'חיפה וצפון':500,'איסוף עצמי: גבעת שאול ירושלים':0};
+const NO_ROUND=[3,8,11,12,28,29];
+const roundW=w=>w<500?w:Math.ceil(w/500)*500;
 
-//  התפריט הכללי 
-
-
-const OrdersOnline = () => {
-    const Navigate = useNavigate();
-  
-    const [inventoryAll, setInventoryAll] = useState({  //מאגר המנות
-        first_courses: [],
-        main_courses: [],
-        salads: [],
-        side_dishes: []
-    });
-   
-    
-    const [onlineOrderMain, setOnlineOrderMain] = useState(true);//התפריט הראשי
-
-    const [loginUser, setLoginUser] = useState(null); // להירשם למערכת   
-    const [sendingToManger , setSendingToManger] = useState(null);// הודעה אישור שליחה למנהל 
-    const [customerOrderSummary, setCustomerOrderSummary] = useState(null); //מערך המכיל סיכום ההזמנה של הלקוח
-
-     const [eventOwner, setEventOwner] = useState(""); //שם בעל האירוע
-    const [guestCount, setGuestCount] = useState(""); //כמות האורחים
-    const [eventDate, setEventDate] = useState(""); // תאריך האירוע
-    const [phoneNumber, setPhoneNumber] = useState(""); //מספר האירוע
-    const [shippingDate, setShippingDate] = useState(""); //תאריך שליחה
-    const [email, setEmail] = useState(""); // מייל לקוח
-  
-
-
-    const [selectedSalads, setSelectedSalads] = useState([]); //סלטים נבחרים
-    const [selectedFirstDishes, setSelectedFirstDishes] = useState([]); //מנות ראשונות נבחרות
-    const [selectedMainDishes, setSelectedMainDishes] = useState([]); //נבחרו מנות עיקריות
-    const [selectedSides, setSelectedSides] = useState([]); //צדדים נבחרים 
-    
-
-    const [orderSummary, setOrderSummary] = useState(null); //מערך המכיל סיכום ההזמנה
-    const [totalPrice, setTotalPrice] = useState(0); //מחיר כולל
-
-    
-    const [firstDishQuantities, setFirstDishQuantities] = useState({}); // כמות מנות ראשונות לכל מנה ראשונה
-    const [mainDishQuantities, setMainDishQuantities] = useState({}); // כמות מנות עיקריות לכל מנה עיקרית
+/* ---------- התאמת תמונות: משאיר רק אותיות עבריות, מתעלם מסיומת/סיומת רנדומלית של Cloudinary ---------- */
+const norm=s=>String(s||'').replace(/\.[a-z0-9]{2,4}$/i,'').replace(/[^\u05D0-\u05EA]/g,'');
+const buildMap=arr=>{const m=new Map();(arr||[]).forEach(i=>{const url=i.url||i.secure_url;[i.display_name,i.public_id&&String(i.public_id).split('/').pop(),i.filename,i.name].forEach(n=>{const k=norm(n);if(k&&url&&!m.has(k))m.set(k,url)})});return m};
+const findImg=(m,name)=>{const k=norm(name);if(!k)return null;if(m.has(k))return m.get(k);for(const[key,url]of m)if(key.length>2&&(key.includes(k)||k.includes(key)))return url;return null};
 
 
 
-    const [errorFirstDish, setErrorFirstDish] = useState(null); // הודעת שגיאה כמות מנות לא תואמות למוזמנים
-    const [errorMainDish, setErrorMainDish] = useState(null); // הודעת שגיאה כמות מנות לא תואמות למוזמנים
-  
-    const [isQuantityModalOpen, setIsQuantityModalOpen] = useState(false); // מצב חלון הכמויות
-    const [errorMessage , setErrorMessage] = useState(null); // הודעת שגיאה כללית 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const darkBg = "linear-gradient(135deg, #111111 0%, #1d1b18 55%, #2a2418 100%)";
+const GOLD = "#C9A96E", GOLD_DARK = "#8c6a25", INK = "#171614", CREAM = "#f6f3ec";
 
 
-    const [selectedImage, setSelectedImage] = useState(null); // בחירת ראיית תמונה
+const OrdersOnline=()=>{
+const nav=useNavigate();
+const [inv,setInv]=useState({first_courses:[],main_courses:[],salads:[],side_dishes:[]});
+const [imgs,setImgs]=useState({first_courses:[],main_courses:[],salads:[],side_dishes:[]});
+const [sel,setSel]=useState({salads:[],first_courses:[],main_courses:[],side_dishes:[]});
+const [qty,setQty]=useState({first_courses:{},main_courses:{}});
+const [mainView,setMainView]=useState(true),[loginOpen,setLoginOpen]=useState(false),[qtyOpen,setQtyOpen]=useState(false),[sent,setSent]=useState(false),[loading,setLoading]=useState(false);
+const [eventOwner,setEventOwner]=useState(''),[guestCount,setGuestCount]=useState(''),[eventDate,setEventDate]=useState(''),[phone,setPhone]=useState(''),[email,setEmail]=useState('');
+const [region,setRegion]=useState(''),[shipCost,setShipCost]=useState(0),[exactLoc,setExactLoc]=useState('');
+const [summary,setSummary]=useState(null),[totalPrice,setTotalPrice]=useState(0),[subtotal,setSubtotal]=useState(0),[vat,setVat]=useState(0);
+const [errors,setErrors]=useState({}),[errMsg,setErrMsg]=useState(null),[zoom,setZoom]=useState(null);
+const summaryRef=useRef(null),formRef=useRef(null);
 
-    const [openImageDialog, setOpenImageDialog] = useState(false);
-    
-     // המגבלות עבור כל קטגוריה
-  const maxSalads = 8;
-  const maxFirstDishes =3;
-  const maxMainDishes = 3;
-  const maxSides =3;
+useEffect(()=>{apiFetch('/api/inventoryAll').then(setInv).catch(e=>console.error('inventory',e))},[]);
+useEffect(()=>{setLoading(true);apiFetch('/api/getUploadedImages').then(d=>{console.log('images from server:',d);setImgs(d)}).catch(e=>console.error('images',e)).finally(()=>setLoading(false))},[]);
+useEffect(()=>{if(summary)summaryRef.current?.scrollIntoView({behavior:'smooth'})},[summary]);
+const maps=useMemo(()=>Object.fromEntries(CATS.map(c=>[c.k,buildMap(imgs[c.k])])),[imgs]);
 
-    const [totalDelivery , setTotalDelivery] = useState(0);
+const toggle=(k,id,checked,max)=>setSel(p=>checked?(p[k].length>=max||p[k].includes(id)?p:{...p,[k]:[...p[k],id]}):{...p,[k]:p[k].filter(x=>x!==id)});
+const tot=k=>Object.entries(qty[k]).filter(([id])=>sel[k].some(s=>String(s)===id)).reduce((a,[,v])=>a+Number(v||0),0);
 
-  
-     const [imagesByCategory, setImagesByCategory] = useState({
-       first_courses: [],
-       main_courses: [],
-       salads: [],
-       side_dishes: [],
-     });
+/* בדיקה: בדיוק המכסה בכל קטגוריה */
+const checkCounts=()=>{const bad=CATS.filter(c=>sel[c.k].length!==c.max).map(c=>`${c.n}: נבחרו ${sel[c.k].length} מתוך ${c.max}`);if(bad.length){setErrMsg('יש לבחור בדיוק את המכסה בכל קטגוריה. '+bad.join(' | '));return false}setErrMsg(null);return true};
+const openDetails=()=>{if(checkCounts())setLoginOpen(true)};
 
-const [loading, setLoading] = useState(false);
+const openQty=()=>{const e={};
+if(!eventOwner.trim())e.eventOwner='יש להזין שם מלא';
+if(!guestCount||guestCount<60||guestCount>1000)e.guestCount='כמות המוזמנים חייבת להיות בין 60 ל-1000';
+if(!eventDate||dayjs(eventDate).isBefore(dayjs().add(3,'day'),'day'))e.eventDate='יש לבחור תאריך שלפחות 3 ימים מהיום';
+setErrors(e);if(Object.keys(e).length)return;setLoginOpen(false);setErrMsg(null);setQtyOpen(true)};
+
+const handleSubmit=()=>{
+for(const[k,n]of[['first_courses','מנות ראשונות'],['main_courses','מנות עיקריות']]){const t=tot(k);if(t!==guestCount){setErrMsg(`סך ${n} חייב להיות בדיוק ${guestCount} (הוזן ${t})`);return}}
+setErrMsg(null);let total=0;const out={};
+CATS.forEach(c=>{out[c.k]=sel[c.k].map(id=>{const d=inv[c.k].find(x=>Number(x.id)===Number(id));if(!d)return null;
+const w=Number(d.weight),p=Number(d.price),q=Number(qty[c.k]?.[id]||0);let tw,pr;
+if(c.k==='salads'||c.k==='side_dishes'){tw=roundW(w*guestCount);pr=tw*p/1000}
+else if(w>0&&w<2){tw=q;pr=q*p}
+else{const raw=q*w;tw=(c.k==='main_courses'&&NO_ROUND.includes(Number(d.id)))?raw:roundW(raw);pr=tw*p/1000}
+total+=pr;return{dish_name:d.dish_name,totalPrice:pr.toFixed(2),totalWeight:c.k==='main_courses'?(tw/1000).toFixed(1):Number(tw).toFixed(2),dishWeight:d.weight}}).filter(Boolean)});
+total+=total*0.8;const v=total*0.18;
+setSubtotal(Number(total.toFixed(2)));setVat(v);setTotalPrice(total+v);setSummary(out);setQtyOpen(false);setMainView(false)};
+
+const validateFinal=()=>{const e={};if(!/^[0-9]{10}$/.test(phone))e.phoneNumber='מספר פלאפון לא תקין (10 ספרות בלבד)';if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))e.email='כתובת מייל לא חוקית';setErrors(e);return!Object.keys(e).length};
+const addOrder=async()=>{try{setLoading(true);const d=await apiFetch('/api/addOrdersOnline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userName:eventOwner,userPhone:phone,guestCount,eventDate,orderMenu:summary,totalPrice,shippingDate:new Date().toISOString().slice(0,19).replace('T',' '),email,event_location:region,address:exactLoc,shippingCost:shipCost,serviceCost:0,toolsType:'ללא',eventType:'תפריט כללי'})});if(d.message==='נשלח בהצלחה')setSent(true)}catch(e){console.error('שגיאה בשמירת ההזמנה:',e);alert('אירעה שגיאה בשמירת ההזמנה.')}finally{setLoading(false)}};
+
+const Heading=({children})=><Box display="flex" alignItems="center" justifyContent="center" mb={3}><Box sx={{flex:1,height:'2px',bgcolor:G,mx:2}}/><Typography variant="h5" sx={{fontWeight:700,color:'#333',textAlign:'center',whiteSpace:'nowrap'}}>{children}</Typography><Box sx={{flex:1,height:'2px',bgcolor:G,mx:2}}/></Box>;
 
 
 
 
-const [shippingCost, setShippingCost] = useState(0); // דמי משלוח
-
-
-const [serviceCost, setServiceCost] = useState(0);// דמי שירות מלצרים 
-
-
-const [deliveryRegion, setDeliveryRegion] = useState('');//אזור משלוח
-const [toolsType, setToolsType] = useState("ללא"); // ברירת מחדל: ללא צורך בכלים
-const [exactLocation, setExactLocation] = useState('');//מיקום מיוחד
-
-// ------------------------------------------------------------
-const [subtotal, setSubtotal] = useState(0);       // סכום לפני מע"מ
-const [vatAmount, setVatAmount] = useState(0);     // סכום מע"מ
-
-
-const summaryRef = useRef(null); // יוזרים יכולים לקרוא לזה גם scrollTarget או משהו דומה
-const formSectionRef = useRef(null);
-
-  //-----------מלאי התפריט---------------------------------------------------------------
-    useEffect(() => {
-        const fetchInventoryAll = async () => {
-            try {
-                 const data = await apiFetch('/api/inventoryAll');
-                setInventoryAll(data);
-                 console.log(data);
-            } catch (error) {
-                console.error('Failed to fetch inventory:', error);
-            }
-        };
-
-        fetchInventoryAll();
-    }, []);
-
-    // פונקציה להורדת כל התוויים שאינם עבריים מהשם
-const removeNonHebrew = (text) => { 
-  return text.replace(/_/g, ' ').replace(/_[a-zA-Z0-9]+$/, ''); // מחליף את כל ה-underscore לרווח ומסיר את כל התוויים הלטיניים אחרי קו תחתון
-};
-  //------------תמונות התפריט---------------------------------------------------------------
-  useEffect(() => {
-    setLoading(true);
-    
-    const fetchImages = async () => {
-      try {
-        const data = await apiFetch('/api/getUploadedImages');
-        setImagesByCategory(data);
-      } catch (err) {
-        console.error('Error fetching images by categories:', err);
-
-      }finally {
-        setLoading(false); // סיום טעינה
-      }
-    };
-
-    fetchImages();
-  }, []);
-  //------------------------------------------------------------------
-    useEffect(() => {
-      if (customerOrderSummary && orderSummary) {
-        setIsModalOpen(true); // פותחים את המודל כאשר יש מידע להזמנה
-      }
-    }, [customerOrderSummary, orderSummary]);
-  //--------------------------------------------------------------------------
-  const validateSelections = () => { // בדיקת הבחירות של הלקוח
-    
-    if (selectedSalads.length > maxSalads) {
-      setErrorMessage(`לא ניתן לבחור יותר מ-${maxSalads} סלטים.`);
-      return false;
-    }
-    if (selectedFirstDishes.length > maxFirstDishes) {
-      setErrorMessage(`לא ניתן לבחור יותר מ-${maxFirstDishes} מנות ראשונות.`);
-      return false;
-    }
-    if (selectedMainDishes.length > maxMainDishes) {
-      setErrorMessage(`לא ניתן לבחור יותר מ-${maxMainDishes} מנות עיקריות.`);
-      return false;
-    }
-    if (selectedSides.length > maxSides ) {
-      setErrorMessage(`לא ניתן לבחור יותר מ-${maxSides} תוספות.`);
-      return false;
-    }
-    setErrorMessage(null); // אם אין שגיאה, ננקה את ההודעה
-    return true;
-  };
-
-
-  //--- חישוב המנות כולם  --------------------------------------------------------------
-    const handleSubmit = async () => {
-
-     const totalFirstDish = Object.values(firstDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
-     const totalMainDish = Object.values(mainDishQuantities).map(quantity => Number(quantity)).reduce((total, quantity) => total + quantity, 0);
-    
-    setErrorFirstDish(totalFirstDish);
-    setErrorMainDish(totalMainDish);
-// בדיקת כמות מנות ראשונות
-  if (selectedFirstDishes.length > 0 && totalFirstDish !== guestCount) {
-    setErrorFirstDish(totalFirstDish);
-    setErrorMessage(`.סך מנות ראשונות חייב להיות בדיוק ${guestCount}`);
-    return;
-  } else {
-    setErrorFirstDish(null);
-  }
-
-  // בדיקת כמות מנות עיקריות
-  if (selectedMainDishes.length > 0 && totalMainDish !== guestCount) {
-    setErrorMainDish(totalMainDish);
-    setErrorMessage(`.סך מנות עיקריות חייב להיות בדיוק ${guestCount}`);
-    return;
-  } else {
-    setErrorMainDish(null);
-  }
-
-  // בדיקה רק אם כמות האורחים קטנה מ-30
-  if (guestCount < 60) {
-    setErrorMessage(".המערכת מיועדת לאירועים של 60 אורחים ומעלה");
-    setTimeout(() => {
-      setErrorMessage(null);
-    }, 7000);
-    return;
-  }
-        setErrorMessage(null); // אם אין שגיאה, ננקה את ההודעה
-    
-        let total = 0;
-  
-       const roundWeight = (weight) => {
-         return weight < 500 ? weight : Math.ceil(weight / 500) * 500;
-       };
-
-    
-        // סלטים
-        const selectedSaladsData = selectedSalads.map((id) => {
-          const salad = inventoryAll.salads.find(d => Number(d.id) === Number(id));
-           if (!salad) {
-             console.warn("Salad not found for id:", id);
-             return null; // או להמשיך בלי לחשב
-           }
-           const pricePerKg = Number(salad.price);       // מחיר בשקלים לקילו
-           const weightPerGuest = Number(salad.weight);  // משקל בגרם לאדם
-
-             const totalWeight = roundWeight(weightPerGuest * guestCount); // סה"כ משקל לכל המוזמנים
-             const totalPrice = (totalWeight / 1000) * pricePerKg;         // מחיר = ק"ג * מחיר לק"ג
-
-            total += totalPrice;       
-            return {
-              dish_name: salad.dish_name,
-              totalPrice: totalPrice.toFixed(2),
-              totalWeight: Number(totalWeight).toFixed(2),
-              dishWeight: salad.weight 
-            };
-
-        });
-
-        //מנה ראשונה
-        const selectedFirstDishesData = selectedFirstDishes.map((id) => {
-            const firstDish = inventoryAll.first_courses.find(d => d.id === id);
-            if (!firstDish) {
-            console.warn("firstDish not found for id:", id);
-            return null; // או להמשיך בלי לחשב
-            }
-            let totalPrice = 0;
-            let totalWeight = 0;
-            if (firstDish.weight > 0 && firstDish.weight < 2) { // יחידות
-                totalPrice = firstDishQuantities[id] * firstDish.price;
-                totalWeight = firstDishQuantities[id];
-            } else {
-                totalWeight = roundWeight(firstDishQuantities[id] * firstDish.weight);
-                totalPrice = (totalWeight * firstDish.price / 1000);  
-            }
-            total += totalPrice;
-           return {
-            dish_name: firstDish.dish_name,
-            totalPrice: totalPrice.toFixed(2),
-            totalWeight: Number(totalWeight).toFixed(2),
-            dishWeight: firstDish.weight  // הוספה חשובה!
-          };
-
-        });
-    
-        //מנה עיקרית
-        const selectedMainDishesData = selectedMainDishes.map((id) => {
-            const mainDish = inventoryAll.main_courses.find(d => d.id === id);
-            if (!mainDish) {
-             console.warn("mainDish not found for id:", id);
-             return null; // או להמשיך בלי לחשב
-          }
-            const noRoundWeightMainDishIds = [3, 8, 11,12, 28 ,29]; // לדוג' פרגית ממולא, אסאדו, צלי וכו'
-
-            let totalPrice = 0;
-            let totalWeight = 0;
-            if (mainDish.weight > 0 && mainDish.weight < 2) { 
-                 // מנות לפי יחידות
-                totalPrice = mainDishQuantities[id] * mainDish.price;
-                totalWeight = mainDishQuantities[id];
-            } else {
-            // מנות לפי גרם
-            const rawWeight = mainDishQuantities[id] * mainDish.weight;
-
-            if (noRoundWeightMainDishIds.includes(Number(mainDish.id))) {
-              totalWeight = rawWeight; // לא נעגל
-            } else {
-              totalWeight = roundWeight(rawWeight); // כן נעגל
-            }
-
-            totalPrice = totalWeight * mainDish.price / 1000;
-          }
-            total += totalPrice;
-           return {
-            dish_name: mainDish.dish_name,
-            totalPrice: totalPrice.toFixed(2),
-            totalWeight: (totalWeight / 1000).toFixed(1),
-            dishWeight: mainDish.weight  // הוספה חשובה!
-          };
-
-        });
-    
-        // תוספות
-        const selectedSidesData = selectedSides.map((id) => {
-         const side = inventoryAll.side_dishes.find(d => Number(d.id) === Number(id));
-         if (!side) return null;
-            const totalWeight = roundWeight(side.weight * guestCount ); // עיגול המשקל
-            const totalPrice = totalWeight * side.price / 1000;
-            total += totalPrice;
-           return {
-            dish_name: side.dish_name,
-            totalPrice: totalPrice.toFixed(2),
-            totalWeight: Number(totalWeight).toFixed(2),
-            dishWeight: side.weight  // הוספה חשובה!
-          };
-
-        }).filter(Boolean);
-    
-
-        const selectedItems = {
-            salads: selectedSaladsData,
-            first_courses: selectedFirstDishesData,
-            main_courses: selectedMainDishesData,
-            side_dishes: selectedSidesData
-        };
-
-        // הוספת רווח של 80%
-          const profitRate = 0.8; // 80%
-          const profitAmount = total * profitRate; // שיעור רווח 
-          total += profitAmount; // הוספת הרווח
-        
-          total += totalDelivery;
-
-        const vatRate = 0.18; // מחיר המעם בישראל 
-
-       setSubtotal(Number(total.toFixed(2))); // סכום לפני מעם 
-        const vatAmount = total * vatRate; // סכום מע״מ בלבד
-        setVatAmount(vatAmount);  // סכום מע״מ בסטיט
-
-       const totalWithVAT = total + vatAmount; // כולל מע״מ
-
-        setOrderSummary(selectedItems);
-       setTotalPrice(Number(totalWithVAT)); // סכום סופי כולל מע״מ 
-
-        setCustomerOrderSummary(selectedItems);  
-        setIsQuantityModalOpen(false);
-        
-        setOnlineOrderMain(false);
+return(<div>
+<NavbarHome sx={{padding:0,margin:0}}/> <br /> <br /> <br /> <br /> <TextMove />
       
-    };
-    
-  
-    //--------------הוספת הזמנה למערכת מנהל ------------------------------------------------------------
-   const addOrdersOnline = async () => {
-     try {
-        setLoading(true);
-              const data = await apiFetch('/api/addOrdersOnline', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      userName: eventOwner,
-                      userPhone: phoneNumber,
-                      guestCount: guestCount,
-                      eventDate: eventDate,
-                      orderMenu: customerOrderSummary,
-                      totalPrice: totalPrice,
-                      shippingDate: shippingDate,
-                      email: email,
-                      event_location: deliveryRegion,
-                      address: exactLocation,
-                      shippingCost: shippingCost,
-                      serviceCost: serviceCost,
-                      toolsType: toolsType, 
-                      eventType: "תפריט כללי"
-                  }),
-              });
-           if (data.message === "נשלח בהצלחה") {
-            setSendingToManger("true");
+<Box sx={{position:'relative',width:'100%',maxHeight:'500px',overflow:'hidden',mb:4}}>
+<Box component="img" src="https://res.cloudinary.com/dhkegagjk/image/upload/v1794303890/IMG-20250713-WA0102_sacqao.jpg" alt="תמונת תפריט הזמנה" sx={{width:'100%',maxHeight:'400px',objectFit:'cover',filter:'brightness(50%)'}}/>
+<Typography variant="h4" component="h1" translate="no" sx={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',fontWeight:'bold',fontSize:{xs:'2.5rem',md:'5rem'},color:G,textAlign:'center',textShadow:'2px 2px 4px black',zIndex:1000}}>תפריט הצעת מחיר</Typography>
+</Box>
 
-           }
+{mainView&&<div className="online-order-container">
+<Container dir="rtl" sx={{maxWidth:'1200px',width:'100%',bgcolor:'rgba(255,255,255,0.92)',borderRadius:3,boxShadow:3,px:{xs:2,sm:4},py:{xs:3,sm:6}}}>
+<Typography variant="h4" sx={{fontWeight:600,color:'#51432D',mb:2,fontSize:{xs:'1.4rem',sm:'1.5rem'},textAlign:'center'}}>תפריט GOLD - הצעת מחיר במקום </Typography>
+<Typography variant="h6" sx={{color:'#4e342e',mb:2,fontSize:{xs:'1rem',sm:'1.2rem'},textAlign:'center'}}>קייטרינג הפנינה - כשר למהדרין יורה דעה הרב מחפוד</Typography>
+<Typography sx={{mb:2,fontSize:{xs:'0.85rem',sm:'1rem'},fontWeight:500,textAlign:'center',color:'#333'}}>פלאפון: <strong>0795152820</strong> | מייל: <strong>hpnina6600200@gmail.com</strong></Typography>
+<Typography variant="body2" sx={{color:'text.secondary',fontSize:{xs:'0.8rem',sm:'1rem'},mb:2,textAlign:'center'}}>ברוכים הבאים! לפניכם התפריט העשיר שלנו בו תקבלו בפשטות ובמהירות הצעת מחיר משתלמת במיוחד עבור האירוע שלכם.<br/>שליחת התפריט אינה מהווה התחייבות עד לאישור סופי מנציג.</Typography>
+<Typography sx={{color:'#6d4228',fontWeight:600,textAlign:'center'}}>מינימום הזמנה 60 מנות !!</Typography>
+</Container>
 
-          } catch (error) {
-              console.error('שגיאה בשמירת ההזמנה:', error);
-              alert("אירעה שגיאה בשמירת ההזמנה.");
-          }
-      } 
-
-
-//--------------------------------------------------------------------------    
-      const [errors, setErrors] = useState({
-        phoneNumber: '',
-        guestCount: '',
-        email:'',
-    });
-
-
-  // בדיקת הלקוח בהכנסת פרטים
- let hasError = false; 
-  const openQuantityModal = () => { 
-    const newErrors = {
-        eventOwner: '',
-        eventDate: '',
-        guestCount: '',
-    };
-
-    if (guestCount < 30 || guestCount > 1000) { // בדיקת כמות מוזמנים (לא יותר מ-1000)
-      newErrors.guestCount = "כמות המוזמנים חייבת להיות לפחות 30 איש";
-        hasError = true;
-    }
-
-  // בדיקת שם מלא (לא ריק)
-  if (!eventOwner.trim()) {
-    newErrors.eventOwner = "עריכת שם שדה חובה";
-    hasError = true;
-  }
-  // בדיקת תאריך האירוע (לא פחות מ-3 ימים מהיום)
-  const today = dayjs(); // התאריך הנוכחי
-  const selectedDate = dayjs(eventDate); // התאריך שנבחר
-  if (selectedDate.isBefore(today.add(3, 'day'), 'day')) {
-    newErrors.eventDate = "אין אפשרות להזמין תפריט בתוך שלושה ימי עסקים מהיום";
-    hasError = true;
-  }
-
-   // בדיקת תאריך האירוע - לא יכול להיות לפני היום הנוכחי
-   const today2 = dayjs(); // התאריך הנוכחי
-   const selectedDate2 = dayjs(eventDate); // התאריך שנבחר
-   if (!eventDate || selectedDate.isBefore(today, 'day')) {
-     newErrors.eventDate = "תאריך האירע צריך להיות לאחר היום הנוכחי";
-     hasError = true;
-   }
-
-    setErrors(newErrors);
-    setShippingDate(new Date().toISOString().slice(0, 19).replace('T', ' '));
-    setTotalDelivery(calculateDeliveryCost(deliveryRegion));
-
-   
-  if (hasError) {
-    return; // עצור במידה ויש שגיאות
-  }
-
-  // אם יש מנות ראשונות או מנות עיקריות - פתח מודאל הכמויות
-  if ((selectedFirstDishes.length > 0) || (selectedMainDishes.length > 0)) {
-    setIsQuantityModalOpen(true);
-    setLoginUser(null);
-  } else {
-    // אם אין מנות ראשונות או עיקריות - דלג למתן הצעת מחיר ישירה
-    handleSubmit();  // תפעיל ישירות את חישוב ההצעה
-    setLoginUser(null);
-  }
-
-  };
-  //---- הלקוח בסגירת הזמנה-----------------------------------
-  const validateFinalForm = () => {
-  let hasFinalError = false;
-  const newErrors = { ...errors }; // שומר את השגיאות הקיימות
-
-  const phoneRegex = /^[0-9]{10}$/;
-  if (!phoneRegex.test(phoneNumber)) {
-    newErrors.phoneNumber = 'מספר פלאפון לא תקין (10 ספרות בלבד)';
-    hasFinalError = true;
-  } else {
-    newErrors.phoneNumber = '';
-  }
-
- const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-  if (!emailRegex.test(email)) {
-    newErrors.email = 'כתובת מייל לא חוקית';
-    hasFinalError = true;
-  } else {
-    newErrors.email = '';
-  }
-
-  setErrors(newErrors);
-  return !hasFinalError;
-};
-
-  //--------------------------------------------------------------------------
-//חלון הרשמה 
-    const openEditModal = () => {  
-    if (!validateSelections()) return;
-      setLoginUser("true"); 
-  };
-    //--------------------------------------------------------------------------
-  //סגירת חלון הרשמה 
-  const closeEditModal = () => {
-    setLoginUser(null);
-  };
-    //--------------------------------------------------------------------------
-  // שינוי כמות הלקוח
-  const handleQuantityChange = (category, id, quantity) => {
-    switch (category) { 
-      case 'first_courses':
-        // עדכון כמות המנות הראשונות
-        setFirstDishQuantities(prev => ({ ...prev, [id]: quantity }));
-        break;
-      case 'main_courses':
-        // עדכון כמות המנות העיקריות
-        setMainDishQuantities(prev => ({ ...prev, [id]: quantity }));
-        break;
-      default:
-        break;
-    }
-  };
-
-// בדיקה אם המשתמש בחר משהו מכל הקטגוריות----------------------------------------------------
-  const handleOrderSummaryClick = () => {
-      openEditModal();
-  };
-
-//-------------פתיחת תמונה לצפייה-------------------------------------
-const handleImageClick = (imageSrc) => {
-  setSelectedImage(imageSrc);
-  setOpenImageDialog(true);
-};
-//-------------------------------------------------
-const closeDialog = () => {
-  setOpenImageDialog(false);
-  setSelectedImage(null);
-};
-//----------------------------------------------
-useEffect(() => {
-  if (customerOrderSummary && orderSummary && summaryRef.current) {
-    summaryRef.current.scrollIntoView({ behavior: 'smooth' }); // גלילה חלקה לסיכום
-  }
-}, [customerOrderSummary, orderSummary]);
-
-//----------------------------------------------------
-
-
-//------------משלוח לאזורים ----------------------------------
-const regionPrices = {
-  "ירושלים והסביבה": 50,
-  "תל אביב והמרכז": 40,
-  "חיפה והצפון": 60,
-  "באר שבע והדרום": 70,
-  "השפלה": 45,
-  "יהודה ושומרון": 55,
-  "השרון": 50,
-  "הגליל": 65,
-  "נגב": 75,
- "אולמי הפנינה": 0
-};
-
-// לאחר בחירת האזור, חישוב עלות ההובלה
-const calculateDeliveryCost = (region) => {
-  return regionPrices[region] || 0; // אם לא נמצא אזור, מחזיר 0
-};
-
-
-
-//------------מציאת תמונה למנה --------------------------------------------------------
-const imagesMap = useMemo(() => {//סלטים
-  const map = new Map();
-  imagesByCategory.salads.forEach(img => {
-    map.set(removeNonHebrew(img.display_name), img.url);
-  });
-  return map;
-}, [imagesByCategory.salads]);
-
-const firstCoursesImageMap = useMemo(() => {//מנה ראשונה 
-  const map = new Map();
-  imagesByCategory.first_courses.forEach(img => {
-    map.set(removeNonHebrew(img.display_name), img.url);
-  });
-  return map;
-}, [imagesByCategory.first_courses]);
-
-
-const mainCoursesImageMap = useMemo(() => {// מנה עיקרת 
-  const map = new Map();
-  imagesByCategory.main_courses.forEach(img => {
-    map.set(removeNonHebrew(img.display_name), img.url);
-  });
-  return map;
-}, [imagesByCategory.main_courses]);
-
-
-const sideDishesImageMap = useMemo(() => {// תוספות
-  const map = new Map();
-  imagesByCategory.side_dishes.forEach(img => {
-    map.set(removeNonHebrew(img.display_name), img.url);
-  });
-  return map;
-}, [imagesByCategory.side_dishes]);
-
-
-
-return (
-  <div>
-     <NavbarHome sx={{ padding: 0, margin: 0 }} />
-    <br/><br/><br/>
-  {/* תיבת תמונה עם כותרת במרכז */}
-  <Box
-    sx={{
-      position: "relative",
-      width: "100%",
-      maxHeight: "500px",
-      overflow: "hidden",
-      mb: 4, // רווח מתחת לתמונה
-    }}
-  >
-    <Box
-      component="img"
-      src="https://res.cloudinary.com/dhkegagjk/image/upload/v1754492906/pexels-ella-olsson-572949-1640773_l5ebhe.jpg"
-      alt="תמונת תפריט הזמנה"
-      sx={{
-        width: "100%",
-        maxHeight: "400px",
-        objectFit: "cover",
-        backgroundPosition: "center",
-        filter: "brightness(50%)",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-      }}
-    />
-    <Typography
-      variant="h3"
-      component="h1"
-      translate="no"
-      sx={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontWeight: "bold",
-        fontSize: { xs: "2.5rem", md: "5rem" }, // רספונסיבי לגודל גופן
-        color: "#FFD700",
-        textAlign: "center",
-        textShadow: "2px 2px 4px black",
-        zIndex: 1000,
-      }}
-    >
-    התפריט שלנו
-    </Typography>
-  </Box>
-{onlineOrderMain && (
-    <div className="online-order-container">
-
-{/* המלל בהתחלה  */}
-     <Box sx={{ fontWeight: 1200 }}>
-  <Container
-    dir="rtl"
-    sx={{
-      maxWidth: "1200px", // קובע מקסימום 1200px גם בדסקטופ
-      width: "100%",
-      backgroundColor: 'rgba(255, 255, 255, 0.92)',
-      borderRadius: 3,
-      boxShadow: 3,
-      px: { xs: 2, sm: 4 },
-      py: { xs: 3, sm: 6 },
-    }}
-  >
-    <Typography
-      variant="h4"
-      sx={{
-        fontWeight: 1200,
-        color: '#1b5e20',
-        mb: { xs: 1, sm: 2 },
-        fontSize: { xs: '1.6rem', sm: '2rem' },
-        textAlign: 'center',
-      }}
-    >
-      תפריט אירועים 
-    </Typography>
-
-    <Typography
-      variant="h6"
-      sx={{
-        color: '#4e342e',
-        mb: { xs: 1.5, sm: 2 },
-        fontSize: { xs: '1rem', sm: '1.2rem' },
-        textAlign: 'center',
-      }}
-    >
-      קייטרינג הפנינה - כשר למהדרין יורה דעה הרב מחפוד
-    </Typography>
-
-    <Typography
-      variant="body1"
-      sx={{
-        mb: 2,
-        fontSize: { xs: '0.85rem', sm: '1rem' },
-        fontWeight: 500,
-        textAlign: 'center',
-        color: '#333',
-      }}
-    >
-      פלאפון: <strong>  0975152820 </strong> |  מייל: <strong> hpnina6600200@gmail.com</strong>
-    </Typography>
-
-    <Typography
-      variant="body2"
-      sx={{
-        color: 'text.secondary',
-        fontSize: { xs: '0.8rem', sm: '1rem' },
-        mb: 2,
-        textAlign: 'center',
-      }}
-    >
-      ברוכים הבאים ! לפניכם התפריט העשיר שלנו בו תקבלו בפשטות ובמהירות הצעת מחיר משתלמת במיוחד עבור האירוע שלכם.
-      <br />
-      שליחת התפריט אינה מהווה התחייבות עד לאישור סופי מנציג.
-    </Typography>
-
-    <Typography
-      variant="subtitle1"
-      sx={{
-        color: '#2e7d32',
-        fontWeight: 600,
-        fontSize: { xs: '0.9rem', sm: '1rem' },
-        textAlign: 'center',
-      }}
-    >
-      מינימום הזמנה 60 מנות !!
-    </Typography>
-  
-  </Container>
-     </Box>
-
-
-      <div dir="rtl" className="menu-container">
-       
-          
-        {loading && (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
+      {/* ===== מה כלול בחבילה + מחיר ===== */}
+        <Box sx={{ mb: 3, borderRadius: "22px", background: darkBg, border: "1px solid #393024", boxShadow: "0 10px 30px rgba(0,0,0,0.2)", p: { xs: 2.5, md: 4 }, textAlign: "center" }}>
+          <Typography sx={{ color: GOLD, fontSize: 11, letterSpacing: 3, fontWeight: 700, mb: 1 }}>הצעת מחיר</Typography>
+          <Typography sx={{ color: "#E4CC9D", fontWeight: 700, fontSize: { xs: 14, md: 16 }, mb: 1.5 }}>מה כלול בחבילה</Typography>
+          <Box sx={{ display: "grid", gap: 1.2, gridTemplateColumns: { xs: "repeat(2, 1fr)", md: "repeat(4, 1fr)" } }}>
+            {[
+              { label: "סלטים", n: 8 },
+              { label: "מנות ראשונות", n: 3 },
+              { label: "מנות עיקריות", n: 3 },
+              { label: "תוספות", n: 3 },
+            ].filter((x) => x.n > 0).map((x) => (
+              <Box key={x.label} sx={{ py: 1.5, borderRadius: "14px", border: "1px solid #5b4a2c", bgcolor: "rgba(201,169,110,0.07)" }}>
+                <Typography sx={{ color: GOLD, fontWeight: 800, fontSize: { xs: 26, md: 32 }, lineHeight: 1.1 }}>{x.n}</Typography>
+                <Typography sx={{ color: "#F5E9D0", fontSize: { xs: 13, md: 14.5 }, fontWeight: 600 }}>{x.label}</Typography>           
+              </Box>
+              
+            ))}
+          </Box>
+        <Typography sx={{ color: "#E4CC9D", fontWeight: 700, fontSize: { xs: 14, md: 16 }, mb: 1.5 }}>התחל בבחירת המוצרים שלך   </Typography>
         </Box>
-      )} 
 
-  {/* להודעת שגיאה */}
-      <Snackbar
-              open={!!errorMessage} 
-              autoHideDuration={6000} 
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} // מיקום ההודעה
-              onClose={() => setErrorMessage(null)} 
-            >
-              <Alert severity="error" sx={{ width: '100%' }}>
-                {errorMessage}
-              </Alert>
-       </Snackbar>
-
-
-{/*  התפריט */}
+<div dir="rtl" className="menu-container">
+{loading&&<LinearProgress/>}
+<Snackbar open={!!errMsg&&!qtyOpen} autoHideDuration={7000} anchorOrigin={{vertical:'bottom',horizontal:'left'}} onClose={()=>setErrMsg(null)}><Alert severity="error" sx={{width:'100%'}}>{errMsg}</Alert></Snackbar>
 
 <Box mt={6}>
- 
-  <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
-    <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-    <Typography
-      variant="h5"
-      sx={{
-        fontWeight: 700,
-        color: '#333',
-        textAlign: 'center',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      סלטים [8 לבחירה]
-    </Typography>
-    <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-  </Box>
- {/* סלטים */}
-  <Grid container spacing={2} justifyContent="center">
-    {inventoryAll.salads.filter((side) => side.is_hidden).map((salad) => {
-      const imageUrl = imagesMap.get(removeNonHebrew(salad.dish_name)) || null;
-      return (
-        <Grid size={{ xs:6, sm: 3 }}  key={salad.id}>
-          <Card
-            sx={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              boxShadow: 3,
-            }}
-          >
-            {imageUrl ? (
-              <CardMedia
-                component="img"
-                height="140"
-                image={imageUrl}
-                alt={salad.dish_name}
-                sx={{ objectFit: 'cover', cursor: 'pointer' }}
-                onClick={() => handleImageClick(imageUrl)}
-              />
-            ) : (
-              <Box
-                height="140px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                bgcolor="#f0f0f0"
-                color="#888"
-                fontSize="0.9rem"
-                fontStyle="italic"
-                textAlign="center"
-                px={1}
-              >
-                טרם צולמה תמונה למנה
-              </Box>
-            )}
-
-            <CardContent sx={{ px: 1.5, py: 1 }}>
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                flexDirection="row-reverse"
-                gap={1}
-              >
-                <Typography
-                  variant="subtitle1"
-                  fontWeight={600}
-                  sx={{
-                    fontSize: { xs: '0.75rem', sm: '0.9rem' },
-                    textAlign: 'right',
-                    flexGrow: 1,
-                    whiteSpace: 'normal',
-                    overflowWrap: 'break-word',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {salad.dish_name}
-                </Typography>
-                <Checkbox
-                  value={salad.id}
-                  size="small"
-                  sx={{ padding: '4px', marginRight: 0 }}
-                  onChange={(e) => {
-                    const id = salad.id;
-                    setSelectedSalads((prev) =>
-                      e.target.checked ? [...prev, id] : prev.filter((s) => s !== id)
-                    );
-                  }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      );
-    })}
-  </Grid>
-
-  {/* מנה ראשונה */}
-  <Box mt={6}>
-    <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
-      <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-      <Typography
-        variant="h5"
-        sx={{
-          fontWeight: 700,
-          color: '#333',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        מנה ראשונה [3 לבחירה]
-      </Typography>
-      <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-    </Box>
-
-    <Grid container spacing={2} justifyContent="center">
-      {inventoryAll.first_courses.filter((side) => side.is_hidden).map((firstDish) => {
-        const imageUrl = firstCoursesImageMap.get(removeNonHebrew(firstDish.dish_name)) || null;
-        return (
-          <Grid size={{ xs:6, sm: 3 }} key={firstDish.id}>
-            <Card
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                boxShadow: 3,
-              }}
-            >
-              {imageUrl ? (
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={imageUrl}
-                  alt={firstDish.dish_name}
-                  sx={{ objectFit: 'cover', cursor: 'pointer' }}
-                  onClick={() => handleImageClick(imageUrl)}
-                />
-              ) : (
-                <Box
-                  height="140px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bgcolor="#f0f0f0"
-                  color="#888"
-                  fontSize="0.9rem"
-                  fontStyle="italic"
-                  textAlign="center"
-                  px={1}
-                >
-                  טרם צולמה תמונה למנה
-                </Box>
-              )}
-
-              <CardContent sx={{ px: 1.5, py: 1 }}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  flexDirection="row-reverse"
-                  gap={1}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight={600}
-                    sx={{
-                      fontSize: { xs: '0.75rem', sm: '0.9rem' },
-                      textAlign: 'right',
-                      flexGrow: 1,
-                      whiteSpace: 'normal',
-                      overflowWrap: 'break-word',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {firstDish.dish_name}
-                  </Typography>
-                  <Checkbox
-                    value={firstDish.id}
-                    size="small"
-                    sx={{ padding: '4px', marginRight: 0 }}
-                    onChange={(e) => {
-                      const id = firstDish.id;
-                      setSelectedFirstDishes((prev) =>
-                        e.target.checked ? [...prev, id] : prev.filter((f) => f !== id)
-                      );
-                    }}
-                  />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        );
-      })}
-    </Grid>
-  </Box>
-
-  {/* מנה עיקרית */}
-  <Box mt={6}>
-    <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
-      <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-      <Typography
-        variant="h5"
-        sx={{
-          fontWeight: 700,
-          color: '#333',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        מנה עיקרית [3 לבחירה]
-      </Typography>
-      <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-    </Box>
-
-    <Grid container spacing={2} justifyContent="center">
-      {inventoryAll.main_courses.filter((side) => side.is_hidden).map((mainDish) => {
-        const imageUrl = mainCoursesImageMap.get(removeNonHebrew(mainDish.dish_name)) || null;
-        return (
-          <Grid size={{ xs:6, sm: 3 }} key={mainDish.id}>
-            <Card
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                boxShadow: 3,
-              }}
-            >
-              {imageUrl ? (
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={imageUrl}
-                  alt={mainDish.dish_name}
-                  sx={{ objectFit: 'cover', cursor: 'pointer' }}
-                  onClick={() => handleImageClick(imageUrl)}
-                />
-              ) : (
-                <Box
-                  height="140px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bgcolor="#f0f0f0"
-                  color="#888"
-                  fontSize="0.9rem"
-                  fontStyle="italic"
-                  textAlign="center"
-                  px={1}
-                >
-                  טרם צולמה תמונה למנה
-                </Box>
-              )}
-
-              <CardContent sx={{ px: 1.5, py: 1 }}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  flexDirection="row-reverse"
-                  gap={1}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight={600}
-                    sx={{
-                      fontSize: { xs: '0.75rem', sm: '0.9rem' },
-                      textAlign: 'right',
-                      flexGrow: 1,
-                      whiteSpace: 'normal',
-                      overflowWrap: 'break-word',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {mainDish.dish_name}
-                  </Typography>
-                  <Checkbox
-                    value={mainDish.id}
-                    size="small"
-                    sx={{ padding: '4px', marginRight: 0 }}
-                    onChange={(e) => {
-                      const id = mainDish.id;
-                      setSelectedMainDishes((prev) =>
-                        e.target.checked ? [...prev, id] : prev.filter((m) => m !== id)
-                      );
-                    }}
-                  />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        );
-      })}
-    </Grid>
-  </Box>
-
-  {/* תוספות */}
-  <Box mt={6} mb={6}>
-    <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
-      <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-      <Typography
-        variant="h5"
-        sx={{
-          fontWeight: 700,
-          color: '#333',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        תוספות [3 לבחירה]
-      </Typography>
-      <Box sx={{ flex: 1, height: '2px', backgroundColor: '#90caf9', mx: 2 }} />
-    </Box>
-
-    <Grid container spacing={2} justifyContent="center">
-      {inventoryAll.side_dishes.filter((side) => side.is_hidden).map((side) => {
-        const imageUrl = sideDishesImageMap.get(removeNonHebrew(side.dish_name)) || null;
-        return (
-          <Grid size={{ xs:6, sm: 3 }}  key={side.id}>
-            <Card
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                boxShadow: 3,
-              }}
-            >
-              {imageUrl ? (
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={imageUrl}
-                  alt={side.dish_name}
-                  sx={{ objectFit: 'cover', cursor: 'pointer' }}
-                  onClick={() => handleImageClick(imageUrl)}
-                />
-              ) : (
-                <Box
-                  height="140px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bgcolor="#f0f0f0"
-                  color="#888"
-                  fontSize="0.9rem"
-                  fontStyle="italic"
-                  textAlign="center"
-                  px={1}
-                >
-                  טרם צולמה תמונה למנה
-                </Box>
-              )}
-
-              <CardContent sx={{ px: 1.5, py: 1 }}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  flexDirection="row-reverse"
-                  gap={1}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight={600}
-                    sx={{
-                      fontSize: { xs: '0.75rem', sm: '0.9rem' },
-                      textAlign: 'right',
-                      flexGrow: 1,
-                      whiteSpace: 'normal',
-                      overflowWrap: 'break-word',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {side.dish_name}
-                  </Typography>
-                  <Checkbox
-                    value={side.id}
-                    size="small"
-                    sx={{ padding: '4px', marginRight: 0 }}
-                    onChange={(e) => {
-                      const id = side.id;
-                      setSelectedSides((prev) =>
-                        e.target.checked ? [...prev, id] : prev.filter((s) => s !== id)
-                      );
-                    }}
-                  />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        );
-      })}
-    </Grid>
-  </Box>
+{CATS.map(c=>{const full=sel[c.k].length>=c.max;return(<Box key={c.k} mt={c.k==='salads'?0:6} mb={c.k==='side_dishes'?6:0}>
+<Heading>{c.t} [{sel[c.k].length}/{c.max}]</Heading>
+<Grid container spacing={2} justifyContent="center">
+{inv[c.k].filter(d=>d.is_hidden).map(d=>{const url=findImg(maps[c.k],d.dish_name),on=sel[c.k].includes(d.id),off=full&&!on;return(
+<Grid size={{xs:6,sm:3}} key={d.id}>
+<Card onClick={()=>!off&&toggle(c.k,d.id,!on,c.max)} sx={{height:'100%',display:'flex',flexDirection:'column',justifyContent:'space-between',cursor:off?'not-allowed':'pointer',opacity:off?0.3:1,filter:off?'grayscale(1)':'none',transition:'all .25s',border:on?`2px solid ${G}`:'2px solid transparent',boxShadow:on?`0 0 14px ${G}99`:3}}>
+{url?<CardMedia component="img" height="140" image={url} alt={d.dish_name} sx={{objectFit:'cover',cursor:'zoom-in'}} onClick={e=>{e.stopPropagation();setZoom(url)}}/>
+:<Box height="140px" display="flex" alignItems="center" justifyContent="center" bgcolor="#f0f0f0" color="#888" fontSize="0.9rem" fontStyle="italic" textAlign="center" px={1}>טרם צולמה תמונה למנה</Box>}
+<CardContent sx={{px:1.5,py:1}}><Box display="flex" alignItems="center" justifyContent="space-between" flexDirection="row-reverse" gap={1}>
+<Typography variant="subtitle1" fontWeight={600} sx={{fontSize:{xs:'0.75rem',sm:'0.9rem'},textAlign:'right',flexGrow:1,whiteSpace:'normal',overflowWrap:'break-word',lineHeight:1.4}}>{d.dish_name}</Typography>
+<Checkbox size="small" checked={on} disabled={off} onClick={e=>e.stopPropagation()} onChange={e=>toggle(c.k,d.id,e.target.checked,c.max)} sx={{p:'4px',mr:0,'&.Mui-checked':{color:G}}}/>
+</Box></CardContent>
+</Card></Grid>)})}
+</Grid></Box>)})}
 </Box>
 
 
 
+<div className="order-summary-container" ><br/><button className="order-summary-button" onClick={openDetails} >המשך לסיכום </button><br/><br/></div>
+</div>
+
+
+
+<Dialog open={!!zoom} onClose={()=>setZoom(null)} maxWidth="xl" fullWidth PaperProps={{sx:{bgcolor:'transparent',boxShadow:'none',m:0,p:0}}} BackdropProps={{sx:{bgcolor:'rgba(0,0,0,0.6)'}}}>
+<DialogContent sx={{p:0,height:'100vh',display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',cursor:'pointer'}} onClick={()=>setZoom(null)}>
+{zoom&&<Box component="img" src={zoom} alt="תמונה מוגדלת" onClick={e=>e.stopPropagation()} sx={{maxWidth:'95vw',maxHeight:'95vh',objectFit:'contain',borderRadius:2,border:`2px solid ${G}`}}/>}
+</DialogContent></Dialog>
+</div>}
+
+{/* ---------- מודל פרטים ---------- */}
+{loginOpen&&<Modal open onClose={()=>setLoginOpen(false)}>
+<Box dir="rtl" sx={{...paperSx,position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',p:4,width:'90%',maxWidth:420}}>
+<Stack spacing={3}>
+<Typography variant="h6" align="center" sx={{color:G,fontWeight:700}}>בוא נחשב לך הצעת מחיר</Typography>
+<TextField sx={fieldSx} label="שם מלא" value={eventOwner} onChange={e=>setEventOwner(e.target.value)} fullWidth required error={!!errors.eventOwner} helperText={errors.eventOwner||'נשתמש בשם כדי לפנות אליך אישית'}/>
+<TextField sx={fieldSx} label="כמה אורחים צפויים?" type="number" value={guestCount} onChange={e=>setGuestCount(Number(e.target.value))} fullWidth inputProps={{inputMode:'numeric',min:60}} error={!!errors.guestCount} helperText={errors.guestCount||'מינימום 60 אורחים'} required/>
+<TextField sx={{...fieldSx,'& input::-webkit-calendar-picker-indicator':{filter:'invert(0.8) sepia(1) saturate(4) hue-rotate(5deg)'}}} label="מתי האירוע?" type="date" value={eventDate} onChange={e=>setEventDate(e.target.value)} fullWidth InputLabelProps={{shrink:true}} error={!!errors.eventDate} helperText={errors.eventDate} required/>
+<Button sx={goldBtn} size="large" onClick={openQty}>המשך להצעת מחיר</Button>
+</Stack></Box></Modal>}
 
 
 
 
- 
-   {/* כפתור סיכום הזמנה */}
-        <div className="order-summary-container">
-        <br />
-        <button onClick={handleOrderSummaryClick} className="order-summary-button">
-          סיכום הזמנה
-        </button>
-        <br />
-        <br />
-    
-      
-      </div>
+{/* ---------- מודל כמויות ---------- */}
+<Dialog open={qtyOpen} PaperProps={{sx:paperSx}} dir="rtl">
+<DialogTitle sx={{color:G,fontWeight:700,textAlign:'center'}}>עזור לנו לדעת מה רצונך</DialogTitle>
+<DialogContent>
+<Typography sx={{color:MU,textAlign:'center',mb:1}}>הגדר את כמות המנות במדויק עבור כל מנה שבחרת. בכל קטגוריה הסכום חייב להיות <strong style={{color:G}}>{guestCount}</strong> מנות.</Typography>
+{[['first_courses','מנות ראשונות'],['main_courses','מנות עיקריות']].map(([k,n])=>{const t=tot(k);return(<Box key={k} mt={3}>
+<Typography variant="h6" sx={{fontWeight:700,color:G,borderBottom:`1px solid ${G}55`,pb:.5}}>{n}</Typography>
+{sel[k].map(id=>{const d=inv[k].find(x=>Number(x.id)===Number(id));return(<Grid container spacing={1} key={id} alignItems="center" sx={{mt:1}}>
+<Grid size={{xs:12,sm:6}}><Typography sx={{color:TX}}>{d?.dish_name}</Typography></Grid>
+<Grid size={{xs:12,sm:6}}><TextField sx={fieldSx} fullWidth type="number" inputProps={{min:0}} value={qty[k][id]??''} onChange={e=>{setQty(p=>({...p,[k]:{...p[k],[id]:e.target.value}}));setErrMsg(null)}} variant="outlined" size="small"/></Grid>
+</Grid>)})}
+<Typography variant="body2" sx={{mt:1,color:t===guestCount?'#7bd88f':'#ff7b7b'}}>הוזן {t} מתוך {guestCount}</Typography>
+</Box>)})}
+{errMsg&&<Typography sx={{mt:2,color:'#ff7b7b'}} variant="body2">{errMsg}</Typography>}
+</DialogContent>
+<DialogActions sx={{p:2,justifyContent:'space-between'}}>
+<Button onClick={()=>{setQtyOpen(false);setLoginOpen(true)}} sx={{color:MU}}>חזרה</Button>
+<Button onClick={handleSubmit} sx={goldBtn}>המשך להצעת מחיר</Button>
+</DialogActions></Dialog>
 
 
-      </div>
 
+{/* ---------- סיכום הצעת מחיר ---------- */}
+{summary&&<Box ref={summaryRef} sx={{p:{xs:1,sm:4},maxWidth:1200,m:'auto'}}><br/>
+<Paper ref={formRef} dir="rtl" elevation={0} sx={{...paperSx,p:{xs:2,sm:4}}}>
+<Typography variant="h5" gutterBottom sx={{color:G,fontWeight:700}}>היי {eventOwner}, תודה שבחרת בקייטרינג הפנינה 🎉</Typography>
+<Typography variant="h6" sx={{mt:2}}>הצעת המחיר שלך: <strong style={{color:G}}>₪ {totalPrice.toFixed(2)}</strong></Typography>
+<Box sx={{mt:1,display:'flex',justifyContent:'center',gap:2,color:MU,flexWrap:'wrap'}}>
+<Typography variant="body2">מספר המוזמנים: <strong style={{color:G}}>{guestCount}</strong></Typography><Typography variant="body2">|</Typography>
+<Typography variant="body2">תאריך האירוע: <strong style={{color:G}}>{new Date(eventDate).toLocaleDateString('he-IL')}</strong></Typography></Box><br/>
+<Typography sx={{mb:2,textAlign:'center',color:MU,fontSize:{xs:'0.9rem',sm:'1rem'},lineHeight:1.6}}>המחיר אינו כולל: דמי משלוח, שירותי מלצרות, כלי פורצלן ועוד</Typography>
+<Typography sx={{mb:3,textAlign:'center',color:MU,fontSize:{xs:'0.9rem',sm:'1rem'},lineHeight:1.6}}>שימו ❤ - ניתן לבחור בשירותים נוספים להזמנה (שירות מלא / כלי פורצלן / דמי משלוח) על ידי הנציג שיחזור אליכם</Typography>
 
-   {/* תמונות הגדלה */}
-<Dialog
-  open={openImageDialog}
-  onClose={closeDialog}
-  maxWidth="xl"
-  fullWidth
-  PaperProps={{
-    sx: {
-      backgroundColor: "transparent", // שקוף לחלוטין
-      boxShadow: "none",
-      m: 0,
-      p: 0,
-    },
-  }}
-  BackdropProps={{
-    sx: {
-      backgroundColor: "rgba(0, 0, 0, 0.3)", // שקיפות עדינה מסביב לתמונה
-    },
-  }}
->
-  <DialogContent
-    sx={{
-      p: 0,
-      m: 0,
-      height: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      overflow: "hidden",
-      cursor: "pointer", // כדי שהמשתמש יבין שאפשר לסגור
-    }}
-    onClick={closeDialog} // סוגר בלחיצה על הרקע
-  >
-    {selectedImage ? (
-      <Box
-        component="img"
-        src={selectedImage}
-        alt="תמונה מוגדלת"
-        onClick={(e) => e.stopPropagation()} // לא נסגר כשנלחצים על התמונה עצמה
-        sx={{
-          maxWidth: "95vw",
-          maxHeight: "95vh",
-          objectFit: "contain",
-          borderRadius: 2,
-          boxShadow: 3,
-        }}
-      />
-    ) : (
-      <Typography
-        variant="body1"
-        sx={{ color: "#444", backgroundColor: "#fff", p: 2, borderRadius: 1 }}
-      >
-        תמונת ברירת מחדל – טרם צולמה תמונה למנה
-      </Typography>
-    )}
-  </DialogContent>
-</Dialog>
+<Grid container spacing={3}>
+<Grid size={{xs:12,sm:3}}><TextField sx={fieldSx} label="כתובת מייל" type="email" value={email} onChange={e=>setEmail(e.target.value)} fullWidth required error={!!errors.email} helperText={errors.email||''}/></Grid>
+<Grid size={{xs:12,sm:3}}><TextField sx={fieldSx} label="מספר פלאפון" type="tel" value={phone} onChange={e=>setPhone(e.target.value)} fullWidth required error={!!errors.phoneNumber} helperText={errors.phoneNumber||''}/></Grid>
+<Grid size={{xs:12,sm:3}}>
+<FormControl fullWidth required sx={fieldSx}><InputLabel id="region-label">אזור משלוח הזמנה</InputLabel>
+<Select labelId="region-label" label="אזור משלוח הזמנה" value={region} MenuProps={menuProps} onChange={e=>{setRegion(e.target.value);setShipCost(REGIONS[e.target.value]??0)}}>
+{Object.keys(REGIONS).map(r=><MenuItem key={r} value={r}>{r}</MenuItem>)}</Select></FormControl>
+{shipCost>0&&<><Typography variant="body2" sx={{color:MU}}>דמי משלוח <strong>החל מ-</strong> ₪{shipCost}</Typography><Typography variant="body2" sx={{color:MU}}>פרטים נוספים אצל הנציג</Typography></>}
+{region&&shipCost===0&&<Typography variant="body2" sx={{color:MU}}>הזמנה לא כוללת דמי משלוח (איסוף עצמי)</Typography>}
+</Grid>
+<Grid size={{xs:12,sm:3}}><TextField sx={fieldSx} label="מיקום מדויק של האירוע" value={exactLoc} onChange={e=>setExactLoc(e.target.value)} fullWidth/></Grid>
+</Grid>
 
+<Box sx={{mt:5,maxWidth:'800px',mx:'auto'}}>
+<Typography variant="h6" gutterBottom textAlign="center" sx={{color:G}}>🍽️ פרטי ההזמנה שלך 🍽️</Typography>
+{CATS.map(c=>{const items=summary[c.k];if(!items?.length)return null;return(<Box key={c.k} sx={{mb:3}}>
+<Typography variant="h6" sx={{fontWeight:'bold',textAlign:'center',borderBottom:`1px solid ${G}66`,pb:1,mb:2,color:G}}>{c.n}</Typography>
+<List disablePadding>{items.map((it,i)=><ListItem key={`${it.dish_name}-${i}`} sx={{bgcolor:i%2?'#1d1d1d':'#242424',border:`1px solid ${G}33`,borderRadius:1,mb:1,px:2,py:1.5}}><ListItemText primary={<Typography textAlign="right" fontWeight={500} sx={{color:TX}}>{it.dish_name}</Typography>}/></ListItem>)}</List>
+</Box>)})}
+</Box>
 
-  </div> 
-     )}
+<Divider sx={{my:3,borderColor:`${G}55`}}/>
+<Box sx={{border:`1px solid ${G}66`,borderRadius:2,p:2,mt:2,width:'100%',maxWidth:400,mx:'auto',direction:'rtl'}}>
+<Typography sx={{display:'flex',justifyContent:'space-between'}}><span>סכום לפני מע״מ:</span><strong>₪ {subtotal.toFixed(2)}</strong></Typography>
+<Typography sx={{display:'flex',justifyContent:'space-between',mt:1}}><span>מע״מ (18%):</span><strong>₪ {vat.toFixed(2)}</strong></Typography>
+<Divider sx={{my:1,borderColor:`${G}55`}}/>
+<Typography variant="h6" sx={{display:'flex',justifyContent:'space-between'}}><span>סה״כ לתשלום:</span><strong style={{color:G}}>₪ {totalPrice.toFixed(2)}</strong></Typography>
+</Box>
 
-
-{/* -------------------חלון השארת פרטים--------------------------------------------------------- */}
- {loginUser && (
-  <Modal open={true} onClose={closeEditModal}>
-    <Box
-      dir="rtl"
-      sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        bgcolor: 'background.paper',
-        borderRadius: 3,
-        padding: 4,
-        width: '90%',
-        maxWidth: 400,
-        boxShadow: 24,
-      }}
-    >
-      <Stack spacing={3}>
-  <Typography variant="h6" align="center">
-    בוא נחשב לך הצעת מחיר 🔍
-  </Typography>
-
-  <TextField
-    label="שם מלא"
-    type="text"
-    
-    value={eventOwner}
-    onChange={(e) => setEventOwner(e.target.value)}
-    fullWidth
-    error={Boolean(errors.eventOwner)}
-    helperText={errors.eventOwner || 'נשתמש בשם כדי לפנות אליך אישית'}
-    required
-  />
-
-<TextField
-  label="כמה אורחים צפויים?"
-  type="number"
-  value={guestCount}
-  onChange={(e) => setGuestCount(Number(e.target.value))}
-  fullWidth
-  inputProps={{ inputMode: 'numeric', min: 1 }}
-  error={Boolean(errors.guestCount)}
-  helperText={errors.guestCount || 'רק מספר משוער, אפשר לשנות בהמשך'}
-  required
-/>
-
-
-  <TextField
-    label="מתי האירוע?"
-    type="date"
-    value={eventDate}
-    onChange={(e) => setEventDate(e.target.value)}
-    fullWidth
-    InputLabelProps={{ shrink: true }}
-    error={Boolean(errors.eventDate)}
-    helperText={errors.eventDate}
-    required
-  />
-
-  <Button variant="contained" size="large" onClick={openQuantityModal}>
-    המשך להצעת מחיר
-  </Button>
+<Stack direction="row" spacing={2} sx={{mt:3}}>
+<Button sx={goldBtn} onClick={()=>validateFinal()?addOrder():formRef.current?.scrollIntoView({behavior:'smooth'})} disabled={loading} startIcon={loading&&<CircularProgress size={20} color="inherit"/>}>{loading?'שולח הזמנה...':'שליחת ההזמנה'}</Button>
+<Button sx={{color:MU,border:`1px solid ${MU}66`}} onClick={()=>{setSummary(null);setMainView(true)}}>חזרה לתפריט</Button>
 </Stack>
-
-    </Box>
-  </Modal>
-)}
-
-
-  {/* ---------------- חלון כמות מנות -------------------------------------------------------------------- */}
-  {(selectedFirstDishes.length > 0 || selectedMainDishes.length > 0) && (
-  <Dialog textAlign="center" open={isQuantityModalOpen}>
-    <DialogTitle>
-      <Typography variant="h6" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-        !עזור לנו לדעת מה רצונך
-      </Typography>
-    </DialogTitle>
-
-    <DialogContent>
-      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-        הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת
-      </Typography>
-      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-        פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה
-      </Typography>
-
-      {/* ========== מנות ראשונות ========== */}
-      {selectedFirstDishes.length > 0 && (
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            מנות ראשונות
-          </Typography>
-
-          {selectedFirstDishes.map((id) => {
-            const dish = inventoryAll.first_courses.find((d) => d.id === id);
-            return (
-              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={6}>
-                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-                    {dish?.dish_name}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    inputProps={{ min: 0 }}
-                    value={firstDishQuantities[id]}
-                    onChange={(e) =>
-                      handleQuantityChange('first_courses', id, e.target.value)
-                    }
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>
-              </Grid>
-            );
-          })}
-
-          {errorFirstDish && errorFirstDish !== guestCount && (
-            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-              הזנת: <strong>{errorFirstDish}</strong> אך יש לך {guestCount} מוזמנים
-            </Typography>
-          )}
-        </div>
-      )}
-
-      {/* ========== מנות עיקריות ========== */}
-      {selectedMainDishes.length > 0 && (
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            מנות עיקריות
-          </Typography>
-
-          {selectedMainDishes.map((id) => {
-            const dish = inventoryAll.main_courses.find((d) => d.id === id);
-            return (
-              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={6}>
-                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-                    {dish?.dish_name}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    inputProps={{ min: 0 }}
-                    value={mainDishQuantities[id]}
-                    onChange={(e) =>
-                      handleQuantityChange('main_courses', id, e.target.value)
-                    }
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>
-              </Grid>
-            );
-          })}
-
-          {errorMainDish && errorMainDish !== guestCount && (
-            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-              הזנת: <strong>{errorMainDish}</strong> אך יש לך {guestCount} מוזמנים
-            </Typography>
-           
-          )}
-        </div>
-      )}
- {errorMessage && (
-        <Typography color="error" variant="body2" sx={{ mt: 2 }}>
-          {errorMessage}
-        </Typography>
-      )}
-      
-    </DialogContent>
-
-    <DialogActions>
-      <Button
-        onClick={handleSubmit}
-        color="primary"
-        variant="contained"
-        disabled={!!errorMessage} // מונע מעבר אם יש שגיאה
-      >
-        המשך להצעת מחיר
-      </Button>
-    </DialogActions>
-
-  </Dialog>
-)}
-
-    
-
-    
-  {/* ---------------- חלון כמות מנות -------------------------------------------------------------------- */}
-  {(selectedFirstDishes.length > 0 || selectedMainDishes.length > 0) && (
-  <Dialog textAlign="center" open={isQuantityModalOpen}>
-    <DialogTitle>
-      <Typography variant="h6" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-        !עזור לנו לדעת מה רצונך
-      </Typography>
-    </DialogTitle>
-
-    <DialogContent>
-      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-        הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת
-      </Typography>
-      <Typography variant="body1" sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-        פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה
-      </Typography>
-
-      {/* ========== מנות ראשונות ========== */}
-      {selectedFirstDishes.length > 0 && (
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            מנות ראשונות
-          </Typography>
-
-          {selectedFirstDishes.map((id) => {
-            const dish = inventoryAll.first_courses.find((d) => d.id === id);
-            return (
-              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={6}>
-                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-                    {dish?.dish_name}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    inputProps={{ min: 0 }}
-                    value={firstDishQuantities[id]}
-                    onChange={(e) =>
-                      handleQuantityChange('first_courses', id, e.target.value)
-                    }
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>
-              </Grid>
-            );
-          })}
-
-          {errorFirstDish && (errorFirstDish > guestCount || errorFirstDish < guestCount) && (
-            <Typography color="error" variant="body2">הזנת: <strong>{errorFirstDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
-          )}
-          
-        </div>
-        
-      )}
-
-      {/* ========== מנות עיקריות ========== */}
-      {selectedMainDishes.length > 0 && (
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            מנות עיקריות
-          </Typography>
-
-          {selectedMainDishes.map((id) => {
-            const dish = inventoryAll.main_courses.find((d) => d.id === id);
-            return (
-              <Grid container spacing={1} key={id} alignItems="center" sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={6}>
-                  <Typography sx={{ fontFamily: '"Assistant", "Arial", sans-serif' }}>
-                    {dish?.dish_name}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    inputProps={{ min: 0 }}
-                    value={mainDishQuantities[id]}
-                    onChange={(e) =>
-                      handleQuantityChange('main_courses', id, e.target.value)
-                    }
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>
-              </Grid>
-            );
-          })}
-
-           {errorMainDish && (errorMainDish > guestCount || errorMainDish < guestCount) && (
-            <Typography color="error" variant="body2">הזנת: <strong>{errorMainDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
-          )}
-        </div>
-      )}
-
-     {errorMessage && (
-          <Typography color="error" variant="body2" style={{ marginTop: '5px' }}>
-            {errorMessage}
-          </Typography>
-        )}
-    </DialogContent>
-
-   <DialogActions >
-        <Button onClick={handleSubmit} color="primary" variant="contained">
-          המשך להצעת מחיר
-        </Button>
-      </DialogActions>
-  </Dialog>
-)}
-
-    
-  {/* ---------------- חלון כמות מנות --------------------------------------------------------------------
-  <Dialog textAlign="center" open={isQuantityModalOpen}>
-      <DialogTitle>
-        <Typography variant="h6" style={{fontFamily:"-moz-initial"}}>! עזור לנו לדעת מה רצונך</Typography>
-      </DialogTitle>
-      <DialogContent>
-        <Typography variant="body1" style={{fontFamily:"-moz-initial"}}>הגדר את כמות המנות במדויק עבור כל סוג מנה שבחרת</Typography>
-        <Typography variant="body1" style={{fontFamily:"-moz-initial"}}>פרוס את בחירתך עבור : <strong>{guestCount}</strong> איש לכל קטגוריה</Typography>
-
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" style={{fontWeight: 'bold'}}>מנות ראשונות</Typography>
-          {selectedFirstDishes.map((id) => {
-            const dish = inventoryAll.first_courses.find(d => d.id === id);
-            return (
-              <Grid container spacing={1} key={id} alignItems="center">
-                <Grid  size={{ xs: 12, sm: 6 }}>
-                  <Typography style={{fontFamily:"-moz-initial"}}> {dish.dish_name}</Typography>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }} marginTop={1} >
-                  <TextField
-                    fullWidth
-                    type="number"
-                    min="0"
-                    value={firstDishQuantities[id]}
-                    onChange={(e) => handleQuantityChange('first_courses', id, e.target.value)}
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>        
-              </Grid>
-            );
-          })}
-          {errorFirstDish && (errorFirstDish > guestCount || errorFirstDish < guestCount) && (
-            <Typography color="error" variant="body2">הזנת: <strong>{errorFirstDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
-          )}
-        </div>
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" style={{fontWeight: 'bold'}}>מנות עיקריות</Typography>
-          {selectedMainDishes.map((id) => {
-            const dish = inventoryAll.main_courses.find(d => d.id === id);
-            return (
-              <Grid container spacing={1} key={id} alignItems="center">  
-              <Grid size={{ xs: 12, sm: 6 }}>
-                  <Typography style={{fontFamily:"-moz-initial"}}>{dish.dish_name}</Typography>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }} marginTop={1}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    min="0"
-                    value={mainDishQuantities[id]}
-                    onChange={(e) => handleQuantityChange('main_courses', id, e.target.value)}
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>
-              
-              </Grid>
-            );
-          })}
-          {errorMainDish && (errorMainDish > guestCount || errorMainDish < guestCount) && (
-            <Typography color="error" variant="body2">הזנת: <strong>{errorMainDish}</strong> אך יש לך {guestCount} מוזמנים</Typography>
-          )}
-        </div>
-        {errorMessage && (
-          <Typography color="error" variant="body2" style={{ marginTop: '5px' }}>
-            {errorMessage}
-          </Typography>
-        )}
-      </DialogContent>
-      <DialogActions >
-        <Button onClick={handleSubmit} color="primary" variant="contained">
-          המשך להצעת מחיר
-        </Button>
-      </DialogActions>
-    </Dialog> */}
-    
-
-{/* //-----------------------------סיכום הצעת מחיר------------------------------------------------ */}
-{customerOrderSummary && orderSummary && (
-
-  <Box ref={summaryRef} sx={{ padding: 4, maxWidth: 1200, margin: 'auto' }}>
-  <br/>
-    <Paper ref={formSectionRef}  elevation={3} sx={{ padding: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        היי {eventOwner}, תודה שבחרת בקייטרינג הפנינה 🎉
-      </Typography>
-  
-  <Typography variant="h6" sx={{ mt: 2 }}>הצעת המחיר שלך: <strong style={{ color: '#1F8A70' }}>   ₪ {totalPrice.toFixed(2)}</strong>
-</Typography>
-
-<Box sx={{ mt: 1, display: 'flex', justifyContent: 'center', gap: 2, color: 'text.secondary' }}>
-  <Typography variant="body2" component="span">
-    מספר המוזמנים שלך : <strong style={{ color: '#1F8A70' }}>{guestCount}</strong>
-  </Typography>
-  <Typography variant="body2" component="span">|</Typography>
-  <Typography variant="body2" component="span">
-    תאריך האירוע שלך : <strong style={{ color: '#1F8A70', marginRight: 4 }}>  {new Date(eventDate).toLocaleDateString('he-IL')} </strong>
-  </Typography>
-</Box>
-
-<br/>
-
- <Typography
-  color="text.secondary"
-  sx={{
-    mb: 2,
-    textAlign: 'center',
-    fontSize: {
-      xs: '0.9rem', // גודל לפלאפונים
-      sm: '1rem',   // גודל למסכים בינוניים ומעלה
-    },
-    lineHeight: 1.6,
-  }}
->
-  ... המחיר אינו כולל: דמי משלוח, שירותי מלצרות, כלי פורצלן, ועוד
-</Typography>
-
-<Typography
-  color="text.secondary"
-  sx={{
-    mb: 3,
-    textAlign: 'center',
-    fontSize: {
-      xs: '0.9rem',
-      sm: '1rem',
-    },
-    lineHeight: 1.6,
-  }}
->
-  שימו ❤ - ניתן לבחור בשירותים נוספים להזמנה = שירות מלא / כלים פורצלן / דמי משלוח - על ידי הנציג שיחזור אליכם
-</Typography>
-
-
-{/* תצוגת תיבות  */}
-
-      <Grid  container spacing={3}>
-        {/* מייל */}
-        <Grid size={{ xs: 12, sm: 3 }}>
-         <TextField
-  label="כתובת מייל"
-  type="email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  fullWidth
-  required
-  error={Boolean(errors.email)}
-  helperText={errors.email || ''}
-/>
-        </Grid>
-
-        {/* פלאפון */}
-        <Grid size={{ xs: 12, sm: 3 }}>
-         <TextField
-  label="מספר פלאפון"
-  type="tel"
-  value={phoneNumber}
-  onChange={(e) => setPhoneNumber(e.target.value)}
-  fullWidth
-  required
-  error={Boolean(errors.phoneNumber)}
-  helperText={errors.phoneNumber || ''}
-/>
-        </Grid>
-
-         {/* אזור משלוח */}
-         <Grid  size={{ xs: 12, sm: 3 }}>
-  <FormControl fullWidth required>
-    <InputLabel id="region-label">אזור משלוח הזמנה</InputLabel>
-    <Select
-      labelId="region-label"
-      value={deliveryRegion}
-      onChange={(e) => {
-        setDeliveryRegion(e.target.value);
-
-        const regionShippingPrices = {
-          'ירושלים והסביבה': 300,
-          'בית שמש והסביבה': 250,
-          'תל אביב והמרכז': 300,
-          'קרית גת, אשקלון, אשדוד': 150,
-          'באר שבע והדרום': 300,
-          'אזור בנימין': 400,
-          'גוש עציון': 350,
-          'הרצליה והסביבה': 400,
-          'חיפה וצפון': 500,
-          'איסוף עצמי:  גבעת שאול ירושלים ': 0,
-        };
-
-        const cost = regionShippingPrices[e.target.value] ?? 0;
-        setShippingCost(cost);
-      }}
-    >
-      <MenuItem value="ירושלים והסביבה">ירושלים והסביבה</MenuItem>
-      <MenuItem value="בית שמש והסביבה">בית שמש והסביבה</MenuItem>
-      <MenuItem value="תל אביב והמרכז">תל אביב והמרכז</MenuItem>
-      <MenuItem value="קרית גת, אשקלון, אשדוד">קרית גת, אשקלון, אשדוד</MenuItem>
-      <MenuItem value="באר שבע והדרום">באר שבע והדרום</MenuItem>
-      <MenuItem value="אזור בנימין">אזור בנימין</MenuItem>
-      <MenuItem value="גוש עציון">גוש עציון</MenuItem>
-      <MenuItem value="הרצליה והסביבה">הרצליה והסביבה</MenuItem>
-      <MenuItem value="חיפה וצפון">חיפה וצפון</MenuItem>
-      <MenuItem value="איסוף עצמי:  גבעת שאול ירושלים  ">איסוף עצמי: גבעת שאול ירושלים  </MenuItem>
-    </Select>
-  </FormControl>
-
- {shippingCost > 0 && (
-  <>
-    <Typography variant="body2" color="text.secondary">
-      דמי משלוח <strong>החל מ -</strong> ₪{shippingCost}
-    </Typography>
-    <Typography variant="body2" color="text.secondary">
-      פרטים נוספים אצל הנציג
-    </Typography>
-  </>
-)}
-
-
-  {shippingCost === 0 && deliveryRegion === 'איסוף עצמי: מושב  גבעת שאול ירושלים  ' && (
-    <Typography variant="body2" color="text.secondary">
-      הזמנה לא כוללת דמי משלוח (איסוף עצמי)
-    </Typography>
-  )}
-         </Grid>
-         
-        {/* מיקום מדויק */}
-        <Grid size={{ xs: 12, sm: 3 }}>
-          <TextField
-            label="מיקום מדויק של האירוע"
-            value={exactLocation}
-            onChange={(e) => setExactLocation(e.target.value)}
-            fullWidth
-          />
-        </Grid>
-
-        {/* סוג כלים
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <FormControl fullWidth>
-            <InputLabel id="tools-label">סוג הכלים</InputLabel>
-            <Select
-              labelId="tools-label"
-              value={toolsType}
-              onChange={(e) => {
-                setToolsType(e.target.value);
-                if (e.target.value === 'פורצלן') {
-                  setToolCost(500); // דוגמה
-                } else if (e.target.value === 'חד פעמי איכותי') {
-                  setToolCost(200);
-                } else {
-                  setToolCost(0);
-                }
-              }}
-            >
-              <MenuItem value="פורצלן">כלי פורצלן - 500</MenuItem>
-              <MenuItem value="חד פעמי איכותי">חד פעמי איכותי - 200</MenuItem>
-              <MenuItem value="ללא">ללא צורך בכלים</MenuItem>
-            </Select>
-          </FormControl>
-          {toolCost > 0 && (
-            <Typography variant="body2" color="text.secondary">
-              תוספת עבור כלים: ₪{toolCost}
-            </Typography>
-          )}
-        </Grid>
-
-       {/* דמי שירות מלצרים */}
-
-       {/* <Grid size={{ xs: 12, sm: 6 }}>
-            <FormControl fullWidth>
-                <InputLabel id="service-label">שירות ומלצרים</InputLabel>
-             <Select
-              labelId="service-label"
-           value={selectedServiceType}
-           onChange={(e) => {
-             const selected = e.target.value;
-             setSelectedServiceType(selected);
-       
-             if (selected === 'full') {
-               if (!guestCount || guestCount < 1) {
-                 alert('אנא הזן את כמות האורחים לפני בחירת שירות מלא');
-                 setServiceCost(0);
-                 setSelectedServiceType("none");
-                 return;
-               }
-               const calculated = calculateFullServiceCost(guestCount);
-               setServiceCost(calculated);
-             } else if (selected === 'basic') {
-               setServiceCost(500);
-             } else {
-               setServiceCost(0);
-             }
-           }}
-         >
-         
-           <MenuItem value="basic">שירות בסיסי = איש מטבח + כלים פורצלן - ₪500</MenuItem>
-           <MenuItem value="full">שירות מלא (מחושב לפי כמות אורחים)</MenuItem> 
-           <MenuItem value="none">ללא שירות</MenuItem>
-         </Select>
-         <Typography variant="caption" color="text.secondary">
-           השירות מלא תחושב אוטומטית לפי גודל האירוע     
-        </Typography>
-       </FormControl>
-       {serviceCost > 0 && (
-         <Typography variant="body2" color="text.secondary">
-           תוספת שירות: ₪{serviceCost}
-         </Typography>
-          )}
-     </Grid> } */}
+</Paper></Box>}
 
 
 
 
+{/* ---------- אישור שליחה ---------- */}
+<Dialog open={sent} onClose={()=>nav('/')} fullScreen PaperProps={{sx:{m:0,p:0,display:'flex',justifyContent:'center',alignItems:'center',bgcolor:'rgba(0,0,0,0.85)',overflow:'hidden'}}}>
 
-      </Grid>
+<Box sx={{position:'fixed',inset:0,zIndex:1500,pointerEvents:'none'}}><Confetti width={window.innerWidth} height={window.innerHeight} colors={[G,'#f0d77b','#ffffff','#8a7a40']}/></Box>
+<Box sx={{...paperSx,position:'relative',zIndex:1600,textAlign:'center',direction:'rtl',p:4,width:{xs:'90%',sm:'70%',md:'50%'},maxHeight:'90vh',overflowY:'auto'}}>
 
-
-
-
-{/*   פרטי התפריט ללקוח   */}
-<Box sx={{ mt: 5, maxWidth: '800px', mx: 'auto' }}>
-  <Typography variant="h6" gutterBottom color="primary" textAlign="center">
-   🍽️ פרטי ההזמנה שלך 🍽️
-  </Typography>
-
- {Object.keys(orderSummary).map((category) => {
-  const items = orderSummary[category];
-  
-  if (!items || items.length === 0) return null; // אם אין פריטים - לא מציג כלום
-
-  return (
-    <Box key={category} sx={{ mb: 3 }}>
-      <Typography
-        variant="h6"
+<DialogTitle sx={{fontWeight:'bold',color:G}}>ברכת מזל טוב - {eventOwner}</DialogTitle>
+<DialogContent>
+<Typography variant="h5" sx={{mb:2,fontWeight:600,color:G}}>הזמנתך נשלחה בהצלחה!</Typography>
+<Typography sx={{mb:1}}>ניצור איתך קשר בהקדם להמשך התהליך</Typography>
+<Typography sx={{mb:1}}>לאחר אישור ההזמנה תקבלו תגובה במייל ותוכלו לראות את ההזמנות שלכם</Typography>
+<Typography sx={{mb:3}}>תודה שבחרתם בקייטרינג הפנינה</Typography>
+<Typography variant="body2" sx={{mt:3,fontStyle:'italic',color:MU}}>שימו לב: שליחת ההזמנה הינה שלב ראשוני בלבד ואינה מהווה התחייבות לתשלום או לאישור סופי.</Typography>
+<Box sx={{mt:4}}><Button sx={goldBtn} onClick={()=>nav('/')}>סגור</Button></Box>
+</DialogContent></Box></Dialog>
+ {/* כפתורי קשר צפים - וואטסאפ וטלפון */}
+      <Box
         sx={{
-          fontWeight: 'bold',
-          textAlign: 'center',
-          borderBottom: '1px solid #ccc',
-          pb: 1,
-          mb: 2,
-         
+          position: "fixed",
+          right: { xs: 14, md: 24 },
+          bottom: { xs: 60, md: 60 },
+          zIndex: 1500,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+          alignItems: "center",
         }}
       >
-        {category === 'salads'
-          ? 'סלטים'
-          : category === 'first_courses'
-          ? 'מנות ראשונות'
-          : category === 'main_courses'
-          ? 'מנות עיקריות'
-          : 'תוספות'}
-      </Typography>
-
-      <List disablePadding>
-        {items.map((item, index) => (
-          <ListItem
-            key={`${item.dish_name}-${index}`}
-            sx={{
-              bgcolor: index % 2 === 0 ? '#e6e6e6ff' : '#fafafa',
-              border: '1px solid #c2c2c2ff',
-              borderRadius: 1,
-              mb: 1,
-              px: 2,
-              py: 1.5,
-            }}
-          >
-            <ListItemText
-              primary={
-                <Typography variant="body1" textAlign="right" fontWeight="500">
-                  {item.dish_name}
-                </Typography>
-              }
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-})}
-
-</Box>
-
-
- <Divider sx={{ my: 3 }} />
-
-
-{/* סיכום הסכום */}
-<Box
-  sx={{
-    border: '1px solid #ddd',  borderRadius: 2,  p: 2,  mt: 2,  width: '100%',  maxWidth: 400, mx: 'auto', // מרכז את הריבוע
-       direction: 'rtl', }}
->
-  <Typography
-    variant="body1" sx={{ display: 'flex', justifyContent: 'space-between' }} >
-    <span>סכום לפני מע״מ:</span>
-    <strong>₪ {subtotal.toFixed(2)}</strong>
-  </Typography>
-
-  <Typography
-    variant="body1"  sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }} >
-    <span>מע״מ (18%):</span>
-    <strong>₪ {vatAmount.toFixed(2)}</strong>
-  </Typography>
-
-  <Divider sx={{ my: 1 }} />
-
-  <Typography
-    variant="h6" sx={{ display: 'flex', justifyContent: 'space-between' }} >
-    <span>סה״כ לתשלום:</span>
-    <strong style={{ color: '#1F8A70' }}>₪ {totalPrice.toFixed(2)}</strong>
-  </Typography>
-</Box>
-
-
-
-<Button
-  sx={{ mt: 3 }}
-  variant="contained"
-  color="primary"
-  onClick={() => {
-    if (validateFinalForm()) {
-      addOrdersOnline();
-    } else {
-    formSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }}
-  disabled={loading}
-  startIcon={loading && <CircularProgress size={20} color="inherit" />}
->
-  {loading ? 'שולח הזמנה...' : 'שליחת ההזמנה'}
-</Button>
-
-
-    </Paper>
-  </Box>
-)}
-
-
-
-
-    {/* -------------------הודעת ברכות להרשמה----------------------------------------------------- */}
-   {sendingToManger && (
-<Dialog
-  open={sendingToManger}
-  onClose={() => Navigate('/')}
-  fullScreen
-  PaperProps={{
-    sx: {
-      m: 0,
-      p: 0,
-      height: '100%',
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      bgcolor: 'rgba(0, 0, 0, 0.5)',
-      position: 'relative',
-      overflow: 'hidden',
-    },
-  }}
-  BackdropProps={{
-    sx: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-  }}
->
-  {/* קונפטי ברקע */}
-  <Box
-     sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        zIndex: 1500, // גבוה יותר מהדיאלוג
-        pointerEvents: 'none', // שלא יפריע ללחיצות
-      }}
-  >
-    <Confetti width={window.innerWidth} height={window.innerHeight} />
-  </Box>
-
-  {/* תוכן דיאלוג */}
-  <Box
-    sx={{
-        position: 'relative',
-        zIndex: 1600,
-        bgcolor: 'white',
-        borderRadius: 3,
-        textAlign: 'center',
-        direction: 'rtl',
-        padding: 4,
-        width: {
-          xs: '90%',
-          sm: '70%',
-          md: '50%',
-        },
-        maxHeight: '90vh',
-        overflowY: 'auto',
-      }}
-  >
-    <DialogTitle sx={{ fontWeight: 'bold', color: '#1F8A70' }}>
-      ברכת מזל טוב - {eventOwner}
-    </DialogTitle>
-
-    <DialogContent>
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 600, color: 'green' }}>
-        הזמנתך נשלחה בהצלחה!
-      </Typography>
-
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        ניצור איתך קשר בהקדם להמשך התהליך
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        לאחר אישור ההזמנה תקבלו תגובה במייל ותוכלו לראות את ההזמנות שלכם
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 3 }}>
-        תודה שבחרתם בקייטרינג הפנינה
-      </Typography>
-
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 3, fontStyle: 'italic' }}>
-       אנא שים לב: שליחת ההזמנה הינה שלב ראשוני בלבד ואינה מהווה התחייבות לתשלום או לאישור סופי.
-      </Typography>
-
-
-      <Box sx={{ mt: 4 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => Navigate('/')}
-          sx={{ borderRadius: 2, px: 4 }}
+        {/* WhatsApp */}
+        <IconButton
+          component="a"
+          href="https://wa.me/972548520195"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="שלחו לנו הודעה בוואטסאפ"
+          sx={{
+            width: { xs: 52, md: 58 },
+            height: { xs: 52, md: 58 },
+            color: "#fff",
+            bgcolor: "#25D366",
+            boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+            border: "2px solid #fff",
+            transition: "transform .25s ease, box-shadow .25s ease",
+            "&:hover": {
+              bgcolor: "#1ebe5d",
+              transform: "scale(1.08)",
+              boxShadow: "0 8px 22px rgba(37,211,102,0.35)",
+            },
+          }}
         >
-          סגור
-        </Button>
+          <WhatsAppIcon sx={{ fontSize: { xs: 29, md: 33 } }} />
+        </IconButton>
+      
+        {/* שיחת טלפון */}
+        <IconButton
+          component="a"
+          href="tel:0795152820"
+          aria-label="התקשרו אלינו"
+          sx={{
+            width: { xs: 52, md: 58 },
+            height: { xs: 52, md: 58 },
+            color: "#17130a",
+            background: "linear-gradient(135deg, #f5df9b, #c6a24b)",
+            boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+            border: "2px solid #fff",
+            transition: "transform .25s ease, box-shadow .25s ease",
+            "&:hover": {
+              background: "linear-gradient(135deg, #ffe9a8, #d4b45f)",
+              transform: "scale(1.08)",
+              boxShadow: "0 8px 22px rgba(198,162,75,0.35)",
+            },
+          }}
+        >
+          <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
+        </IconButton>
+
+
       </Box>
-    </DialogContent>
-  </Box>
-</Dialog>
 
-)}
-
-
-  <Box
-      dir="rtl">
-    <Footer /> 
-      </Box>
- 
-
-
-   </div>
-
- )}
-
+<Box dir="rtl"><Footer/></Box>
+</div>)};
 
 export default OrdersOnline;

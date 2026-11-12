@@ -284,6 +284,14 @@ const GenericOrder = () => {
     fetchMenu();
   }, []);
 
+
+useEffect(() => {
+  if (!sendingToManager) return;
+  try { window.gtag?.("event", "conversion", { send_to: "AW-18566920409/PeA4CKec_rYdENnxspVF" }); } catch (e) {}
+  try { window.fbq?.("track", "Lead"); } catch (e) {}
+}, [sendingToManager]);
+
+
   // ----- סינון: הסרת מנות נסתרות לפי כרטיס החבילה -----
   const filterVisibleDishes = (dishes, category) => {
     const hidden = hiddenItems[category] || [];
@@ -350,19 +358,30 @@ const GenericOrder = () => {
     return !hasFinalError;
   };
 
-    // אומר שגיאה ללקוח שתאריך לפני 2 ימי עסקים
-  const minEventDate = (() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 3);
+// ---- עזרים ----
+const toDateString = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  })();
-
+// מקבל מחרוזת YYYY-MM-DD ובודק אם זו שבת (בלי בעיות אזור זמן)
+const isShabbat = (dateStr) => {
+  if (!dateStr) return false;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).getDay() === 6; // 6 = שבת
+};
+  // בדיקת 3 ימי עסקים 
+const minEventDate = (() => {
+  const date = new Date();
+  date.setDate(date.getDate() + 3);
+  if (date.getDay() === 6) date.setDate(date.getDate() + 1); // אם יצא שבת, עוברים ליום ראשון
+  return toDateString(date);
+})();
   
+
+
   // ----- בדיקת כמות מנות מול המגבלות (רק על קטגוריות שמוצגות בפועל) -----
   const validateSelectionLimits = () => {
     if (sections.length === 0) {
@@ -385,6 +404,8 @@ const GenericOrder = () => {
   // פתיחת מודול סיכום הזמנה עם בדיקת מגבלות
   const handleOrderSummaryClick = () => { if (validateSelectionLimits()) setIsModalOpen(true); };
 
+
+  
   // ----- סגירת הזמנה: שליחה לשרת -----
   const handleFinalSubmit = async () => {
     if (!guestName || !guestCount || !eventDate || !eventLocation || !phoneNumber || !email) {
@@ -758,19 +779,42 @@ const GenericOrder = () => {
           <TextField fullWidth label="מספר פלאפון" type="tel" autoComplete="tel" inputProps={{ inputMode: "tel" }} value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} sx={fieldSx} error={Boolean(errors.phoneNumber)} helperText={errors.phoneNumber || ""} />
           <TextField fullWidth label="כתובת מייל" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} sx={fieldSx} error={Boolean(errors.email)} helperText={errors.email || ""} />
           <TextField fullWidth label="מספר מוזמנים" type="number" value={guestCount === 0 ? "" : guestCount} onChange={(e) => setGuestCount(Number(e.target.value))} sx={fieldSx} error={Boolean(errors.guestCount)} helperText={errors.guestCount || `מינימום ${MIN_GUESTS} מוזמנים`} />
-        <TextField
-                         fullWidth
-                         label="תאריך ביצוע ההזמנה"
-                         type="date"
-                         InputLabelProps={{ shrink: true }}
-                         inputProps={{ min: minEventDate }}
-                         value={eventDate}
-                         onChange={(e) => setEventDate(e.target.value)}
-                         error={Boolean(errors.eventDate)}
-                         helperText={errors.eventDate || "ניתן לבחור תאריך החל משלושה ימים מהיום"}
-                         sx={fieldSx}
-                       />
+           <TextField
+          fullWidth
+          label="תאריך ביצוע ההזמנה"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          inputProps={{ min: minEventDate }}
+          value={eventDate}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (isShabbat(value)) {
+              setEventDate("");
+              setErrors((prev) => ({
+                ...prev,
+                eventDate: "לא ניתן להזמין ליום שבת, אנא בחרו יום אחר",
+              }));
+              return;
+            }
+            setErrors((prev) => ({ ...prev, eventDate: undefined }));
+            setEventDate(value);
+          }}
+          error={Boolean(errors.eventDate)}
+          helperText={errors.eventDate || "ניתן לבחור תאריך החל משלושה ימים מהיום (לא בשבת)"}
+          sx={fieldSx}
+         />
 
+        <TextField
+                  fullWidth
+                  label="כתובת משלוח"
+                  autoComplete="street-address"
+                  value={eventLocation}
+                  onChange={e => setEventLocation(e.target.value)}
+                  error={Boolean(errors.eventLocation)}
+                  helperText={errors.eventLocation}
+                  sx={{ ...fieldSx, mb: 3 }}
+                />
+         
           <Button fullWidth disabled={sending} onClick={() => { if (validateFinalForm()) handleFinalSubmit(); }}
             sx={{ minHeight: 54, color: "#131313", border: "1px solid #E4CC9D", borderRadius: "12px", fontWeight: 800, fontSize: 18, background: "linear-gradient(135deg, #C9A96E 0%, #E4CC9D 50%, #C9A96E 100%)", boxShadow: "0 6px 16px rgba(201,169,110,0.35)", "&:hover": { background: "linear-gradient(135deg, #B89555 0%, #D9BD86 50%, #B89555 100%)" }, "&.Mui-disabled": { background: "#D8C6A5", color: "#6B6252" } }}>
             {sending ? "שולח..." : "שלח הזמנה"}

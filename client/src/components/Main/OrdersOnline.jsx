@@ -53,7 +53,12 @@ useEffect(()=>{apiFetch('/api/inventoryAll').then(setInv).catch(e=>console.error
 useEffect(()=>{setLoading(true);apiFetch('/api/getUploadedImages').then(d=>{console.log('images from server:',d);setImgs(d)}).catch(e=>console.error('images',e)).finally(()=>setLoading(false))},[]);
 useEffect(()=>{if(summary)summaryRef.current?.scrollIntoView({behavior:'smooth'})},[summary]);
 const maps=useMemo(()=>Object.fromEntries(CATS.map(c=>[c.k,buildMap(imgs[c.k])])),[imgs]);
-
+// שליחת המרה לגוגל ופייסבוק כשהכרטיס ברכה נפתח
+useEffect(() => {
+  if (!sent) return;
+  try { window.gtag?.("event", "conversion", { send_to: "AW-18566920409/PeA4CKec_rYdENnxspVF" }); } catch (e) {}
+  try { window.fbq?.("track", "Lead"); } catch (e) {}
+}, [sent]);
 const toggle=(k,id,checked,max)=>setSel(p=>checked?(p[k].length>=max||p[k].includes(id)?p:{...p,[k]:[...p[k],id]}):{...p,[k]:p[k].filter(x=>x!==id)});
 const tot=k=>Object.entries(qty[k]).filter(([id])=>sel[k].some(s=>String(s)===id)).reduce((a,[,v])=>a+Number(v||0),0);
 
@@ -61,11 +66,57 @@ const tot=k=>Object.entries(qty[k]).filter(([id])=>sel[k].some(s=>String(s)===id
 const checkCounts=()=>{const bad=CATS.filter(c=>sel[c.k].length!==c.max).map(c=>`${c.n}: נבחרו ${sel[c.k].length} מתוך ${c.max}`);if(bad.length){setErrMsg('יש לבחור בדיוק את המכסה בכל קטגוריה. '+bad.join(' | '));return false}setErrMsg(null);return true};
 const openDetails=()=>{if(checkCounts())setLoginOpen(true)};
 
-const openQty=()=>{const e={};
-if(!eventOwner.trim())e.eventOwner='יש להזין שם מלא';
-if(!guestCount||guestCount<60||guestCount>1000)e.guestCount='כמות המוזמנים חייבת להיות בין 60 ל-1000';
-if(!eventDate||dayjs(eventDate).isBefore(dayjs().add(3,'day'),'day'))e.eventDate='יש לבחור תאריך שלפחות 3 ימים מהיום';
-setErrors(e);if(Object.keys(e).length)return;setLoginOpen(false);setErrMsg(null);setQtyOpen(true)};
+
+// ---- עזרים ----
+const toDateString = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+// מקבל מחרוזת YYYY-MM-DD ובודק אם זו שבת (בלי בעיות אזור זמן)
+const isShabbat = (dateStr) => {
+  if (!dateStr) return false;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).getDay() === 6; // 6 = שבת
+};
+// בדיקת לקוח סגירת הזמנה 3 ימי עסקים
+const minEventDate = (() => {
+  const date = new Date();
+  date.setDate(date.getDate() + 3);
+  if (date.getDay() === 6) date.setDate(date.getDate() + 1); // אם יצא שבת, עוברים ליום ראשון
+  return toDateString(date);
+})();
+
+
+const openQty = () => {
+  const e = {};
+
+  if (!eventOwner.trim()) {
+    e.eventOwner = "יש להזין שם מלא";
+  }
+
+  if (!guestCount || guestCount < 60 || guestCount > 1000) {
+    e.guestCount = "כמות המוזמנים חייבת להיות בין 60 ל-1000";
+  }
+
+  if (!eventDate) {
+    e.eventDate = "יש לבחור תאריך";
+  } else if (isShabbat(eventDate)) {
+    e.eventDate = "לא ניתן להזמין ליום שבת, אנא בחרו יום אחר";
+  } else if (dayjs(eventDate).isBefore(dayjs().add(3, "day"), "day")) {
+    e.eventDate = "יש לבחור תאריך שלפחות 3 ימים מהיום";
+  }
+
+  setErrors(e);
+
+  if (Object.keys(e).length) return;
+
+  setLoginOpen(false);
+  setErrMsg(null);
+  setQtyOpen(true);
+};
 
 const handleSubmit=()=>{
 for(const[k,n]of[['first_courses','מנות ראשונות'],['main_courses','מנות עיקריות']]){const t=tot(k);if(t!==guestCount){setErrMsg(`סך ${n} חייב להיות בדיוק ${guestCount} (הוזן ${t})`);return}}
@@ -202,7 +253,43 @@ return(<div>
 <Typography variant="h6" sx={{mt:2}}>הצעת המחיר שלך: <strong style={{color:G}}>₪ {totalPrice.toFixed(2)}</strong></Typography>
 <Box sx={{mt:1,display:'flex',justifyContent:'center',gap:2,color:MU,flexWrap:'wrap'}}>
 <Typography variant="body2">מספר המוזמנים: <strong style={{color:G}}>{guestCount}</strong></Typography><Typography variant="body2">|</Typography>
-<Typography variant="body2">תאריך האירוע: <strong style={{color:G}}>{new Date(eventDate).toLocaleDateString('he-IL')}</strong></Typography></Box><br/>
+        <TextField
+  fullWidth
+  label="תאריך ביצוע ההזמנה"
+  type="date"
+  InputLabelProps={{ shrink: true }}
+  inputProps={{ min: minEventDate }}
+  value={eventDate}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    if (isShabbat(value)) {
+      setEventDate("");
+      setErrors((prev) => ({
+        ...prev,
+        eventDate: "לא ניתן להזמין ליום שבת, אנא בחרו יום אחר",
+      }));
+      return;
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      eventDate: undefined,
+    }));
+
+    setEventDate(value);
+  }}
+  error={Boolean(errors.eventDate)}
+  helperText={
+    errors.eventDate ||
+    "ניתן לבחור תאריך החל משלושה ימים מהיום (לא בשבת)"
+  }
+  sx={fieldSx}
+/>
+                 
+                 </Box>
+ 
+
 <Typography sx={{mb:2,textAlign:'center',color:MU,fontSize:{xs:'0.9rem',sm:'1rem'},lineHeight:1.6}}>המחיר אינו כולל: דמי משלוח, שירותי מלצרות, כלי פורצלן ועוד</Typography>
 <Typography sx={{mb:3,textAlign:'center',color:MU,fontSize:{xs:'0.9rem',sm:'1rem'},lineHeight:1.6}}>שימו ❤ - ניתן לבחור בשירותים נוספים להזמנה (שירות מלא / כלי פורצלן / דמי משלוח) על ידי הנציג שיחזור אליכם</Typography>
 

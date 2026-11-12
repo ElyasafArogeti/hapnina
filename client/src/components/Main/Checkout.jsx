@@ -144,6 +144,12 @@ export default function Checkout() {
     }
   }, [addons]);
 
+  useEffect(() => {
+  if (!showSuccessDialog) return;
+  try { window.gtag?.("event", "conversion", { send_to: "AW-18566920409/PeA4CKec_rYdENnxspVF" }); } catch (e) {}
+  try { window.fbq?.("track", "Lead"); } catch (e) {}
+}, [showSuccessDialog]);
+
   const setAddonQty = (id, qty) =>
     setAddons((prev) => {
       const next = { ...prev };
@@ -398,20 +404,32 @@ export default function Checkout() {
     }
   };
 
-  // אומר שגיאה ללקוח שתאריך לפני 2 ימי עסקים
-  const minEventDate = (() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 3);
+// ---- עזרים ----
+const toDateString = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+// מקבל מחרוזת YYYY-MM-DD ובודק אם זו שבת (בלי בעיות אזור זמן)
+const isShabbat = (dateStr) => {
+  if (!dateStr) return false;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).getDay() === 6; // 6 = שבת
+};
 
-    return `${year}-${month}-${day}`;
-  })();
-
-
+const minEventDate = (() => {
+  const date = new Date();
+  date.setDate(date.getDate() + 3);
+  if (date.getDay() === 6) date.setDate(date.getDate() + 1); // אם יצא שבת, עוברים ליום ראשון
+  return toDateString(date);
+})();
   
+
+
+
+
   const activeAddons = ADDONS.filter((a) => a.category === addonTab);
   const addonCountInCategory = (key) =>
     selectedAddons.filter((a) => a.category === key).length;
@@ -1413,20 +1431,31 @@ export default function Checkout() {
                   helperText={errors.email}
                   sx={fieldSx}
                 />
-
-                <TextField
-                  fullWidth
-                  label="תאריך ביצוע ההזמנה"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  inputProps={{ min: minEventDate }}
-                  value={eventDate}
-                  onChange={(e) => setEventDate(e.target.value)}
-                  error={Boolean(errors.eventDate)}
-                  helperText={errors.eventDate || "ניתן לבחור תאריך החל משלושה ימים מהיום"}
-                  sx={fieldSx}
-                />
-
+                 <TextField
+                 fullWidth
+                 label="תאריך ביצוע ההזמנה"
+                 type="date"
+                 InputLabelProps={{ shrink: true }}
+                 inputProps={{ min: minEventDate }}
+                 value={eventDate}
+                 onChange={(e) => {
+                   const value = e.target.value;
+                   if (isShabbat(value)) {
+                     setEventDate("");
+                     setErrors((prev) => ({
+                       ...prev,
+                       eventDate: "לא ניתן להזמין ליום שבת, אנא בחרו יום אחר",
+                     }));
+                     return;
+                   }
+                   setErrors((prev) => ({ ...prev, eventDate: undefined }));
+                   setEventDate(value);
+                 }}
+                 error={Boolean(errors.eventDate)}
+                 helperText={errors.eventDate || "ניתן לבחור תאריך החל משלושה ימים מהיום (לא בשבת)"}
+                 sx={fieldSx}
+               />
+               
                 <TextField
                   fullWidth
                   label="כתובת משלוח"

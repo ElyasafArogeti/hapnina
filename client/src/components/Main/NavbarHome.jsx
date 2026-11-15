@@ -63,9 +63,9 @@ const handleNavigateToBarMitzvah = () => {  //בר מצווה
          minGuests: 60,  
         pricePerDish: 110,
         selectionLimits: {
-          salads: 5,
-          first_courses: 3,
-          main_courses: 3,
+          salads: 8,
+          first_courses: 2,
+          main_courses: 2,
           side_dishes: 2,
         },
        eventImage, 
@@ -327,7 +327,7 @@ return (
         { label: "דף הבית", to: "/" },
         { label: "אוכל מוכן עד הבית", to: "/MainCourse" },
         { label: "שאלות ותשובות", to: "/FAQAccordion" },
-        { label: "קצת עלינו", to: "/about" },
+        { label: "אודות", to: "/about" },
         { label: "צור קשר", to: "/contact" },
       ].map((link) => (
         <Link
@@ -588,7 +588,7 @@ return (
             {[
               { label: "דף הבית", to: "/" },
               { label: "אוכל מוכן עד הבית", to: "/MainCourse" },
-              { label: "קצת עלינו", to: "/about" },
+              { label: "אודות ", to: "/about" },
               { label: "צור קשר", to: "/contact" },
               { label: "שאלות ותשובות", to: "/FAQAccordion" },
             ].map((link) => (

@@ -15,11 +15,12 @@ const BarMitzvahOffer = () => {
     navigate("/GenericOrder", {
       state: {
         eventName: "בר/בת מצווה",
+         minGuests: 60,  
         pricePerDish: 110,
         selectionLimits: {
-          salads: 5,
-          first_courses: 3,
-          main_courses: 3,
+          salads: 8,
+          first_courses: 2,
+          main_courses: 2,
           side_dishes: 2,
         },
         eventImage,

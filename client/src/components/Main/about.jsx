@@ -253,7 +253,7 @@ const About = () => {
        {/* תמונה בצד ימין */}
           <Grid size={{ xs: 12, sm: 6 }} md={6}>
             <img
-              src="https://www.britot.co.il/media-lib/business717_media28.jpg"
+              src="https://res.cloudinary.com/dhkegagjk/image/upload/v1752410371/IMG-20250713-WA0106_oenesp.jpg"
               alt="logo"
               style={{ width: '95%', borderRadius: '10px' , boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
             />

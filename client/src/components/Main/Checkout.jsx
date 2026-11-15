@@ -80,7 +80,7 @@ const ADDONS = [
   { id: 932, category: "drinks", name: "מים מינרליים", unit: "לשישייה", price: 20 },
 ];
 
-
+const darkBg = "linear-gradient(135deg, #111111 0%, #1d1b18 55%, #2a2418 100%)";
 
 // ---------- סגנונות ----------------------------------------------
 const GOLD = "#C9A96E";
@@ -144,11 +144,8 @@ export default function Checkout() {
     }
   }, [addons]);
 
-  useEffect(() => {
-  if (!showSuccessDialog) return;
-  try { window.gtag?.("event", "conversion", { send_to: "AW-18566920409/PeA4CKec_rYdENnxspVF" }); } catch (e) {}
-  try { window.fbq?.("track", "Lead"); } catch (e) {}
-}, [showSuccessDialog]);
+
+
 
   const setAddonQty = (id, qty) =>
     setAddons((prev) => {
@@ -188,6 +185,13 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
+  useEffect(() => {
+  if (!showSuccessDialog) return;
+  try { window.gtag?.("event", "conversion", { send_to: "AW-18566920409/PeA4CKec_rYdENnxspVF" }); } catch (e) {}
+  try { window.fbq?.("track", "Lead"); } catch (e) {}
+}, [showSuccessDialog]);
+
+
   // ---------- כפתור צף בטלפון: מעבר לטופס ----------
   const formRef = useRef(null);
   const [formVisible, setFormVisible] = useState(false);
@@ -202,6 +206,10 @@ export default function Checkout() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+
+
+
 
 
   // פונקציה שמייצרת את סיכום ההזמנה
@@ -277,6 +285,7 @@ export default function Checkout() {
     return order;
   };
 
+
   // בדיקת הלקוח לפני שליחה
   const validateFinalForm = () => {
     const newErrors = {};
@@ -330,8 +339,6 @@ export default function Checkout() {
 
     return Object.keys(newErrors).length === 0;
   };
-
-
   // שליחת סיכום הזמנה לשרת למסד נתונים
   const handleFinalSubmit = async () => {
     setErrorMessage("");
@@ -403,7 +410,6 @@ export default function Checkout() {
       setErrorMessage("אירעה שגיאה בשליחת ההזמנה");
     }
   };
-
 // ---- עזרים ----
 const toDateString = (date) => {
   const year = date.getFullYear();
@@ -411,14 +417,13 @@ const toDateString = (date) => {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
-
 // מקבל מחרוזת YYYY-MM-DD ובודק אם זו שבת (בלי בעיות אזור זמן)
 const isShabbat = (dateStr) => {
   if (!dateStr) return false;
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d).getDay() === 6; // 6 = שבת
 };
-
+/// בדיקה שלא יצא בשבת  
 const minEventDate = (() => {
   const date = new Date();
   date.setDate(date.getDate() + 3);
@@ -1581,108 +1586,145 @@ const minEventDate = (() => {
       )}
 
 
-      {/* כרטיס הצלחה לאחר שליחה */}
-      <Dialog
-        open={showSuccessDialog}
-        onClose={() => navigate("/")}
-        fullScreen
-        PaperProps={{
-          sx: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            bgcolor: "rgba(0,0,0,0.5)",
-            overflow: "hidden",
-          },
-        }}
-        BackdropProps={{
-          sx: { bgcolor: "rgba(0,0,0,0.5)" },
+ 
+{/* כרטיס הצלחה לאחר שליחה */}
+<Dialog
+  open={showSuccessDialog}
+  onClose={() => navigate("/")}
+  fullScreen
+  PaperProps={{
+    sx: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      bgcolor: "rgba(0,0,0,0.6)",
+      overflow: "hidden",
+    },
+  }}
+  BackdropProps={{
+    sx: { bgcolor: "rgba(0,0,0,0.6)" },
+  }}
+>
+  <Box
+    sx={{
+      position: "fixed",
+      inset: 0,
+      width: "100vw",
+      height: "100vh",
+      zIndex: 1,
+      pointerEvents: "none",
+    }}
+  >
+    <Confetti
+      width={window.innerWidth}
+      height={window.innerHeight}
+      colors={["#C9A96E", "#E4CC9D", "#8c6a25", "#ffffff", "#171614"]}
+    />
+  </Box>
+
+  <Box
+    sx={{
+      position: "relative",
+      zIndex: 2,
+      bgcolor: "#fff",
+      borderRadius: "22px",
+      p: { xs: 3, sm: 4 },
+      width: { xs: "90%", sm: "70%", md: "50%" },
+      maxWidth: 600,
+      maxHeight: "90vh",
+      overflowY: "auto",
+      textAlign: "center",
+      direction: "rtl",
+      boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+    }}
+  >
+    {/* כותרת עליונה */}
+    <Box
+      sx={{
+        py: 3,
+        background: darkBg,
+        borderBottom: `3px solid ${GOLD}`,
+        mx: -3,
+        mt: -3,
+        mb: 3,
+        borderRadius: "22px 22px 0 0",
+      }}
+    >
+      <Typography
+        sx={{
+          color: GOLD,
+          fontSize: 11,
+          letterSpacing: 3,
+          fontWeight: 700,
         }}
       >
-        <Box
-          sx={{
-            position: "fixed",
-            inset: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 1,
-            pointerEvents: "none",
-          }}
-        >
-          <Confetti
-            width={window.innerWidth}
-            height={window.innerHeight}
-          />
-        </Box>
+        HAPNINA CATERING
+      </Typography>
 
-        <Box
-          sx={{
-            position: "relative",
-            zIndex: 2,
-            bgcolor: "#fff",
-            borderRadius: 3,
-            p: { xs: 3, sm: 4 },
-            width: { xs: "90%", sm: "70%", md: "50%" },
-            maxWidth: 600,
-            maxHeight: "90vh",
-            overflowY: "auto",
-            textAlign: "center",
-            direction: "rtl",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
-          }}
-        >
-          <DialogTitle
-            sx={{ fontWeight: "bold", color: "#1F8A70" }}
-          >
-            🎉 תודה על הזמנתך!
-          </DialogTitle>
+      <Typography
+        sx={{
+          color: "#F5E9D0",
+          fontWeight: 800,
+          fontSize: 30,
+          mt: 0.5,
+        }}
+      >
+        🎉 תודה על הזמנתך!
+      </Typography>
+    </Box>
 
-          <DialogContent>
-            <Typography
-              variant="h5"
-              sx={{ mb: 2, fontWeight: "bold", color: "green" }}
-            >
-              הזמנתך נשלחה בהצלחה!
-            </Typography>
+    <DialogContent>
+      <Typography
+        variant="h5"
+        sx={{ mb: 2, fontWeight: "bold", color: "#1F8A70" }}
+      >
+        הזמנתך נשלחה בהצלחה!
+      </Typography>
 
-            <Typography sx={{ mb: 2 }}>
-              נציגנו יחזור אליך בהקדם להמשך תהליך ההזמנה.
-            </Typography>
+      <Typography sx={{ mb: 2, color: "#3b3528" }}>
+        נציגנו יחזור אליך בהקדם להמשך תהליך ההזמנה.
+      </Typography>
 
-            <Typography sx={{ mb: 2 }}>
-              לאחר אישור ההזמנה נעדכן אותך בפרטים הנוספים.
-            </Typography>
+      <Typography sx={{ mb: 2, color: "#3b3528" }}>
+        לאחר אישור ההזמנה נעדכן אותך בפרטים הנוספים.
+      </Typography>
 
-            <Typography sx={{ mb: 3 }}>
-              תודה שבחרת בקייטרינג הפנינה ❤️
-            </Typography>
+      <Typography sx={{ mb: 3, color: "#3b3528" }}>
+        תודה שבחרת בקייטרינג הפנינה ❤️
+      </Typography>
 
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontStyle: "italic" }}
-            >
-              שליחת ההזמנה היא שלב ראשוני בלבד ואינה מהווה
-              התחייבות לתשלום או לאישור סופי.
-            </Typography>
+      <Typography
+        variant="body2"
+        sx={{ fontStyle: "italic", color: "#8a8172" }}
+      >
+        שליחת ההזמנה היא שלב ראשוני בלבד ואינה מהווה
+        התחייבות לתשלום או לאישור סופי.
+      </Typography>
 
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => navigate("/")}
-              sx={{
-                mt: 4,
-                px: 4,
-                py: 1.5,
-                borderRadius: 2,
-                fontWeight: "bold",
-              }}
-            >
-              סגור וחזרה לתפריט הראשי
-            </Button>
-          </DialogContent>
-        </Box>
-      </Dialog>
+      <Button
+        variant="contained"
+        onClick={() => navigate("/")}
+        sx={{
+          mt: 4,
+          px: 4,
+          py: 1.5,
+          minHeight: 50,
+          borderRadius: "12px",
+          fontWeight: 800,
+          fontSize: 16,
+          bgcolor: INK,
+          color: GOLD,
+          border: `1px solid ${GOLD}`,
+          "&:hover": {
+            bgcolor: "#2a2418",
+          },
+        }}
+      >
+        סגור וחזרה לתפריט הראשי
+      </Button>
+    </DialogContent>
+  </Box>
+</Dialog>
 
       <Footer />
     </Box>

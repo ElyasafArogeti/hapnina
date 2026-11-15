@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import axiosInstance from '../axiosInstance';
 
@@ -10,13 +9,12 @@ import {
   Button,
   Snackbar,
   Alert,
-  Grid,
   Card,
   CardContent,
   Divider,
   MenuItem,
   Stack,
-   IconButton
+  IconButton,
 } from '@mui/material';
 
 import {
@@ -28,8 +26,6 @@ import {
   Send,
   EventAvailable,
   Favorite,
-  Instagram,
- 
 } from '@mui/icons-material';
 
 import NavbarHome from './NavbarHome';
@@ -111,7 +107,7 @@ const Contact = () => {
     {
       icon: <LocationOn />,
       title: 'המיקום שלנו',
-      value: 'גבעת שאול - ירושלים   ',
+      value: 'גבעת שאול - ירושלים',
       link: null,
     },
     {
@@ -125,7 +121,7 @@ const Contact = () => {
 
 
   return (
-    <Box sx={{ backgroundColor: cream, direction: 'rtl', minHeight: '100vh'  }}>
+    <Box sx={{ backgroundColor: cream, direction: 'rtl', minHeight: '100vh' }}>
       <NavbarHome />
       <br /><br /><br /><br />
       <TextMove />
@@ -212,7 +208,7 @@ const Contact = () => {
 
       <Container maxWidth="lg" sx={{ py: { xs: 6, md: 9 } }}>
 
-        <Box textAlign="center" mb={7}>
+        <Box textAlign="center" mb={{ xs: 5, md: 7 }}>
 
           <Typography
             sx={{
@@ -256,306 +252,311 @@ const Contact = () => {
 
         {/* CONTACT CARDS */}
 
-        <Grid container spacing={3} sx={{ mb: 9 }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(4, 1fr)',
+            },
+            gap: { xs: 2.5, md: 3 },
+            mb: { xs: 7, md: 10 },
+          }}
+        >
 
           {contactItems.map((item, index) => (
 
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Card
+              key={index}
+              elevation={0}
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                backgroundColor: '#fff',
+                border: '1px solid #eee8dc',
+                transition: '0.3s',
+                '&:hover': {
+                  transform: 'translateY(-7px)',
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
+                },
+              }}
+            >
 
-              <Card
-                elevation={0}
+              <CardContent
                 sx={{
-                  height: '100%',
-                  borderRadius: 3,
-                  backgroundColor: '#fff',
-                  border: '1px solid #eee8dc',
-                  transition: '0.3s',
-                  '&:hover': {
-                    transform: 'translateY(-7px)',
-                    boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
-                  },
+                  textAlign: 'center',
+                  py: 4,
                 }}
               >
 
-                <CardContent
+                <Box
                   sx={{
-                    textAlign: 'center',
-                    py: 4,
+                    width: 60,
+                    height: 60,
+                    borderRadius: '50%',
+                    backgroundColor: '#f5efe3',
+                    color: gold,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mx: 'auto',
+                    mb: 2,
+                    '& svg': { fontSize: 28 },
                   }}
                 >
+                  {item.icon}
+                </Box>
 
-                  <Box
+                <Typography
+                  fontWeight="bold"
+                  sx={{ mb: 1, color: dark }}
+                >
+                  {item.title}
+                </Typography>
+
+                {item.link ? (
+                  <Typography
+                    component="a"
+                    href={item.link}
                     sx={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: '50%',
-                      backgroundColor: '#f5efe3',
-                      color: gold,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mx: 'auto',
-                      mb: 2,
-                      '& svg': { fontSize: 28 },
+                      color: '#777',
+                      textDecoration: 'none',
+                      fontSize: 14,
+                      overflowWrap: 'anywhere',
+                      '&:hover': { color: gold },
                     }}
                   >
-                    {item.icon}
-                  </Box>
-
-                  <Typography
-                    fontWeight="bold"
-                    sx={{ mb: 1, color: dark }}
-                  >
-                    {item.title}
+                    {item.value}
                   </Typography>
+                ) : (
+                  <Typography
+                    sx={{ color: '#777', fontSize: 14 }}
+                  >
+                    {item.value}
+                  </Typography>
+                )}
 
-                  {item.link ? (
-                    <Typography
-                      component="a"
-                      href={item.link}
-                      sx={{
-                        color: '#777',
-                        textDecoration: 'none',
-                        fontSize: 14,
-                        '&:hover': { color: gold },
-                      }}
-                    >
-                      {item.value}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      sx={{ color: '#777', fontSize: 14 }}
-                    >
-                      {item.value}
-                    </Typography>
-                  )}
+              </CardContent>
 
-                </CardContent>
-
-              </Card>
-
-            </Grid>
+            </Card>
 
           ))}
 
-        </Grid>
+        </Box>
 
         {/* FORM + CONTACT DETAILS */}
 
-        <Grid container spacing={5} alignItems="stretch">
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '5fr 7fr' },
+            // רווח אמיתי בין הקטעים: בטלפון בין למעלה ללמטה, במחשב בין ימין לשמאל
+            gap: { xs: 4, md: 6 },
+            alignItems: 'stretch',
+          }}
+        >
 
           {/* דברו איתנו */}
 
-          <Grid item xs={12} md={5}>
+          <Box
+            sx={{
+              backgroundColor: dark,
+              color: '#fff',
+              borderRadius: 4,
+              p: { xs: 3, md: 5 },
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
+          >
 
-            <Box
+            <Typography
               sx={{
-                backgroundColor: dark,
-                color: '#fff',
-                height: '100%',
-                borderRadius: 4,
-                p: { xs: 3, md: 5 },
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
+                color: gold,
+                mb: 2,
+                fontWeight: 600,
               }}
             >
+              THE PEARL EXPERIENCE
+            </Typography>
 
-              <Typography
-                sx={{
-                  color: gold,
-                  mb: 2,
-                  fontWeight: 600,
-                }}
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              sx={{ mb: 3, lineHeight: 1.5 }}
+            >
+              הרגעים שלכם.
+              <br />
+              האירוע שלנו.
+            </Typography>
+
+            <Typography
+              sx={{
+                color: '#ddd',
+                lineHeight: 2,
+                mb: 4,
+              }}
+            >
+              אנחנו מאמינים שכל אירוע הוא סיפור בפני עצמו.
+              לכן חשוב לנו להכיר אתכם, להבין את החלומות שלכם
+              ולהעניק לכם יחס אישי לאורך הדרך.
+            </Typography>
+
+            <Divider sx={{ borderColor: '#514a40', mb: 3 }} />
+
+            <Stack spacing={3}>
+
+              <Box display="flex" alignItems="center" gap={2}>
+                <Favorite sx={{ color: gold }} />
+                <Typography>יחס אישי וליווי מקצועי</Typography>
+              </Box>
+
+              <Box display="flex" alignItems="center" gap={2}>
+                <EventAvailable sx={{ color: gold }} />
+                <Typography>תכנון אירוע בהתאמה אישית</Typography>
+              </Box>
+
+              <Box display="flex" alignItems="center" gap={2}>
+                <Send sx={{ color: gold }} />
+                <Typography>מענה לכל שאלה ובקשה</Typography>
+              </Box>
+
+            </Stack>
+
+            <Button
+              component="a"
+              href="https://wa.me/972548520195"
+              target="_blank"
+              rel="noopener noreferrer"
+              startIcon={<WhatsApp />}
+              sx={{
+                mt: 5,
+                color: '#fff',
+                backgroundColor: '#25D366',
+                borderRadius: 3,
+                py: 1.5,
+                '&:hover': {
+                  backgroundColor: '#1da851',
+                },
+              }}
+            >
+              דברו איתנו בוואטסאפ
+            </Button>
+
+          </Box>
+
+          {/* טופס שליחה  */}
+
+          <Box
+            id="contact-form"
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              backgroundColor: '#fff',
+              borderRadius: 4,
+              p: { xs: 3, md: 5 },
+              boxShadow: '0 5px 30px rgba(0,0,0,0.05)',
+              border: '1px solid #eee8dc',
+            }}
+          >
+
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              sx={{ color: dark, mb: 1 }}
+            >
+              השאירו לנו הודעה
+            </Typography>
+
+            <Typography sx={{ color: '#888', mb: 4 }}>
+              מלאו את הפרטים ונחזור אליכם בהקדם.
+            </Typography>
+
+            <Stack spacing={3}>
+
+              <TextField
+                name="fullName"
+                label="שם מלא"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
+
+              <TextField
+                name="phone"
+                label="מספר טלפון לחזרה"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
+
+              <TextField
+                select
+                name="eventType"
+                label="איזה אירוע אתם מתכננים?"
+                value={formData.eventType}
+                onChange={handleChange}
+                fullWidth
               >
-                THE PEARL EXPERIENCE
-              </Typography>
+                <MenuItem value="חתונה">חתונה</MenuItem>
+                <MenuItem value="בר מצווה">בר מצווה</MenuItem>
+                <MenuItem value="בת מצווה">בת מצווה</MenuItem>
+                <MenuItem value="ברית">ברית</MenuItem>
+                <MenuItem value="אירוע משפחתי">אירוע משפחתי</MenuItem>
+                <MenuItem value="אירוע עסקי">אירוע עסקי</MenuItem>
+                <MenuItem value="אחר">אחר</MenuItem>
+              </TextField>
 
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                sx={{ mb: 3, lineHeight: 1.5 }}
-              >
-                הרגעים שלכם.
-                <br />
-                האירוע שלנו.
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: '#ddd',
-                  lineHeight: 2,
-                  mb: 4,
-                }}
-              >
-                אנחנו מאמינים שכל אירוע הוא סיפור בפני עצמו.
-                לכן חשוב לנו להכיר אתכם, להבין את החלומות שלכם
-                ולהעניק לכם יחס אישי לאורך הדרך.
-              </Typography>
-
-              <Divider sx={{ borderColor: '#514a40', mb: 3 }} />
-
-              <Stack spacing={3}>
-
-                <Box display="flex" alignItems="center" gap={2}>
-                  <Favorite sx={{ color: gold }} />
-                  <Typography>יחס אישי וליווי מקצועי</Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap={2}>
-                  <EventAvailable sx={{ color: gold }} />
-                  <Typography>תכנון אירוע בהתאמה אישית</Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center" gap={2}>
-                  <Send sx={{ color: gold }} />
-                  <Typography>מענה לכל שאלה ובקשה</Typography>
-                </Box>
-
-              </Stack>
+              <TextField
+                name="message"
+                label="ספרו לנו קצת על האירוע שלכם"
+                multiline
+                rows={5}
+                value={formData.message}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
 
               <Button
-                component="a"
-                href="https://wa.me/972548520195"
-                target="_blank"
-                rel="noopener noreferrer"
-                startIcon={<WhatsApp />}
+                type="submit"
+                variant="contained"
+                disabled={loading}
+                fullWidth
                 sx={{
-                  mt: 5,
-                  color: '#fff',
-                  backgroundColor: '#25D366',
+                  py: 1.8,
+                  backgroundColor: gold,
                   borderRadius: 3,
-                  py: 1.5,
+                  fontSize: 17,
+                  fontWeight: 'bold',
                   '&:hover': {
-                    backgroundColor: '#1da851',
+                    backgroundColor: '#9c7940',
                   },
                 }}
               >
-                דברו איתנו בוואטסאפ
+                {loading ? 'שולח...' : 'שליחת הודעה'}
               </Button>
 
-            </Box>
-
-          </Grid>
-
-       <br/><br/>
-          {/* טופס שליחה  */}
-          <Grid item xs={12} md={7} id="contact-form">
-
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              sx={{
-                backgroundColor: '#fff',
-                borderRadius: 4,
-                p: { xs: 3, md: 5 },
-                boxShadow: '0 5px 30px rgba(0,0,0,0.05)',
-                border: '1px solid #eee8dc',
-              }}
-            >
-
               <Typography
-                variant="h4"
-                fontWeight="bold"
-                sx={{ color: dark, mb: 1 }}
+                variant="caption"
+                textAlign="center"
+                color="text.secondary"
               >
-                השאירו לנו הודעה
+                הפרטים שלכם ישמשו אותנו לצורך חזרה אליכם
+                בנוגע לפנייתכם.
               </Typography>
 
-              <Typography sx={{ color: '#888', mb: 4 }}>
-                מלאו את הפרטים ונחזור אליכם בהקדם.
-              </Typography>
+            </Stack>
 
-              <Stack spacing={3}>
+          </Box>
 
-                <TextField
-                  name="fullName"
-                  label="שם מלא"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-
-                <TextField
-                  name="phone"
-                  label="מספר טלפון לחזרה"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-
-                <TextField
-                  select
-                  name="eventType"
-                  label="איזה אירוע אתם מתכננים?"
-                  value={formData.eventType}
-                  onChange={handleChange}
-                  fullWidth
-                >
-                  <MenuItem value="חתונה">חתונה</MenuItem>
-                  <MenuItem value="בר מצווה">בר מצווה</MenuItem>
-                  <MenuItem value="בת מצווה">בת מצווה</MenuItem>
-                  <MenuItem value="ברית">ברית</MenuItem>
-                  <MenuItem value="אירוע משפחתי">אירוע משפחתי</MenuItem>
-                  <MenuItem value="אירוע עסקי">אירוע עסקי</MenuItem>
-                  <MenuItem value="אחר">אחר</MenuItem>
-                </TextField>
-
-                <TextField
-                  name="message"
-                  label="ספרו לנו קצת על האירוע שלכם"
-                  multiline
-                  rows={5}
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={loading}
-                  fullWidth
-                  sx={{
-                    py: 1.8,
-                    backgroundColor: gold,
-                    borderRadius: 3,
-                    fontSize: 17,
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#9c7940',
-                    },
-                  }}
-                >
-                  {loading ? 'שולח...' : 'שליחת הודעה'}
-                </Button>
-
-                <Typography
-                  variant="caption"
-                  textAlign="center"
-                  color="text.secondary"
-                >
-                  הפרטים שלכם ישמשו אותנו לצורך חזרה אליכם
-                  בנוגע לפנייתכם.
-                </Typography>
-
-              </Stack>
-
-            </Box>
-
-          </Grid>
-
-        </Grid>
+        </Box>
 
       </Container>
-
-  
-
-    
 
       {/* BOTTOM MESSAGE */}
 
@@ -563,7 +564,7 @@ const Contact = () => {
         sx={{
           backgroundColor: dark,
           textAlign: 'center',
-          py: 6,
+          py: { xs: 6, md: 8 },
           px: 4,
         }}
       >
@@ -573,7 +574,7 @@ const Contact = () => {
           sx={{
             color: '#fff',
             fontWeight: 'bold',
-            mb: 6,
+            mb: { xs: 3, md: 4 },
           }}
         >
           האירוע הבא שלכם מתחיל כאן
@@ -608,67 +609,68 @@ const Contact = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-        {/* כפתורי קשר צפים - וואטסאפ וטלפון */}
-<Box
-  sx={{
-    position: "fixed",
-    right: { xs: 14, md: 24 },
-    bottom: { xs: 60, md: 60 },
-    zIndex: 1500,
-    display: "flex",
-    flexDirection: "column",
-    gap: 1.5,
-    alignItems: "center",
-  }}
->
-  {/* WhatsApp */}
-  <IconButton
-    component="a"
-    href="https://wa.me/972548520195"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="שלחו לנו הודעה בוואטסאפ"
-    sx={{
-      width: { xs: 52, md: 58 },
-      height: { xs: 52, md: 58 },
-      color: "#fff",
-      bgcolor: "#25D366",
-      boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
-      border: "2px solid #fff",
-      transition: "transform .25s ease, box-shadow .25s ease",
-      "&:hover": {
-        bgcolor: "#1ebe5d",
-        transform: "scale(1.08)",
-        boxShadow: "0 8px 22px rgba(37,211,102,0.35)",
-      },
-    }}
-  >
-    <WhatsAppIcon sx={{ fontSize: { xs: 29, md: 33 } }} />
-  </IconButton>
 
-  {/* שיחת טלפון */}
-  <IconButton
-    component="a"
-    href="tel:0795152820"
-    aria-label="התקשרו אלינו"
-    sx={{
-      width: { xs: 52, md: 58 },
-      height: { xs: 52, md: 58 },
-      color: "#17130a",
-      background: "linear-gradient(135deg, #f5df9b, #c6a24b)",
-      boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
-      border: "2px solid #fff",
-      transition: "transform .25s ease, box-shadow .25s ease",
-      "&:hover": {
-        background: "linear-gradient(135deg, #ffe9a8, #d4b45f)",
-        transform: "scale(1.08)",
-        boxShadow: "0 8px 22px rgba(198,162,75,0.35)",
-      },
-    }}
-  >
-    <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
-  </IconButton>
-</Box>
+      {/* כפתורי קשר צפים - וואטסאפ וטלפון */}
+      <Box
+        sx={{
+          position: "fixed",
+          right: { xs: 14, md: 24 },
+          bottom: { xs: 60, md: 60 },
+          zIndex: 1500,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+          alignItems: "center",
+        }}
+      >
+        {/* WhatsApp */}
+        <IconButton
+          component="a"
+          href="https://wa.me/972548520195"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="שלחו לנו הודעה בוואטסאפ"
+          sx={{
+            width: { xs: 52, md: 58 },
+            height: { xs: 52, md: 58 },
+            color: "#fff",
+            bgcolor: "#25D366",
+            boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+            border: "2px solid #fff",
+            transition: "transform .25s ease, box-shadow .25s ease",
+            "&:hover": {
+              bgcolor: "#1ebe5d",
+              transform: "scale(1.08)",
+              boxShadow: "0 8px 22px rgba(37,211,102,0.35)",
+            },
+          }}
+        >
+          <WhatsAppIcon sx={{ fontSize: { xs: 29, md: 33 } }} />
+        </IconButton>
+
+        {/* שיחת טלפון */}
+        <IconButton
+          component="a"
+          href="tel:0795152820"
+          aria-label="התקשרו אלינו"
+          sx={{
+            width: { xs: 52, md: 58 },
+            height: { xs: 52, md: 58 },
+            color: "#17130a",
+            background: "linear-gradient(135deg, #f5df9b, #c6a24b)",
+            boxShadow: "0 5px 18px rgba(0,0,0,0.22)",
+            border: "2px solid #fff",
+            transition: "transform .25s ease, box-shadow .25s ease",
+            "&:hover": {
+              background: "linear-gradient(135deg, #ffe9a8, #d4b45f)",
+              transform: "scale(1.08)",
+              boxShadow: "0 8px 22px rgba(198,162,75,0.35)",
+            },
+          }}
+        >
+          <PhoneIcon sx={{ fontSize: { xs: 26, md: 30 } }} />
+        </IconButton>
+      </Box>
     </Box>
   );
 };

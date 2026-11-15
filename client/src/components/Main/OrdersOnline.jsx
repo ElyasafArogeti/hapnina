@@ -53,12 +53,14 @@ useEffect(()=>{apiFetch('/api/inventoryAll').then(setInv).catch(e=>console.error
 useEffect(()=>{setLoading(true);apiFetch('/api/getUploadedImages').then(d=>{console.log('images from server:',d);setImgs(d)}).catch(e=>console.error('images',e)).finally(()=>setLoading(false))},[]);
 useEffect(()=>{if(summary)summaryRef.current?.scrollIntoView({behavior:'smooth'})},[summary]);
 const maps=useMemo(()=>Object.fromEntries(CATS.map(c=>[c.k,buildMap(imgs[c.k])])),[imgs]);
+
 // שליחת המרה לגוגל ופייסבוק כשהכרטיס ברכה נפתח
 useEffect(() => {
   if (!sent) return;
   try { window.gtag?.("event", "conversion", { send_to: "AW-18566920409/PeA4CKec_rYdENnxspVF" }); } catch (e) {}
   try { window.fbq?.("track", "Lead"); } catch (e) {}
 }, [sent]);
+
 const toggle=(k,id,checked,max)=>setSel(p=>checked?(p[k].length>=max||p[k].includes(id)?p:{...p,[k]:[...p[k],id]}):{...p,[k]:p[k].filter(x=>x!==id)});
 const tot=k=>Object.entries(qty[k]).filter(([id])=>sel[k].some(s=>String(s)===id)).reduce((a,[,v])=>a+Number(v||0),0);
 

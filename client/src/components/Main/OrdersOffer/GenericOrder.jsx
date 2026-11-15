@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { apiFetch } from "../../api";
 import { Box, Typography, Container, Button, Snackbar, Alert, LinearProgress, TextField, Dialog, IconButton, useMediaQuery } from "@mui/material";
 import NavbarHome from "../NavbarHome";
@@ -18,7 +18,7 @@ import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PhoneIcon from "@mui/icons-material/Phone";
-
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 // ============================================================
 // דף גנרי לתצוגת תפריטי חבילות (בר מצווה, ברית, אזכרה ועוד)
 // ============================================================
@@ -114,7 +114,7 @@ const DISH_IMAGE_LIST = [
  // =========================
   // סלטים
   // =========================
-  { id: 55, name: "גזר מרוקאי חי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100406/manager_images/salads/%D7%92%D7%96%D7%A8%20%D7%9E%D7%A8%D7%95%D7%A7%D7%90%D7%99%20%D7%97%D7%99.jpg" },
+  { id: 55, name: "גזר מרוקאי חי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411745/IMG-20250713-WA0123_oqu4hr.jpg" },
    { id: 56, name: "גזר מרוקאי מבושל", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793904540/IMG-20250713-WA0134_eoik7q.jpg" },
   { id: 57, name: "טחינה מתובלת", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%98%D7%97%D7%99%D7%A0%D7%94_%D7%9E%D7%AA%D7%95%D7%91%D7%9C%D7%AA_vahf3p.webp" },
   { id: 58, name: "חמוצי הבית", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100669/manager_images/salads/%D7%97%D7%9E%D7%95%D7%A6%D7%99%20%D7%94%D7%91%D7%99%D7%AA.jpg" },
@@ -127,25 +127,25 @@ const DISH_IMAGE_LIST = [
   { id: 64, name: "חציל במיונז", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 65, name: "קוביות חציל פיקנטי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127721/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA_%D7%97%D7%A6%D7%99%D7%9C_%D7%A4%D7%99%D7%A7%D7%A0%D7%98%D7%99_dgos72.jpg" },
   { id: 66, name: "כרוב ושמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1757940314/manager_images/salads/%D7%9B%D7%A8%D7%95%D7%91%20%D7%95%D7%A9%D7%9E%D7%99%D7%A8.jpg" },
-  { id: 67, name: "כרוב וגזר במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299553/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_ylityg.jpg" },
+  { id: 67, name: "כרוב וגזר במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_r8xpo4.jpg" },
   { id: 68, name: "כרוב וגזר מתובל", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902672/%D7%9B%D7%A8%D7%95%D7%91_%D7%95%D7%92%D7%96%D7%A8_%D7%9E%D7%AA%D7%95%D7%91%D7%9C_etds51.webp" },
-  { id: 69, name: "כרוב אדום במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100484/manager_images/salads/%D7%9B%D7%A8%D7%95%D7%91%20%D7%90%D7%93%D7%95%D7%9D%20%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96.jpg" },
-  { id: 70, name: "סלט עגבניות חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299552/%D7%A1%D7%9C%D7%98_%D7%A2%D7%92%D7%91%D7%A0%D7%99%D7%95%D7%AA_%D7%97%D7%A8%D7%99%D7%A3_ettezc.jpg" },
-  { id: 71, name: "מטבוחה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299551/%D7%9E%D7%98%D7%91%D7%95%D7%97%D7%94_asqdns.jpg" },
+  { id: 69, name: "כרוב אדום במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9B%D7%A8%D7%95%D7%91_%D7%90%D7%93%D7%95%D7%9D_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_wrftkh.jpg" },
+  { id: 70, name: "סלט עגבניות חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_7_bqk4r4.jpg" },
+  { id: 71, name: "מטבוחה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%9E%D7%98%D7%91%D7%95%D7%97%D7%94_ziwlal.jpg" },
   { id: 72, name: "סלט מלפפון בשמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 73, name: "שרי בבזיליקום", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794298529/%D7%A9%D7%A8%D7%99_%D7%91%D7%91%D7%96%D7%99%D7%9C%D7%99%D7%A7%D7%95%D7%9D_eteih6.jpg" },
   { id: 74, name: "פלפל מתוק בצבעים", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127718/%D7%A4%D7%9C%D7%A4%D7%9C_%D7%9E%D7%AA%D7%95%D7%A7_%D7%91%D7%A6%D7%91%D7%A2%D7%99%D7%9D_ckdgpx.jpg" },
   { id: 75, name: "סלט טבולה", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902673/%D7%A1%D7%9C%D7%98_%D7%98%D7%91%D7%95%D7%9C%D7%94_rpqelv.jpg" },
   { id: 76, name: "שורש סלרי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 77, name: "תירס מקסיקני", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100721/manager_images/salads/%D7%AA%D7%99%D7%A8%D7%A1%20%D7%9E%D7%A7%D7%A1%D7%99%D7%A7%D7%A0%D7%99.jpg" },
-  { id: 78, name: "תפוחי אדמה במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299551/%D7%AA%D7%A4%D7%95%D7%97%D7%99_%D7%90%D7%93%D7%9E%D7%94_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_u3nh2m.jpg" },
-  { id: 79, name: "קוביות סלק", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299547/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA_%D7%A1%D7%9C%D7%A7_prksjq.webp" },
-  { id: 80, name: "סלט בטטה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299546/%D7%A1%D7%9C%D7%98_%D7%91%D7%98%D7%98%D7%94_ydbhu3.webp" },
-  { id: 81, name: "סלט ירוק", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299543/%D7%A1%D7%9C%D7%98_%D7%99%D7%A8%D7%95%D7%A7_gyjf9q.jpg" },
-  { id: 82, name: "חומוס ישראלי", price: 23, unit: "לק״ג ", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299543/%D7%97%D7%95%D7%9E%D7%95%D7%A1_%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99_pwjlwm.jpg" },
+  { id: 78, name: "תפוחי אדמה במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100613/manager_images/salads/%D7%AA%D7%A4%D7%95%27%D7%90%20%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96.jpg" },
+  { id: 79, name: "קוביות סלק", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887467/%D7%A7%D7%95%D7%91%D7%99%D7%95%D7%AA_%D7%A1%D7%9C%D7%A7_bkcjei.webp" },
+  { id: 80, name: "סלט בטטה", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887466/%D7%A1%D7%9C%D7%98_%D7%91%D7%98%D7%98%D7%94_t9vgji.webp" },
+  { id: 81, name: "סלט ירוק", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791891249/WhatsApp_Image_2026-10-13_at_10.08.02_sspqpy.jpg" },
+  { id: 82, name: "חומוס ישראלי", price: 23, unit: "לק״ג ", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791887822/%D7%97%D7%95%D7%9E%D7%95%D7%A1_%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99_boq1zc.jpg" },
   { id: 83, name: "חסה, שרי ונבטים ברוטב", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127715/%D7%97%D7%A1%D7%94_%D7%A9%D7%A8%D7%99_%D7%95%D7%A0%D7%91%D7%98%D7%99%D7%9D_%D7%91%D7%A8%D7%95%D7%98%D7%91_zrm3cm.jpg" },
   { id: 84, name: "בורגול", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794298528/%D7%91%D7%95%D7%A8%D7%92%D7%95%D7%9C_eupa9r.jpg" },
-  { id: 85, name: "פלפל חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100317/manager_images/salads/%D7%A4%D7%9C%D7%A4%D7%9C%20%D7%97%D7%A8%D7%99%D7%A3.jpg" },
+  { id: 85, name: "פלפל חריף", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1752411746/IMG-20250713-WA0108_noob7d.jpg" },
 ];
 
 
@@ -254,7 +254,8 @@ const GenericOrder = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [zoomImage, setZoomImage] = useState(null); // זום על תמונת מנה: { src, name }
-
+  const [step, setStep] = useState(0);   // השלב הנוכחי (קטגוריה אחת בכל פעם)
+  const stepsRef = useRef(null);
   // פרטי לקוח
   const [guestName, setGuestName] = useState("");
   const [guestCount, setGuestCount] = useState("");
@@ -403,7 +404,27 @@ const minEventDate = (() => {
 
   // פתיחת מודול סיכום הזמנה עם בדיקת מגבלות
   const handleOrderSummaryClick = () => { if (validateSelectionLimits()) setIsModalOpen(true); };
+  // ----- ניווט בשלבים: כל קטגוריה בשלב נפרד -----
+  const STEP_MIN_MSG = { salads: "יש לבחור לפחות סלט אחד", first: "יש לבחור לפחות מנה ראשונה אחת", main: "יש לבחור לפחות מנה עיקרית אחת", sides: "יש לבחור לפחות תוספת אחת" };
+  const currentStep = Math.min(step, Math.max(sections.length - 1, 0));
+  const currentSection = sections[currentStep];
+  const isLastStep = currentStep === sections.length - 1;
+  const nextTitle = !isLastStep && sections[currentStep + 1] ? sections[currentStep + 1].title : "";
 
+  const scrollToSteps = () => setTimeout(() => {
+    const el = stepsRef.current;
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
+  }, 50);
+
+  const goNext = () => {
+    if (!currentSection) return;
+    if (currentSection.selected.length === 0) { setErrorMessage(STEP_MIN_MSG[currentSection.key]); return; }
+    if (isLastStep) { handleOrderSummaryClick(); return; } // בשלב האחרון: פותח את סיכום ההזמנה
+    setStep(currentStep + 1);
+    scrollToSteps();
+  };
+
+  const goBack = () => { if (currentStep > 0) { setStep(currentStep - 1); scrollToSteps(); } };
 
   
   // ----- סגירת הזמנה: שליחה לשרת -----
@@ -599,16 +620,63 @@ const minEventDate = (() => {
 
 
         {/* ===== קטעי התפריט: סלטים, ראשונות, עיקריות (כולל דגים באזכרה), תוספות ===== */}
-        {sections.map((s) => (
-          <MenuSection key={s.key} title={s.title} note={s.note} dishes={s.dishes} selected={s.selected} setSelected={s.set} limit={s.limit} fishIds={s.fish} onZoom={setZoomImage} />
-        ))}
+              {sections.length > 0 && currentSection && (
+          <>
+            {/* ===== סרגל שלבים + פס התקדמות ===== */}
+            <Box ref={stepsRef} sx={{ mb: 2, borderRadius: "18px", background: darkBg, border: "1px solid #393024", boxShadow: "0 8px 24px rgba(0,0,0,0.18)", px: { xs: 1.5, sm: 3 }, py: { xs: 2, sm: 2.5 } }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, gap: 1 }}>
+                <Typography sx={{ color: "#F5E9D0", fontWeight: 700, fontSize: { xs: 15, sm: 18 } }}>בחירת מנות</Typography>
+                <Box sx={{ border: "1px solid #6F5936", borderRadius: "20px", px: 1.5, py: 0.5, flexShrink: 0 }}>
+                  <Typography sx={{ color: "#D9BD86", fontSize: 12, fontWeight: 600 }}>שלב {currentStep + 1} מתוך {sections.length}</Typography>
+                </Box>
+              </Box>
 
-        <Box sx={{ textAlign: "center", mt: 4, width: "100%" }}>
-          <Button size="large" onClick={handleOrderSummaryClick}
-            sx={{ px: 6, minHeight: 54, borderRadius: "12px", fontWeight: 800, fontSize: 18, color: "#131313", border: "1px solid #E4CC9D", background: "linear-gradient(135deg, #C9A96E 0%, #E4CC9D 50%, #C9A96E 100%)", boxShadow: "0 6px 16px rgba(201,169,110,0.35)", "&:hover": { background: "linear-gradient(135deg, #B89555 0%, #D9BD86 50%, #B89555 100%)" } }}>
-            המשך בהזמנה
-          </Button>
-        </Box>
+              <Box sx={{ display: "flex", alignItems: "flex-start", width: "100%" }}>
+                {sections.map((s, i) => {
+                  const active = i === currentStep;
+                  const completed = i < currentStep;
+                  return (
+                    <Fragment key={s.key}>
+                      <Box
+                        onClick={completed ? () => { setStep(i); scrollToSteps(); } : undefined}
+                        sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.8, flex: "0 0 auto", cursor: completed ? "pointer" : "default" }}>
+                        <Box sx={{ width: active ? 36 : 30, height: active ? 36 : 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", bgcolor: active ? GOLD : "transparent", border: active ? "1px solid #E4CC9D" : completed ? "1px solid #9C7B47" : "1px solid #514735", color: active ? "#17130D" : "#D9BD86", fontWeight: 800, fontSize: 13, transition: "all 0.25s ease" }}>
+                          {completed ? <CheckIcon sx={{ fontSize: 17 }} /> : i + 1}
+                        </Box>
+                        <Typography sx={{ color: active ? "#F1D7A5" : completed ? GOLD : "#8D8980", fontSize: { xs: 10.5, sm: 12.5 }, fontWeight: active ? 700 : 500, whiteSpace: "nowrap" }}>{s.title}</Typography>
+                      </Box>
+                      {i < sections.length - 1 && (
+                        <Box sx={{ flex: 1, minWidth: { xs: 10, sm: 24 }, height: "1px", mt: active ? "18px" : "15px", mx: { xs: 0.5, sm: 1.5 }, background: completed ? GOLD : "#40392E" }} />
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </Box>
+
+              <LinearProgress variant="determinate" value={((currentStep + 1) / sections.length) * 100} sx={{ mt: 2, height: 4, borderRadius: 5, bgcolor: "#3a3326", "& .MuiLinearProgress-bar": { bgcolor: GOLD } }} />
+            </Box>
+
+            {/* ===== הקטגוריה של השלב הנוכחי ===== */}
+            <MenuSection key={currentSection.key} title={currentSection.title} note={currentSection.note} dishes={currentSection.dishes} selected={currentSection.selected} setSelected={currentSection.set} limit={currentSection.limit} fishIds={currentSection.fish} onZoom={setZoomImage} />
+
+            {/* ===== חזרה / המשך ===== */}
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2, mt: 3 }}>
+              {currentStep > 0 ? (
+                <Button variant="outlined" startIcon={<ArrowForwardIosIcon />} onClick={goBack}
+                  sx={{ direction: "rtl", color: GOLD_DARK, borderColor: "#b89546", borderRadius: "12px", px: 2.5, py: 1.2, fontWeight: 700, bgcolor: "#fff", "&:hover": { bgcolor: "#faf7ef", borderColor: GOLD_DARK } }}>
+                  חזרה
+                </Button>
+              ) : <Box />}
+
+              <Button size="large" onClick={goNext}
+                sx={{ px: { xs: 3, md: 6 }, minHeight: 54, borderRadius: "12px", fontWeight: 800, fontSize: { xs: 16, md: 18 }, color: "#131313", border: "1px solid #E4CC9D", background: "linear-gradient(135deg, #C9A96E 0%, #E4CC9D 50%, #C9A96E 100%)", boxShadow: "0 6px 16px rgba(201,169,110,0.35)", "&:hover": { background: "linear-gradient(135deg, #B89555 0%, #D9BD86 50%, #B89555 100%)" } }}>
+                {isLastStep ? "המשך בהזמנה" : `המשך ל${nextTitle}`}
+              </Button>
+            </Box>
+          </>
+        )}
+
+
       </Container>
 
  {/* כפתורי קשר צפים - וואטסאפ וטלפון */}
@@ -700,7 +768,10 @@ const minEventDate = (() => {
         </Box>
       )}
     </Box>
-    <Button onClick={handleOrderSummaryClick} sx={{ px: { xs: 2.5, md: 4 }, height: 44, borderRadius: "12px", fontWeight: 800, flexShrink: 0, color: "#131313", background: "linear-gradient(135deg, #C9A96E 0%, #E4CC9D 100%)" }}>המשך בהזמנה</Button>
+    <Button size="large" onClick={goNext}
+                sx={{ px: { xs: 3, md: 6 }, minHeight: 54, borderRadius: "12px", fontWeight: 800, fontSize: { xs: 16, md: 18 }, color: "#131313", border: "1px solid #E4CC9D", background: "linear-gradient(135deg, #C9A96E 0%, #E4CC9D 50%, #C9A96E 100%)", boxShadow: "0 6px 16px rgba(201,169,110,0.35)", "&:hover": { background: "linear-gradient(135deg, #B89555 0%, #D9BD86 50%, #B89555 100%)" } }}>
+                {isLastStep ? "המשך בהזמנה" : `המשך ל${nextTitle}`}
+              </Button>
   </Box>
 )}
 

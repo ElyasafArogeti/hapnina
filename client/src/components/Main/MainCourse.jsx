@@ -57,9 +57,8 @@ const calculateCustomerPrice = (price) => {
 
 
 
-
 // תפריט קייטרינג הפנינה
-const dishes = [
+export const dishes = [
   // =========================
   // דגים
   // =========================

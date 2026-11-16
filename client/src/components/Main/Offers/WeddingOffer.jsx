@@ -4,12 +4,12 @@ import { Card, Typography, Button, Box } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
 
-// תפריט GOLD
+// תפריט שבתות
 const WeddingOffer = () => {
   const navigate = useNavigate();
 
   const eventImage =
-    "https://ari-events.co.il/wp-content/uploads/2023/11/hupa-ari-10.webp";
+    "";
 
   const features = [
     "8 סוגי סלטים לבחירה",
@@ -74,7 +74,7 @@ const WeddingOffer = () => {
             color: "#e1c27a",
           }}
         >
-          תפריט GOLD
+         חבילת שבתות מפואר
         </Typography>
 
         <Typography
@@ -85,7 +85,7 @@ const WeddingOffer = () => {
             lineHeight: 1.7,
           }}
         >
-          תפריט מלא ומפנק לכל אירוע, עם הצעת מחיר במקום
+          תפריט מלא ומפנק  לשבת חתן או שבת משפחתית  
         </Typography>
 
         {/* פירוט החבילה */}
@@ -142,18 +142,18 @@ const WeddingOffer = () => {
           >
             <Typography
               sx={{
-                color: "#e1c27a",
-                fontSize: "0.95rem",
-                fontWeight: 800,
+                   color: "#e1c27a",
+              fontSize: "1.25rem",
+              fontWeight: 900,
               }}
             >
-              הצעת מחיר במקום
+             רק ₪179 למנה
             </Typography>
           </Box>
 
           <Button
             fullWidth
-            onClick={() => navigate("/OrdersOnline")}
+            onClick={() => navigate("/Sabbath")}
             variant="contained"
             sx={{
               py: 1.15,
@@ -171,7 +171,7 @@ const WeddingOffer = () => {
               },
             }}
           >
-            לקבלת הצעת מחיר
+           כנסו לתפריט שבתות
           </Button>
         </Box>
       </Box>

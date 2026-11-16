@@ -9,7 +9,7 @@ const WeddingOffer = () => {
   const navigate = useNavigate();
 
   const eventImage =
-    "";
+    "https://res.cloudinary.com/dhkegagjk/image/upload/v1794859465/%D7%97%D7%95%D7%A4%D7%94_%D7%99%D7%94%D7%95%D7%93%D7%99%D7%AA_%D7%A8%D7%95%D7%9E%D7%A0%D7%98%D7%99%D7%AA_%D7%91%D7%A9%D7%A2%D7%AA_%D7%A9%D7%A7%D7%99%D7%A2%D7%94_ozugk5.png";
 
   const features = [
     "8 סוגי סלטים לבחירה",

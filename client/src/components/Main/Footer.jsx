@@ -182,30 +182,9 @@ const Footer = () => {
               }}
             >
               קייטרינג איכותי עם שירות אישי, באירועים קטנים וגדולים. גבעת שאול, ירושלים.
-            </Typography>
+             </Typography>
 
-            <Button
-              component={Link}
-              to="/MainCourse"
-              sx={{
-                px: 3.5,
-                py: 1.1,
-                borderRadius: "12px",
-                fontWeight: 800,
-                fontSize: 15,
-                color: "#131313",
-                border: `1px solid ${GOLD_LIGHT}`,
-                background: `linear-gradient(135deg, ${GOLD} 0%, ${GOLD_LIGHT} 50%, ${GOLD} 100%)`,
-                boxShadow: "0 6px 16px rgba(201,169,110,0.3)",
-                transition: "all 0.25s ease",
-                "&:hover": {
-                  background: "linear-gradient(135deg, #B89555 0%, #D9BD86 50%, #B89555 100%)",
-                  boxShadow: "0 8px 20px rgba(201,169,110,0.45)",
-                },
-              }}
-            >
-              סל קניות שלך
-            </Button>
+
           </Grid>
 
           {/* ניווט מהיר */}
@@ -215,8 +194,15 @@ const Footer = () => {
             <MuiLink component={Link} to="/about" sx={linkSx}>אודות</MuiLink>
             <MuiLink component={Link} to="/FAQAccordion" sx={linkSx}>שאלות ותשובות</MuiLink>
             <MuiLink component={Link} to="/contact" sx={linkSx}>צור קשר</MuiLink>
-            <MuiLink component={Link} to="/MainCourse" sx={linkSx}>אוכל מוכן להזמנה</MuiLink>
-            <MuiLink component={Link} to="/OrdersOnline" sx={linkSx}>תפריט כללי</MuiLink>
+            <MuiLink component={Link} to="/MainCourse" sx={linkSx}>אוכל מוכן עד הבית</MuiLink>
+          <MuiLink component={Link} to="/#event-packages" sx={linkSx}> חבילות התפריטים שלנו</MuiLink>
+ 
+  
+ 
+
+ 
+
+         
           </Grid>
 
           {/* מידע חשוב */}

@@ -160,7 +160,6 @@ export const dishes = [
   { id: 72, name: "סלט מלפפון בשמיר", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 73, name: "שרי בבזיליקום", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794298529/%D7%A9%D7%A8%D7%99_%D7%91%D7%91%D7%96%D7%99%D7%9C%D7%99%D7%A7%D7%95%D7%9D_eteih6.jpg" },
   { id: 74, name: "פלפל מתוק בצבעים", price: 29, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794127718/%D7%A4%D7%9C%D7%A4%D7%9C_%D7%9E%D7%AA%D7%95%D7%A7_%D7%91%D7%A6%D7%91%D7%A2%D7%99%D7%9D_ckdgpx.jpg" },
-  { id: 75, name: "סלט טבולה", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902673/%D7%A1%D7%9C%D7%98_%D7%98%D7%91%D7%95%D7%9C%D7%94_rpqelv.jpg" },
   { id: 76, name: "שורש סלרי", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "" },
   { id: 77, name: "תירס מקסיקני", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1753100721/manager_images/salads/%D7%AA%D7%99%D7%A8%D7%A1%20%D7%9E%D7%A7%D7%A1%D7%99%D7%A7%D7%A0%D7%99.jpg" },
   { id: 78, name: "תפוחי אדמה במיונז", price: 23, unit: "לק״ג", category: "סלטים", details: "", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794299551/%D7%AA%D7%A4%D7%95%D7%97%D7%99_%D7%90%D7%93%D7%9E%D7%94_%D7%91%D7%9E%D7%99%D7%95%D7%A0%D7%96_u3nh2m.jpg" },

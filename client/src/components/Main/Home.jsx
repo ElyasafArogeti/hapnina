@@ -577,7 +577,9 @@ const navigate = useNavigate();
 
     
 {/* קטע החבילות  */}
-<OffersSection />
+<Box id="event-packages">
+  <OffersSection />
+</Box>
 
     {/* כרטיס 2 - הזמנות תפריטים אונליין */}
     <Grid2 size={{ xs: 12, md: 12 }}>

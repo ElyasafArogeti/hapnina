@@ -584,9 +584,6 @@ function JourneyBar({ step, maxStep, onJump, total }) {
         שלב {gi + 1} מתוך {GROUPS.length}: {GROUPS[gi].label}
         {current.sub ? ` · ${current.sub} (${subIndex + 1} מתוך ${friday.length})` : ""}
         {" · "}
-        <Box component="span" sx={{ color: "#fff", fontWeight: 700 }}>
-          סה״כ כרגע ₪{total.toLocaleString("he-IL")}
-        </Box>
       </Typography>
     </Box>
   );

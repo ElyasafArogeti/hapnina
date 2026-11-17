@@ -9,13 +9,13 @@ const WeddingOffer = () => {
   const navigate = useNavigate();
 
   const eventImage =
-    "https://res.cloudinary.com/dhkegagjk/image/upload/v1794859465/%D7%97%D7%95%D7%A4%D7%94_%D7%99%D7%94%D7%95%D7%93%D7%99%D7%AA_%D7%A8%D7%95%D7%9E%D7%A0%D7%98%D7%99%D7%AA_%D7%91%D7%A9%D7%A2%D7%AA_%D7%A9%D7%A7%D7%99%D7%A2%D7%94_ozugk5.png";
+    "https://res.cloudinary.com/dhkegagjk/image/upload/v1791904848/%D7%AA%D7%9E%D7%95%D7%A0%D7%94_%D7%A9%D7%91%D7%AA_jmcv5t.jpg";
 
   const features = [
     "8 סוגי סלטים לבחירה",
-    "3 מנות ראשונות לבחירה",
-    "3 מנות עיקריות לבחירה",
-    "3 תוספות לבחירה",
+    "2 סוגי דגים לבחירה",
+    "2  סוגי עופות ובשרים לבחירה ",
+    "2 תוספות לבחירה",
   ];
 
   return (
@@ -147,7 +147,7 @@ const WeddingOffer = () => {
               fontWeight: 900,
               }}
             >
-             רק ₪179 למנה
+             רק ₪190 למנה
             </Typography>
           </Box>
 

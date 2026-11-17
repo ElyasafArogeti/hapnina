@@ -13,24 +13,48 @@ import NavbarHome from "./NavbarHome";
 import Footer from "./Footer";
 import defaultDishImage from "../../assets/imgs/imgdifolt.png";
 
-
-
 import { dishes } from "./MainCourse";
 
 // ============================================================
 // קבועים
 // ============================================================
-const PRICE_PER_GUEST = 179; // ₪ למנה
+const PRICE_PER_GUEST = 190; // ₪ למנה
 const MIN_GUESTS = 50;
 const SALADS_LIMIT = 8;
 const FRIDAY_LIMITS = { fish: 2, mains: 2, sides: 2 };
-const SEUDA3_LIMIT = 3; // כמה תוספות לסעודה שלישית (לשינוי - רק כאן)
-const SERVICE_PHONE = "0548520195";
+const SEUDA3_LIMIT = 2; // כמה תוספות לסעודה שלישית (לשינוי - רק כאן)
+const SERVICE_PHONE = " 0795152820 (שלוחה 1)";
 const EVENT_TYPE = "שבת חתן "; // אותו ערך כמו בסל הקניות. אפשר לשנות ל"שבת חתן" אם תרצה להבדיל במסד הנתונים
 
+// ---- תוספות בתשלום (מחיר למנה, הלקוח בוחר כמות ידנית) ----
+const SCHNITZEL_PRICE = 20; // ₪ למנת שניצל בשבת בבוקר (במקום חמין)
+const SALMON_PRICE = 5; // ₪ למנת סלמון בסעודה שלישית
+
+// ---- מנות שלא יוצגו בשלב המנות העיקריות של ליל שבת ----
+const EXCLUDED_MAINS = [
+  "מעורב ירושלמי + פירה",
+  "צלי בקר מספר 5",
+  "גוש אסאדו",
+  "מוקפץ סיני עם רצועות עוף",
+  "קבבונים",
+  "כבדים מוקפצים + פירה",
+  "מוסקה בשרית",
+  "פרגית עוף ממולא",
+];
+// נרמול טקסט להשוואה: בלי ניקוד, רווחים, גרשיים וסימנים
+const normalize = (s) =>
+  (s || "")
+    .replace(/[\u0591-\u05C7]/g, "")
+    .replace(/[^\u05D0-\u05EAA-Za-z0-9]/g, "")
+    .toLowerCase();
+const EXCLUDED_MAINS_NORM = EXCLUDED_MAINS.map(normalize);
+const isExcludedMain = (dish) => {
+  const n = normalize(dish.name);
+  return EXCLUDED_MAINS_NORM.some((ex) => n === ex || n.includes(ex));
+};
 
 const STEP_IMAGES = {
-  intro: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794859465/%D7%97%D7%95%D7%A4%D7%94_%D7%99%D7%94%D7%95%D7%93%D7%99%D7%AA_%D7%A8%D7%95%D7%9E%D7%A0%D7%98%D7%99%D7%AA_%D7%91%D7%A9%D7%A2%D7%AA_%D7%A9%D7%A7%D7%99%D7%A2%D7%94_ozugk5.png", // חופה, חתן וכלה מהגב, כלה צנועה
+  intro: "https://res.cloudinary.com/dhkegagjk/image/upload/v1791904848/%D7%AA%D7%9E%D7%95%D7%A0%D7%94_%D7%A9%D7%91%D7%AA_jmcv5t.jpg", // פתיח וסיום
   salads: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794860469/%D7%A1%D7%A2%D7%95%D7%93%D7%AA_%D7%97%D7%92_%D7%90%D7%9C%D7%92%D7%A0%D7%98%D7%99%D7%AA_%D7%91%D7%90%D7%95%D7%9C%D7%9D_%D7%9E%D7%95%D7%90%D7%A8_%D1%81%D0%B2%D0%B5%D1%87%E1%83%94%E1%83%91%E1%83%98%E1%83%97_fzvgg3.png", // סועדים ליד שולחנות, זקן מרים כוס קידוש, חושך בחוץ, נרות שבת בפינה
   friday: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794860062/%D7%A1%D7%A2%D7%95%D7%93%D7%AA_%D7%A9%D7%91%D7%AA_%D7%97%D7%92%D7%99%D7%92%D7%99%D7%AA_%D7%95%D7%9E%D7%A9%D7%A4%D7%97%D7%AA%D7%99%D7%AA_hy90m0.png", // גברים בלבד אוכלים סעודת ליל שבת (משמש את שלושת שלבי ליל שבת)
   morning: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794860677/%D7%A1%D7%A2%D7%95%D7%93%D7%AA_%D7%97%D7%92_%D7%91%D7%90%D7%95%D7%9C%D7%9D_%D7%9E%D7%95%D7%90%D7%A8_cand%D7%9C%E0%AA%BF%E0%AA%B8%E0%AB%8D%E0%AA%9F_dttlr7.png", // אור יום בחוץ, סיר חמין על השולחן, ילדים משחקים ברקע
@@ -54,19 +78,32 @@ const SANS = `"Heebo", "Assistant", Arial, sans-serif`;
 
 // ---- מנות "חמים" לשבת בבוקר (אין להן מחיר, חלק מהחבילה) ----
 const HOT_ITEMS = [
-  { id: "hot-wheat", name: "  חיטה", details: "הקלאסי של שבת בבוקר", image: "" },
-  { id: "hot-beans", name: "שעועית", details: "חמין בלי שעועית אך אפשר", image: "" },
-  { id: "hot-eggs", name: "ביצים חמינדוס", details: "חומות וטעימות ", image: "" },
-  { id: "hot-rice", name: "אורז", details: "בצד הולך טוב", image: "" },
-  
+  { id: "hot-wheat", name: "  חיטה", details: "הקלאסי של שבת בבוקר", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794904856/%D7%AA%D7%91%D7%A9%D7%99%D7%9C_%D7%97%D7%99%D7%98%D7%94_%D7%96%D7%94%D7%95%D7%91_%D7%91%D7%A6%D7%9C%D7%97%D7%AA_%D7%9E%D7%A2%D7%95%D7%98%D7%A8%D7%AA_fjq8up.png" },
+  { id: "hot-beans", name: "שעועית", details: "חמין בלי שעועית אך אפשר", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794905318/%D7%AA%D7%91%D7%A9%D7%99%D7%9C_%D7%A9%D7%A2%D7%95%D7%A2%D7%99%D7%AA_%D7%A2%D7%A9%D7%99%D7%A8_%D7%91%D7%A7%D7%A2%D7%A8%D7%AA_%D7%A4%D7%95%D7%A8%D7%A6%D7%9C%D7%9F_la3mkb.png" },
+  { id: "hot-eggs", name: "ביצים", details: "חומות וטעימות ", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794905318/%D7%A7%D7%A2%D7%A8%D7%94_%D7%9E%D7%A2%D7%95%D7%98%D7%A8%D7%AA_%D7%A2%D7%9D_%D7%91%D7%99%D7%A6%D7%99%D7%9D_%D7%97%D7%95%D7%9E%D7%95%D7%AA_tejfh5.png" },
+  { id: "hot-rice", name: "אורז", details: "בצד הולך טוב", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902793/%D7%90%D7%95%D7%A8%D7%96_%D7%A2%D7%9D_%D7%A9%D7%A7%D7%93%D7%99%D7%9D_%D7%95%D7%A6%D7%99%D7%9E%D7%95%D7%A7%D7%99%D7%9D_ivmmhz.webp" },
 ];
+
+// ---- תוספות בתשלום: שניצל בשבת בבוקר (לאלה שלא אוכלים חמין) ----
+const SCHNITZEL_ITEM = {
+  name: "מנת שניצל",
+  details: "לאלה שלא אוכלים חמין: שניצל במקום",
+  image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794129100/%D7%A9%D7%A0%D7%99%D7%A6%D7%9C_%D7%A2%D7%95%D7%A3_w7w77j.jpg",
+};
+
+// ---- תוספות בתשלום: סלמון בסעודה שלישית ----
+const SALMON_ITEM = {
+  name: "מנת סלמון",
+  details: "סלמון לסעודה שלישית",
+  image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1793902184/%D7%A4%D7%99%D7%9C%D7%94_%D7%A1%D7%9C%D7%9E%D7%95%D7%9F_%D7%91%D7%A8%D7%95%D7%98%D7%91_%D7%90%D7%93%D7%9D_qujkul.webp", // אפשר להדביק כאן קישור לתמונת סלמון. אם ריק תוצג תמונת ברירת המחדל
+};
 
 // ---- תוספות לסעודה שלישית (אפשר לערוך חופשי) ----
 const byId = (id) => dishes.find((d) => d.id === id);
 const SEUDA3_ITEMS = [
-  { id: "s3-fried-fish", name: "דג מטוגן", details: "פריך וטרי", image: "" },
+  { id: "s3-fried-fish", name: "דג מטוגן", details: "פריך וטרי", image: "https://res.cloudinary.com/dhkegagjk/image/upload/v1794909204/%D7%A4%D7%99%D7%9C%D7%94_%D7%93%D7%92_%D7%9E%D7%98%D7%95%D7%92%D7%9F_%D7%A2%D7%9D_%D7%9C%D7%99%D7%9E%D7%95%D7%9F_%D7%95%D7%A4%D7%98%D7%A8%D7%95%D7%96%D7%99%D7%9C%D7%99%D7%94_shaecw.png" },
   byId(4),
-  byId(1), 
+  byId(1),
 ].filter(Boolean);
 
 // ---- השלבים. ליל שבת מפוצל לשלושה שלבים נפרדים ----
@@ -244,6 +281,124 @@ function PickCard({ item, selected, locked, onToggle }) {
   );
 }
 
+// כרטיס תוספת בתשלום עם בחירת כמות ידנית (₪ למנה)
+function ExtraQtyCard({ item, price, qty, max, onChange }) {
+  const set = (v) => onChange(Math.max(0, Math.min(max, Number.isNaN(v) ? 0 : v)));
+  const active = qty > 0;
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: { xs: 1.5, sm: 2.5 },
+        flexWrap: "wrap",
+        bgcolor: "#fff",
+        borderRadius: "14px",
+        border: `2px solid ${active ? C.gold : C.line}`,
+        boxShadow: active ? `0 0 0 3px ${C.goldLight}66` : "none",
+        transition: "border-color .2s, box-shadow .2s",
+        p: { xs: 1.2, sm: 1.8 },
+      }}
+    >
+      <Box
+        component="img"
+        src={imgSrc(item)}
+        alt={item.name}
+        loading="lazy"
+        onError={(e) => {
+          if (e.currentTarget.src !== defaultDishImage) {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = defaultDishImage;
+          }
+        }}
+        sx={{
+          width: { xs: 84, sm: 120 },
+          height: { xs: 84, sm: 120 },
+          borderRadius: "12px",
+          objectFit: item.image?.trim() ? "cover" : "contain",
+          bgcolor: "#fff",
+          flexShrink: 0,
+        }}
+      />
+      <Box sx={{ flex: "1 1 160px", minWidth: 0 }}>
+        <Typography sx={{ fontFamily: SANS, fontWeight: 700, fontSize: { xs: 16, sm: 19 }, color: C.ink }}>
+          {item.name}
+        </Typography>
+        {item.details && (
+          <Typography sx={{ fontFamily: SANS, fontSize: { xs: 12.5, sm: 14 }, color: C.mute, mt: 0.3 }}>
+            {item.details}
+          </Typography>
+        )}
+        <Box
+          sx={{
+            display: "inline-block",
+            mt: 0.8,
+            px: 1.4,
+            py: 0.3,
+            borderRadius: 99,
+            bgcolor: C.pearl,
+            border: `1px solid ${C.goldLight}`,
+            fontFamily: SANS,
+            fontWeight: 700,
+            fontSize: 13.5,
+            color: C.night,
+          }}
+        >
+          תוספת ₪{price} למנה
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mx: "auto" }}>
+        <IconButton
+          aria-label={`הפחתת ${item.name}`}
+          onClick={() => set(qty - 1)}
+          disabled={qty <= 0}
+          sx={{ color: C.night, border: `1px solid ${C.gold}` }}
+        >
+          <RemoveIcon />
+        </IconButton>
+        <Box
+          component="input"
+          type="number"
+          inputMode="numeric"
+          aria-label={`כמות ${item.name}`}
+          value={qty}
+          onChange={(e) => set(parseInt(e.target.value.replace(/\D/g, ""), 10))}
+          onFocus={(e) => e.target.select()}
+          sx={{
+            width: 70,
+            textAlign: "center",
+            border: "none",
+            borderBottom: `2px solid ${C.gold}`,
+            outline: "none",
+            background: "transparent",
+            color: C.night,
+            fontFamily: SERIF,
+            fontWeight: 700,
+            fontSize: 26,
+            MozAppearance: "textfield",
+            "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": { WebkitAppearance: "none", margin: 0 },
+          }}
+        />
+        <IconButton
+          aria-label={`הוספת ${item.name}`}
+          onClick={() => set(qty + 1)}
+          disabled={qty >= max}
+          sx={{ color: C.night, border: `1px solid ${C.gold}` }}
+        >
+          <AddIcon />
+        </IconButton>
+      </Box>
+      {active && (
+        <Typography
+          sx={{ width: "100%", textAlign: "center", fontFamily: SANS, fontWeight: 700, color: C.wine, fontSize: 14 }}
+        >
+          {qty} מנות × ₪{price} = ₪{(qty * price).toLocaleString("he-IL")}
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
 // מונה בחירה "נבחרו 3 מתוך 8"
 function Counter({ label, count, limit }) {
   const done = limit ? count === limit : count > 0;
@@ -322,8 +477,8 @@ function ChosenList({ title, names }) {
   );
 }
 
-// סרגל המסלול: כל התחנות, עם סימון איפה אנחנו (טלפון ומחשב)
-function JourneyBar({ step, onJump }) {
+// סרגל המסלול: כל התחנות, אפשר לקפוץ לכל תחנה שכבר הגעתם אליה (ולחזור למקום שבו עצרתם)
+function JourneyBar({ step, maxStep, onJump, total }) {
   const current = STEPS[step];
   const gi = GROUPS.findIndex((g) => g.key === current.group);
   const friday = STEPS.filter((s) => s.group === "friday");
@@ -347,34 +502,40 @@ function JourneyBar({ step, onJump }) {
           const active = i === gi;
           const done = i < gi;
           const firstStepIndex = STEPS.findIndex((s) => s.group === g.key);
+          const lastStepIndex = STEPS.map((s) => s.group).lastIndexOf(g.key);
+          // אפשר ללחוץ על כל תחנה שכבר הגענו אליה (גם אם היא אחרי המקום הנוכחי)
+          const reachable = !active && firstStepIndex <= maxStep;
+          // קופצים לשלב האחרון שהגענו אליו בתוך התחנה (למשל ליל שבת -> תוספות)
+          const target = Math.min(maxStep, lastStepIndex);
+          const visited = firstStepIndex <= maxStep;
           return (
             <Box
               key={g.key}
               role="button"
-              tabIndex={0}
+              tabIndex={reachable ? 0 : -1}
               aria-current={active ? "step" : undefined}
-              aria-label={done ? `חזרה לשלב ${g.label}` : g.label}
-              onClick={() => done && onJump(firstStepIndex)}
-              onKeyDown={(e) => e.key === "Enter" && done && onJump(firstStepIndex)}
-              sx={{ flex: 1, minWidth: 0, textAlign: "center", cursor: done ? "pointer" : "default" }}
+              aria-label={reachable ? `מעבר לשלב ${g.label}` : g.label}
+              onClick={() => reachable && onJump(target)}
+              onKeyDown={(e) => e.key === "Enter" && reachable && onJump(target)}
+              sx={{ flex: 1, minWidth: 0, textAlign: "center", cursor: reachable ? "pointer" : "default" }}
             >
               <Box
                 sx={{
                   height: 4,
                   borderRadius: 99,
-                  bgcolor: active ? C.gold : done ? C.goldLight : "#33435f",
+                  bgcolor: active ? C.gold : visited ? C.goldLight : "#33435f",
                   transition: "background-color .3s",
                 }}
               />
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.4, mt: 0.7 }}>
-                {done && <CheckIcon sx={{ fontSize: 12, color: C.goldLight }} />}
+                {visited && !active && <CheckIcon sx={{ fontSize: 12, color: C.goldLight }} />}
                 <Typography
                   sx={{
                     fontFamily: SANS,
                     fontSize: { xs: 10.5, sm: 13 },
                     fontWeight: active ? 800 : 500,
                     lineHeight: 1.25,
-                    color: active ? "#fff" : done ? C.goldLight : "#8f9bb3",
+                    color: active ? "#fff" : visited ? C.goldLight : "#8f9bb3",
                   }}
                 >
                   {g.label}
@@ -385,9 +546,47 @@ function JourneyBar({ step, onJump }) {
         })}
       </Box>
 
+      {/* תתי-שלבים של ליל שבת */}
+      {current.group === "friday" && (
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 0.8, mt: 0.9 }}>
+          {STEPS.map((s, i) => {
+            if (s.group !== "friday") return null;
+            const isCur = i === step;
+            const canGo = !isCur && i <= maxStep;
+            return (
+              <Box
+                key={s.key}
+                role="button"
+                tabIndex={canGo ? 0 : -1}
+                onClick={() => canGo && onJump(i)}
+                onKeyDown={(e) => e.key === "Enter" && canGo && onJump(i)}
+                sx={{
+                  px: 1.3,
+                  py: 0.25,
+                  borderRadius: 99,
+                  fontFamily: SANS,
+                  fontSize: { xs: 11.5, sm: 12.5 },
+                  fontWeight: isCur ? 800 : 500,
+                  color: isCur ? C.night : canGo ? C.goldLight : "#8f9bb3",
+                  bgcolor: isCur ? C.goldLight : "transparent",
+                  border: `1px solid ${isCur ? C.goldLight : canGo ? C.gold : "#33435f"}`,
+                  cursor: canGo ? "pointer" : "default",
+                }}
+              >
+                {s.sub}
+              </Box>
+            );
+          })}
+        </Box>
+      )}
+
       <Typography sx={{ textAlign: "center", mt: 0.8, fontFamily: SANS, fontSize: { xs: 12, sm: 13 }, color: C.goldLight }}>
         שלב {gi + 1} מתוך {GROUPS.length}: {GROUPS[gi].label}
         {current.sub ? ` · ${current.sub} (${subIndex + 1} מתוך ${friday.length})` : ""}
+        {" · "}
+        <Box component="span" sx={{ color: "#fff", fontWeight: 700 }}>
+          סה״כ כרגע ₪{total.toLocaleString("he-IL")}
+        </Box>
       </Typography>
     </Box>
   );
@@ -468,7 +667,9 @@ function Body({ children }) {
 export default function Sabbath() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
+  const [maxStep, setMaxStep] = useState(0); // השלב הכי רחוק שהגענו אליו
   const [sel, setSel] = useState({ salads: [], fish: [], mains: [], sides: [], hot: [], seuda3: [] });
+  const [extras, setExtras] = useState({ schnitzel: 0, salmon: 0 }); // כמויות של תוספות בתשלום
   const [guests, setGuests] = useState(String(MIN_GUESTS));
   const [form, setForm] = useState({ name: "", phone: "", email: "", date: "", address: "" });
   const [errors, setErrors] = useState({});
@@ -478,6 +679,7 @@ export default function Sabbath() {
   const [successOpen, setSuccessOpen] = useState(false);
 
   const guestsNum = parseInt(guests, 10) || 0;
+  const guestsEff = Math.max(guestsNum, MIN_GUESTS);
 
   // פונטים
   useEffect(() => {
@@ -490,15 +692,20 @@ export default function Sabbath() {
     document.head.appendChild(link);
   }, []);
 
-  // גלילה לראש בכל מעבר שלב
+  // גלילה לראש בכל מעבר שלב + עדכון השלב הכי רחוק שהגענו אליו
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    setMaxStep((m) => Math.max(m, step));
   }, [step]);
 
   // ---- נתונים מהתפריט ----
   const saladItems = useMemo(() => dishes.filter((d) => d.category === "סלטים"), []);
   const fishItems = useMemo(() => dishes.filter((d) => d.category === "דגים"), []);
-  const mainItems = useMemo(() => dishes.filter((d) => d.category === "בשרים" || d.category === "עופות"), []);
+  // מנות עיקריות: בשרים ועופות, בלי המנות שהוסרו (EXCLUDED_MAINS)
+  const mainItems = useMemo(
+    () => dishes.filter((d) => (d.category === "בשרים" || d.category === "עופות") && !isExcludedMain(d)),
+    []
+  );
   const sideItems = useMemo(() => dishes.filter((d) => d.category === "תוספות"), []);
 
   const toggle = (group, id, limit) =>
@@ -521,22 +728,50 @@ export default function Sabbath() {
   const isIntro = step === 0;
   const isSummary = step === LAST;
 
-  // האם אפשר להמשיך מהשלב הנוכחי
-  const blocked = (() => {
-    if (stepKey === "salads" && sel.salads.length !== SALADS_LIMIT)
+  // האם שלב מסוים חסר בחירות (מחזיר הודעה, או "" אם הכול תקין)
+  const stepIncomplete = (key) => {
+    if (key === "salads" && sel.salads.length !== SALADS_LIMIT)
       return `נא לבחור ${SALADS_LIMIT} סלטים (נבחרו ${sel.salads.length})`;
-    if (stepKey === "fish" && sel.fish.length !== FRIDAY_LIMITS.fish) return `נא לבחור ${FRIDAY_LIMITS.fish} דגים`;
-    if (stepKey === "mains" && sel.mains.length !== FRIDAY_LIMITS.mains)
+    if (key === "fish" && sel.fish.length !== FRIDAY_LIMITS.fish) return `נא לבחור ${FRIDAY_LIMITS.fish} דגים`;
+    if (key === "mains" && sel.mains.length !== FRIDAY_LIMITS.mains)
       return `נא לבחור ${FRIDAY_LIMITS.mains} מנות עיקריות`;
-    if (stepKey === "sides" && sel.sides.length !== FRIDAY_LIMITS.sides)
+    if (key === "sides" && sel.sides.length !== FRIDAY_LIMITS.sides)
       return `נא לבחור ${FRIDAY_LIMITS.sides} תוספות`;
     return "";
-  })();
+  };
+
+  // האם אפשר להמשיך מהשלב הנוכחי
+  const blocked = stepIncomplete(stepKey);
 
   const next = () => step < LAST && !blocked && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
 
-  const total = PRICE_PER_GUEST * guestsNum;
+  // קפיצה מהסרגל. קפיצה אחורה תמיד חופשית.
+  // קפיצה קדימה עוצרת בשלב הראשון שחסרות בו בחירות (למשל אם הורדת סלט וחזרת קדימה)
+  const goTo = (target) => {
+    if (target > step) {
+      for (let i = 0; i < target; i++) {
+        if (stepIncomplete(STEPS[i].key)) {
+          setStep(i);
+          return;
+        }
+      }
+    }
+    setStep(target);
+  };
+
+  // ---- חישוב מחיר: מחיר בסיס לכל הסועדים + תוספות בתשלום לפי כמות ידנית ----
+  const schnitzelQty = Math.min(extras.schnitzel, guestsEff);
+  const salmonQty = Math.min(extras.salmon, guestsEff);
+  const baseTotal = PRICE_PER_GUEST * guestsEff;
+  const schnitzelTotal = schnitzelQty * SCHNITZEL_PRICE;
+  const salmonTotal = salmonQty * SALMON_PRICE;
+  const total = baseTotal + schnitzelTotal + salmonTotal;
+
+  const extraNames = [
+    ...(schnitzelQty > 0 ? [`${SCHNITZEL_ITEM.name} × ${schnitzelQty} (₪${schnitzelTotal.toLocaleString("he-IL")})`] : []),
+    ...(salmonQty > 0 ? [`${SALMON_ITEM.name} × ${salmonQty} (₪${salmonTotal.toLocaleString("he-IL")})`] : []),
+  ];
 
   // ---- בדיקת תקינות לכל השדות ----
   const validate = () => {
@@ -575,6 +810,13 @@ export default function Sabbath() {
   // לחיצה על "שליחת הזמנה": בדיקה ואז דיאלוג אישור
   const handleSubmitClick = () => {
     setErrorMessage("");
+    // הגנה: אם נשאר שלב לא שלם (אחרי קפיצות וחזרות), חוזרים אליו
+    for (let i = 1; i < LAST; i++) {
+      if (stepIncomplete(STEPS[i].key)) {
+        setStep(i);
+        return;
+      }
+    }
     if (!validate()) {
       setErrorMessage("יש שדות שצריך לתקן");
       return;
@@ -596,6 +838,13 @@ export default function Sabbath() {
         ...sideNames.map((n) => mk(n, "ליל שבת")),
         ...hotNames.map((n) => mk(n, "שבת בבוקר")),
         ...seuda3Names.map((n) => mk(n, "סעודה שלישית")),
+        // תוספות בתשלום: הכמות והמחיר נכנסים לשם המנה כדי שיופיעו בהזמנה
+        ...(schnitzelQty > 0
+          ? [mk(`${SCHNITZEL_ITEM.name} × ${schnitzelQty} (תוספת ₪${SCHNITZEL_PRICE} למנה)`, "שבת בבוקר")]
+          : []),
+        ...(salmonQty > 0
+          ? [mk(`${SALMON_ITEM.name} × ${salmonQty} (תוספת ₪${SALMON_PRICE} למנה)`, "סעודה שלישית")]
+          : []),
       ],
     };
   };
@@ -618,7 +867,7 @@ export default function Sabbath() {
         body: JSON.stringify({
           userName: form.name.trim(),
           userPhone: phone,
-          guestCount: guestsNum,
+          guestCount: guestsEff,
           eventDate: form.date,
           orderMenu: createOrderSummary(),
           totalPrice: Number(total.toFixed(2)),
@@ -724,17 +973,36 @@ export default function Sabbath() {
             <Hero
               image={STEP_IMAGES.morning}
               title="סעודת שבת בבוקר"
-              subtitle="השולחן מלא, החמין על האש, והבית מתעורר"
+              subtitle="השולחן מלא, החמין על הפלטה, והריח מרחף באויר"
             />
             <Body>
               <Typography sx={{ fontFamily: SANS, color: C.ink, lineHeight: 1.9, fontSize: { xs: 15, md: 17 }, mt: 3 }}>
-                {SALADS_LIMIT} הסלטים שבחרתם מלווים אתכם בכל סעודות השבת, גם בבוקר. כאן אתם מוסיפים את המנות החמות.
+             <strong>   בבוקר אתם מקבלים סיר חמין מרוקאי בשרי, משובח וטעים.</strong> 
               </Typography>
+              <Typography sx={{ fontFamily: SANS, color: C.ink, lineHeight: 1.9, fontSize: { xs: 15, md: 17 }, mt: 3 }}>
+                {SALADS_LIMIT}  הסלטים שבחרתם מלווים אתכם בכל סעודות השבת.
+              </Typography>
+              
               <Box sx={{ mt: 2 }}>
                 <ChosenList title={`הסלטים שבחרתם לכל הסעודות (${saladNames.length})`} names={saladNames} />
               </Box>
-              <Counter label="חמין בשרי מרוקאי לשבת בבוקר" count={sel.hot.length} />
+              <Counter label="מה תרצו להוסיף בצד החמין ?" count={sel.hot.length} />
               <PickGrid items={HOT_ITEMS} picked={sel.hot} onToggle={(id) => toggle("hot", id)} />
+
+              {/* תוספת בתשלום: שניצל לאלה שלא אוכלים חמין */}
+              <Typography sx={{ fontFamily: SERIF, fontWeight: 700, fontSize: { xs: 22, md: 28 }, color: C.night, mt: 4, mb: 0.5 }}>
+                לא כולם אוכלים חמין?
+              </Typography>
+              <Typography sx={{ fontFamily: SANS, color: C.mute, fontSize: { xs: 14, md: 15.5 }, mb: 1.5 }}>
+                אפשר להוסיף מנות שניצל לכמה סועדים שתרצו, בתוספת ₪{SCHNITZEL_PRICE} למנה. זה לא משפיע על שאר הסועדים.
+              </Typography>
+              <ExtraQtyCard
+                item={SCHNITZEL_ITEM}
+                price={SCHNITZEL_PRICE}
+                qty={schnitzelQty}
+                max={guestsEff}
+                onChange={(v) => setExtras((x) => ({ ...x, schnitzel: v }))}
+              />
             </Body>
           </>
         );
@@ -750,7 +1018,7 @@ export default function Sabbath() {
             <Body>
               <Typography sx={{ fontFamily: SANS, color: C.ink, lineHeight: 1.9, fontSize: { xs: 15, md: 17 }, mt: 3 }}>
                 גם בסעודה השלישית מחכים לכם {SALADS_LIMIT} הסלטים שבחרתם. אפשר להוסיף עד {SEUDA3_LIMIT} תוספות: דג
-                מטוגן, עוד סלטים ועוד.
+                מטוגן, ועוד.
               </Typography>
               <Box sx={{ mt: 2 }}>
                 <ChosenList title={`הסלטים שבחרתם (${saladNames.length})`} names={saladNames} />
@@ -761,6 +1029,21 @@ export default function Sabbath() {
                 picked={sel.seuda3}
                 limit={SEUDA3_LIMIT}
                 onToggle={(id) => toggle("seuda3", id, SEUDA3_LIMIT)}
+              />
+
+              {/* תוספת בתשלום: סלמון */}
+              <Typography sx={{ fontFamily: SERIF, fontWeight: 700, fontSize: { xs: 22, md: 28 }, color: C.night, mt: 4, mb: 0.5 }}>
+                רוצים להעלות רמה? סלמון
+              </Typography>
+              <Typography sx={{ fontFamily: SANS, color: C.mute, fontSize: { xs: 14, md: 15.5 }, mb: 1.5 }}>
+                אפשר להוסיף מנות סלמון לכמה סועדים שתרצו, בתוספת ₪{SALMON_PRICE} למנה.
+              </Typography>
+              <ExtraQtyCard
+                item={SALMON_ITEM}
+                price={SALMON_PRICE}
+                qty={salmonQty}
+                max={guestsEff}
+                onChange={(v) => setExtras((x) => ({ ...x, salmon: v }))}
               />
             </Body>
           </>
@@ -778,6 +1061,7 @@ export default function Sabbath() {
                 <ChosenList title="ליל שבת - תוספות" names={sideNames} />
                 <ChosenList title="שבת בבוקר - חמין" names={hotNames} />
                 <ChosenList title="סעודה שלישית" names={seuda3Names} />
+                {extraNames.length > 0 && <ChosenList title="תוספות בתשלום" names={extraNames} />}
               </Box>
 
               {/* כמות סועדים ומחיר */}
@@ -840,8 +1124,45 @@ export default function Sabbath() {
                   <Typography sx={{ fontFamily: SANS, color: "#ff9aa8", fontSize: 14 }}>{errors.guests}</Typography>
                 )}
                 <Typography sx={{ fontFamily: SANS, color: "#c9cfdb", fontSize: 14 }}>
-                  ₪{PRICE_PER_GUEST} למנה. אפשר להקליד מספר או ללחוץ לשינוי של 5 סועדים
+                  ₪{PRICE_PER_GUEST} למנה. אפשר להקליד או ללחוץ לשינוי של 5 סועדים
                 </Typography>
+
+                {/* פירוט המחיר */}
+                <Box
+                  sx={{
+                    mt: 2,
+                    mx: "auto",
+                    maxWidth: 360,
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: "#dfe3ec",
+                    textAlign: "right",
+                  }}
+                >
+                  <Box sx={{ display: "flex", justifyContent: "space-between", py: 0.3 }}>
+                    <span>
+                      {guestsEff} סועדים × ₪{PRICE_PER_GUEST}
+                    </span>
+                    <span>₪{baseTotal.toLocaleString("he-IL")}</span>
+                  </Box>
+                  {schnitzelQty > 0 && (
+                    <Box sx={{ display: "flex", justifyContent: "space-between", py: 0.3 }}>
+                      <span>
+                        שניצל {schnitzelQty} × ₪{SCHNITZEL_PRICE}
+                      </span>
+                      <span>₪{schnitzelTotal.toLocaleString("he-IL")}</span>
+                    </Box>
+                  )}
+                  {salmonQty > 0 && (
+                    <Box sx={{ display: "flex", justifyContent: "space-between", py: 0.3 }}>
+                      <span>
+                        סלמון {salmonQty} × ₪{SALMON_PRICE}
+                      </span>
+                      <span>₪{salmonTotal.toLocaleString("he-IL")}</span>
+                    </Box>
+                  )}
+                </Box>
+
                 <Typography sx={{ fontFamily: SERIF, fontWeight: 700, fontSize: { xs: 34, md: 44 }, mt: 1.5 }}>
                   סה״כ ₪{total.toLocaleString("he-IL")}
                 </Typography>
@@ -940,11 +1261,10 @@ export default function Sabbath() {
   return (
     <Box sx={{ direction: "rtl", minHeight: "100vh", bgcolor: C.pearl, fontFamily: SANS }}>
       <NavbarHome sx={{ padding: 0, margin: 0 }} />
-      <br /> <br /> <br /> 
-      <br />  
-     
+      <br /> <br /> <br />
+      <br />
 
-      {!isIntro && <JourneyBar step={step} onJump={setStep} />}
+      {!isIntro && <JourneyBar step={step} maxStep={maxStep} onJump={goTo} total={total} />}
 
       {/* ===== שלב הפתיחה: חופה + מזל טוב ===== */}
       {isIntro && (

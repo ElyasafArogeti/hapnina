@@ -1,4 +1,6 @@
-import  { useState } from 'react';
+import  { useState, useEffect} from 'react';
+import { useLocation } from "react-router-dom";
+
 import TextMove from "../Main/textMove";
 import NavbarHome from "../Main/NavbarHome";
 import { Typography, List,  ListItemText } from "@mui/material";
@@ -31,6 +33,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 
+// import FaqWidget from "./Ai/FaqWidget";
 
 const images = [
   // כאן תכניס כתובות של תמונות (תמונות אוכל)
@@ -66,6 +69,19 @@ const images = [
 
 const Home = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+
+
+// // בתוך הקומפוננטה:
+// const { hash } = useLocation();
+// useEffect(() => {
+//   if (!hash) return;
+//   const t = setTimeout(() => {
+//     document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+//   }, 300);
+//   return () => clearTimeout(t);
+// }, [hash]);
+
+
 
 
 const navigate = useNavigate();
@@ -351,20 +367,12 @@ const navigate = useNavigate();
 
 
 {/* שני כרטיסי קייטרינג - עיצוב שחור וזהב */}
-<Container
-  maxWidth={false}
-  sx={{
-    py: { xs: 2, md: 4 },
-    px: { xs: 2, md: 4 },
-    width: "100%",
-    boxSizing: "border-box",
-  }}
->
+  <Container sx={{ pt: { xs: 2, md: 4 }, px: { xs: 2, md: 4 }, width: "100%", boxSizing: "border-box" }}>
 
   <Grid2 container spacing={3} alignItems="stretch">
 
     {/* כרטיס 1 - אוכל מוכן */}
-    <Grid2 size={{ xs: 12, md: 12 }}>
+    <Grid2 size={{ xs: 12 }}>
       <Card
         sx={{
           position: "relative",
@@ -574,15 +582,25 @@ const navigate = useNavigate();
         </Box>
       </Card>
     </Grid2>
-
+    </Grid2>
+  </Container>
     
 {/* קטע החבילות  */}
-<Box id="event-packages">
-  <OffersSection />
-</Box>
-
+  <Box
+    id="event-packages"
+    sx={{
+      width: "100%",
+      py: { xs: 2, md: 4 },
+      px: { xs: 2, md: 4 },
+      boxSizing: "border-box",
+    }}
+  >
+    <OffersSection />
+  </Box>
+  <Container sx={{ pt: { xs: 2, md: 4 }, px: { xs: 2, md: 4 }, width: "100%", boxSizing: "border-box" }}>
+     <Grid2 container spacing={3} alignItems="stretch">
     {/* כרטיס 2 - הזמנות תפריטים אונליין */}
-    <Grid2 size={{ xs: 12, md: 12 }}>
+    <Grid2 size={{ xs: 12 }}>
       <Card
         sx={{
           position: "relative",
@@ -1529,7 +1547,7 @@ const navigate = useNavigate();
 </Box>
 
 
-
+  {/* <FaqWidget /> */}
     </Box>
   );
 };

@@ -3,12 +3,13 @@ import React from "react";
 import { Card, Typography, Button, Box } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
-import barmitzvah from "../../../assets/imgs/barmitzvah.png";
+
 
 const BarMitzvahOffer = () => {
   const navigate = useNavigate();
 
-   const eventImage = barmitzvah;
+   const eventImage =
+    "https://res.cloudinary.com/dhkegagjk/image/upload/v1795002343/%D7%97%D7%92%D7%99%D7%92%D7%AA_%D7%91%D7%A8_%D7%95%D7%91%D7%AA_%D7%9E%D7%A6%D7%95%D7%95%D7%94_%D7%97%D7%92%D7%99%D7%92%D7%99%D7%AA_ypm6ct.png";
 
   // נתוני ההזמנה נשמרו ללא שינוי
   const handleClick = () => {

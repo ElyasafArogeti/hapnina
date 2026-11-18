@@ -3,7 +3,8 @@ import { apiFetch } from "../../api";
 import { Box, Typography, Container, Button, Snackbar, Alert, LinearProgress, TextField, Dialog, IconButton, useMediaQuery } from "@mui/material";
 import NavbarHome from "../NavbarHome";
 import Footer from "../Footer";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { PACKAGES } from "../Offers/Packages";
 import Confetti from "react-confetti";
 import defaultDishImage from "../../../assets/imgs/imgdifolt.png"; // <-- בדוק שהנתיב נכון לפי מיקום הקובץ אצלך
 import CheckIcon from "@mui/icons-material/Check";
@@ -19,6 +20,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PhoneIcon from "@mui/icons-material/Phone";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+
+
 // ============================================================
 // דף גנרי לתצוגת תפריטי חבילות (בר מצווה, ברית, אזכרה ועוד)
 // ============================================================
@@ -239,9 +242,23 @@ const GenericOrder = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
+  const [searchParams] = useSearchParams();
 
-  // נתונים שמגיעים מכרטיס החבילה בעמוד הבית
-  const { eventName, pricePerDish, selectionLimits = {}, eventImage, hiddenItems = {}, includeFish, minGuests } = state || {};
+  // חבילה לפי מזהה בקישור (?package=brit), ואם אין: לפי state מהכפתור בעמוד הבית
+  const pkg = PACKAGES.find((p) => p.id === searchParams.get("package") && p.order);
+  const data = pkg
+    ? {
+        eventName: pkg.order.eventName,
+        minGuests: pkg.order.minGuests,
+        pricePerDish: pkg.pricePerDish,
+        selectionLimits: pkg.order.selectionLimits,
+        eventImage: pkg.image,
+        hiddenItems: pkg.order.hiddenItems,
+      }
+    : state;
+
+  // נתונים שמגיעים מהקישור או מכרטיס החבילה בעמוד הבית
+  const { eventName, pricePerDish, selectionLimits = {}, eventImage, hiddenItems = {}, includeFish, minGuests } = data || {};
   const MIN_GUESTS = Number(minGuests) || DEFAULT_MIN_GUESTS; // המינימום בפועל לחבילה הזו
 
   // ----- מצב -----
@@ -486,7 +503,7 @@ const minEventDate = (() => {
     .filter((g) => g.items.length > 0);
 
   // ----- מגן: הגעה לעמוד בלי לבחור חבילה -----
-  if (!state) {
+    if (!data) {
     return (
       <>
         <NavbarHome sx={{ padding: 0, margin: 0 }} />

@@ -210,44 +210,62 @@ const KitchenOrder = () => {
     } catch (e) { console.error('Error updating dish:', e); notify('שגיאה בעדכון המנה', 'error'); }
   };
 
+
+
   /* ================================================================
-     עריכה / מחיקה של קטגוריה שלמה (קורא לאותם נתיבים, מנה אחרי מנה)
+     עריכה / מחיקה של קטגוריה שלמה (בקשות אחת אחרי השנייה, כדי שהשרת לא ידרוס)
      ================================================================ */
   const handleUpdateCategory = async () => {
     const { cat, price, weight } = catEdit;
     if (price === '' && weight === '') return notify('יש להזין מחיר או משקל לעדכון', 'warning');
     const items = menu?.[cat] || [];
     setLoading(true);
+    const okNames = new Set();
+    const updated = {};
     try {
-      const payloads = items.map((d) => ({
-        dish_name: d.dish_name,
-        price: price !== '' ? price : d.totalPrice,
-        weight: weight !== '' ? weight : d.totalWeight,
-        user_id: userId,
+      for (const d of items) {
+        const payload = {
+          dish_name: d.dish_name,
+          price: price !== '' ? price : d.totalPrice,
+          weight: weight !== '' ? weight : d.totalWeight,
+          user_id: userId,
+        };
+        try {
+          const res = await axiosInstance.put('/api/KitchenOrder/updateDish', payload, { headers: authHeaders });
+          if (res.status === 200) { okNames.add(d.dish_name); updated[d.dish_name] = payload; }
+        } catch (e) { console.error('Error updating dish:', d.dish_name, e); }
+      }
+      setMenu((p) => ({
+        ...p,
+        [cat]: (p[cat] || []).map((d) => (okNames.has(d.dish_name) ? { ...d, totalPrice: updated[d.dish_name].price, totalWeight: updated[d.dish_name].weight } : d)),
       }));
-      const results = await Promise.allSettled(payloads.map((p) => axiosInstance.put('/api/KitchenOrder/updateDish', p, { headers: authHeaders })));
-      const okNames = new Set(payloads.filter((_, i) => results[i].status === 'fulfilled' && results[i].value?.status === 200).map((p) => p.dish_name));
-      const byName = Object.fromEntries(payloads.map((p) => [p.dish_name, p]));
-      setMenu((p) => ({ ...p, [cat]: (p[cat] || []).map((d) => (okNames.has(d.dish_name) ? { ...d, totalPrice: byName[d.dish_name].price, totalWeight: byName[d.dish_name].weight } : d)) }));
       setCatEdit(null);
-      okNames.size === items.length ? notify(`כל המנות ב${CATEGORY_TITLES[cat] || cat} עודכנו בהצלחה!`) : notify(`עודכנו ${okNames.size} מתוך ${items.length} מנות`, 'warning');
-    } catch (e) { console.error('Error updating category:', e); notify('שגיאה בעדכון הקטגוריה', 'error'); }
-    finally { setLoading(false); }
+      okNames.size === items.length
+        ? notify(`כל המנות ב${CATEGORY_TITLES[cat] || cat} עודכנו בהצלחה!`)
+        : notify(`עודכנו ${okNames.size} מתוך ${items.length} מנות`, 'warning');
+    } finally { setLoading(false); }
   };
 
   const handleDeleteCategory = async () => {
     const cat = catDelete;
     const items = menu?.[cat] || [];
     setLoading(true);
+    const okNames = new Set();
     try {
-      const results = await Promise.allSettled(items.map((d) => axiosInstance.delete('/api/KitchenOrder/deleteDish', { data: { dish_name: d.dish_name, user_id: userId }, headers: authHeaders })));
-      const okNames = new Set(items.filter((_, i) => results[i].status === 'fulfilled' && results[i].value?.status === 200).map((d) => d.dish_name));
+      for (const d of items) {
+        try {
+          const res = await axiosInstance.delete('/api/KitchenOrder/deleteDish', { data: { dish_name: d.dish_name, user_id: userId }, headers: authHeaders });
+          if (res.status === 200) okNames.add(d.dish_name);
+        } catch (e) { console.error('Error deleting dish:', d.dish_name, e); }
+      }
       setMenu((p) => ({ ...p, [cat]: (p[cat] || []).filter((d) => !okNames.has(d.dish_name)) }));
       setCatDelete(null);
-      okNames.size === items.length ? notify(`כל המנות ב${CATEGORY_TITLES[cat] || cat} נמחקו`) : notify(`נמחקו ${okNames.size} מתוך ${items.length} מנות`, 'warning');
-    } catch (e) { console.error('Error deleting category:', e); notify('שגיאה במחיקת הקטגוריה', 'error'); }
-    finally { setLoading(false); }
+      okNames.size === items.length
+        ? notify(`כל המנות ב${CATEGORY_TITLES[cat] || cat} נמחקו`)
+        : notify(`נמחקו ${okNames.size} מתוך ${items.length} מנות`, 'warning');
+    } finally { setLoading(false); }
   };
+
 
   /* ================================================================
      בניית מסמך ה-PDF (משותף להורדה, למטבח ולמייל) - ללא שינוי בעיצוב
@@ -324,7 +342,8 @@ const KitchenOrder = () => {
                 <div style="font-size:9px;color:#888;margin-bottom:3px;">פרטי ההזמנה</div>
                 <div style="font-size:14px;font-weight:bold;color:#263442;margin-bottom:4px;">${esc(eventOwner)}</div>
                 ${guestCount ? `<div style="padding:4px;margin-bottom:3px;background:#f0f2f4;border-radius:3px;font-size:11px;color:#374151;"><strong>מספר אורחים:</strong> ${esc(guestCount)}</div>` : ''}
-                ${pickupTime ? `<div style="padding:4px;background:#f0f2f4;border-radius:3px;font-size:11px;color:#374151;"><strong>מוכן לשעה:</strong> ${esc(pickupTime)}</div>` : ''}
+              ${pickupTime ? `<div style="padding:4px;margin-bottom:3px;background:#f0f2f4;border-radius:3px;font-size:11px;color:#374151;"><strong>מוכן לשעה:</strong> ${esc(pickupTime)}</div>` : ''}
+${forKitchen && kitchenMessage.trim() ? `<div style="padding:5px;background:#fff8e1;border:1px solid #c3d1e6;border-radius:3px;font-size:11px;color:#374151;text-align:right;white-space:pre-wrap;"><strong>הערות למטבח:  </strong> ${esc(kitchenMessage)}</div>` : ''}
               </div>
             </td>
           </tr>
@@ -341,6 +360,8 @@ const KitchenOrder = () => {
         </div>
       </div>`;
   };
+
+
 
   // שם הקובץ: לפי שם בעל ההזמנה ותאריך האירוע
   const orderFileName = (kitchen) => `הזמנה - ${safeName(eventOwner) || 'לקוח'} - ${safeName(eventDateText)}${kitchen ? ' - מטבח' : ''}.pdf`;
@@ -458,7 +479,7 @@ const KitchenOrder = () => {
   };
 
   /* ---------- וואצאפ ---------- */
-  const waMessage = `הזמנה עבור ${BUSINESS_NAME}\nתאריך האירוע: ${eventDateText}\nמספר אורחים: ${guestCount}\n\nפרטי ההזמנה (הקובץ מצורף)`;
+ const waMessage = ` הזמנה למטבח:  ${BUSINESS_NAME}\nשם בעל ההזמנה: ${eventOwner || ''}\nתאריך האירוע: ${eventDateText}\nמספר אורחים: ${guestCount}\n\nפרטי ההזמנה (הקובץ מצורף)`;
 
   // בטלפון: חלון שיתוף של המכשיר עם קובץ ה-PDF (בוחרים וואצאפ ואז איש קשר/קבוצה)
   const handleShareFile = async () => {
@@ -467,7 +488,7 @@ const KitchenOrder = () => {
       const blob = await getPdfBlob(true);
       const file = new File([blob], orderFileName(true), { type: 'application/pdf' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], text: waMessage });
+      await navigator.share({ files: [file], text: waMessage, title: orderFileName(true) });
         setShowWhatsApp(false);
       } else {
         notify('המכשיר/הדפדפן לא תומך בשיתוף קבצים. בחר מספר מהרשימה: הקובץ יורד והצ׳אט נפתח', 'warning');
@@ -592,14 +613,14 @@ const KitchenOrder = () => {
             <TableContainer sx={{ overflowX: 'auto', maxWidth: '100%' }}>
               <Table size="small" sx={{ minWidth: 700 }}>
                 <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ ...thSx, position: 'sticky', right: 0, zIndex: 3 }}>שם המנה</TableCell>
-                    <TableCell sx={thSx}>מחיר המנה</TableCell>
-                    <TableCell sx={thSx}>משקל / כמות במסמך</TableCell>
-                    <TableCell className="no-print" sx={thSx}>תצוגה למוצר</TableCell>
-                    <TableCell className="no-print" sx={thSx}>ערך ידני</TableCell>
-                    <TableCell className="no-print" sx={{ ...thSx, position: 'sticky', left: 0, zIndex: 3 }}>פעולות</TableCell>
-                  </TableRow>
+                 <TableRow>
+  <TableCell sx={thSx}>שם המנה</TableCell>
+  <TableCell sx={thSx}>מחיר המנה</TableCell>
+  <TableCell sx={thSx}>משקל / כמות במסמך</TableCell>
+  <TableCell className="no-print" sx={thSx}>תצוגה למוצר</TableCell>
+  <TableCell className="no-print" sx={thSx}>ערך ידני</TableCell>
+  <TableCell className="no-print" sx={thSx}>פעולות</TableCell>
+</TableRow>
                 </TableHead>
                 <TableBody>
                   {items.map((item, i) => {
@@ -607,7 +628,7 @@ const KitchenOrder = () => {
                     const bg = i % 2 === 0 ? '#fff' : C.pearl;
                     return (
                       <TableRow key={`${item.dish_name}-${i}`} sx={{ bgcolor: bg }}>
-                        <TableCell sx={{ position: 'sticky', right: 0, bgcolor: bg, zIndex: 1, fontWeight: 700, minWidth: 130 }}>{item.dish_name}</TableCell>
+                       <TableCell sx={{ fontWeight: 700, minWidth: 130 }}>{item.dish_name}</TableCell>
                         <TableCell align="center">{item.totalPrice}</TableCell>
                         <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>{weightText(cat, item)}</TableCell>
                         <TableCell className="no-print" align="center">
@@ -619,7 +640,7 @@ const KitchenOrder = () => {
                         <TableCell className="no-print" align="center">
                           <TextField size="small" type="number" placeholder="ערך ידני" value={cfg.value ?? ''} onChange={(e) => setItem(cat, item.dish_name, { value: e.target.value })} sx={{ width: 100 }} />
                         </TableCell>
-                        <TableCell className="no-print" align="center" sx={{ position: 'sticky', left: 0, bgcolor: bg, zIndex: 1, boxShadow: '4px 0 6px -4px rgba(0,0,0,0.25)', whiteSpace: 'nowrap' }}>
+                       <TableCell className="no-print" align="center" sx={{ whiteSpace: 'nowrap' }}>
                           <IconButton size="small" aria-label="ערוך" sx={{ color: C.night }} onClick={() => setEditDish({ dish_name: item.dish_name, price: item.totalPrice, weight: item.totalWeight, cat })}><EditIcon fontSize="small" /></IconButton>
                           <IconButton size="small" aria-label="מחק" sx={{ color: C.wine }} onClick={() => setDishToDelete(item.dish_name)}><DeleteIcon fontSize="small" /></IconButton>
                         </TableCell>

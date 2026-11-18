@@ -33,6 +33,7 @@ import GenericOrder from './components/Main/OrdersOffer/GenericOrder'
 import FAQAccordion from './components/Main/FAQAccordion';
 import Checkout from './components/Main/Checkout';
 import Sabbath from './components/Main/Sabbath.jsx';
+import FaqWidget from './components/Main/Ai/FaqWidget.jsx';
 
 
 
@@ -53,6 +54,7 @@ function App() {
           <Route path='/FAQAccordion' element={<FAQAccordion />} />
           <Route path='/Checkout' element={<Checkout />} />
           <Route path='/Sabbath' element={<Sabbath />} />
+          <Route path='/FaqWidget' element={<FaqWidget />} />
 
 
 <Route path='/OffersSection' element={<OffersSection />} />

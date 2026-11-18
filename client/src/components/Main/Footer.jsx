@@ -195,7 +195,7 @@ const Footer = () => {
             <MuiLink component={Link} to="/FAQAccordion" sx={linkSx}>שאלות ותשובות</MuiLink>
             <MuiLink component={Link} to="/contact" sx={linkSx}>צור קשר</MuiLink>
             <MuiLink component={Link} to="/MainCourse" sx={linkSx}>אוכל מוכן עד הבית</MuiLink>
-          <MuiLink component={Link} to="/#event-packages" sx={linkSx}> חבילות התפריטים שלנו</MuiLink>
+            <MuiLink component={Link} to="/#event-packages" sx={linkSx}> חבילות התפריטים שלנו</MuiLink>
  
   
  

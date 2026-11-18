@@ -56,7 +56,9 @@ const [isScrolled, setIsScrolled] = useState(false);
 
   //  שליחת הנתונים לתפריט הגנרי
 const handleNavigateToBarMitzvah = () => {  //בר מצווה 
-    const eventImage = barmitzvah;
+    const eventImage =
+    "https://res.cloudinary.com/dhkegagjk/image/upload/v1795002343/%D7%97%D7%92%D7%99%D7%92%D7%AA_%D7%91%D7%A8_%D7%95%D7%91%D7%AA_%D7%9E%D7%A6%D7%95%D7%95%D7%94_%D7%97%D7%92%D7%99%D7%92%D7%99%D7%AA_ypm6ct.png";
+
     navigate("/GenericOrder", {
       state: {
         eventName: "בר/בת מצווה",
@@ -200,7 +202,7 @@ const handleNavigateToRentals = () => { //אזכרות
 
 // קישורים לסוגים בתצוגת מובייל
   const dropdownItems = [
-    {label: "תפריט GOLD ", to: "/OrdersOnline"},
+    {label: "חבילת שבת מפוארת", to: "/Sabbath"},
     { label: "חבילת בר/בת מצווה", onClick: handleNavigateToBarMitzvah },
     { label: "חבילת ברית מילה",  onClick: handleNavigateToBrit },
     { label: "חבילת אזכרה",  onClick: handleNavigateToRentals },

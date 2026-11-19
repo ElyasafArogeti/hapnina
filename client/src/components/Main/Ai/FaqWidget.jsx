@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
   Box,
-  Fab,
   Paper,
   TextField,
   IconButton,
@@ -11,50 +10,149 @@ import {
   Zoom,
   Grow,
   Tooltip,
+  Fade,
 } from "@mui/material";
-import ChatIcon from "@mui/icons-material/ChatBubbleRounded";
+import SmartToyIcon from "@mui/icons-material/SmartToyRounded";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesomeRounded";
 import CloseIcon from "@mui/icons-material/CloseRounded";
 import SendIcon from "@mui/icons-material/SendRounded";
 import PhoneIcon from "@mui/icons-material/PhoneInTalkRounded";
-import { faqs, greeting, fallback, PHONE } from "./faqData";
+import { faqs, greeting, PHONE } from "./faqData";
+import { respond, thinkingTime, THINKING_STEPS } from "./faqBrain";
 
 const BRAND = "#b8860b"; // שנה לצבע של האתר שלך
 const BRAND_DARK = "#8a6508";
 
-const findAnswer = (text) => {
-  const t = text.trim().toLowerCase();
-  let best = null;
-  let bestScore = 0;
-  for (const item of faqs) {
-    const score = item.keywords.filter((k) => t.includes(k.toLowerCase())).length;
-    if (score > bestScore) {
-      best = item;
-      bestScore = score;
-    }
-  }
-  return best ? best.answer : fallback;
-};
+/* ---------- כפתור צף: רובוט מרחף ---------- */
+function RobotLauncher({ onClick }) {
+  const [hint, setHint] = useState(false);
 
-function TypingDots() {
+  useEffect(() => {
+    const t1 = setTimeout(() => setHint(true), 3000);
+    const t2 = setTimeout(() => setHint(false), 12000);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
   return (
-    <Box sx={{ display: "flex", gap: 0.5, p: 1.5 }}>
-      {[0, 1, 2].map((i) => (
-        <Box
-          key={i}
-          sx={{
-            width: 7,
-            height: 7,
+    <Box
+      sx={{
+        position: "fixed",
+        bottom: 20,
+        left: 20,
+        zIndex: 1300,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        direction: "rtl",
+      }}
+    >
+      <Box
+        component="button"
+        onClick={onClick}
+        aria-label="פתח את עוזרת ה-AI"
+        sx={{
+          position: "relative",
+          width: 68,
+          height: 68,
+          border: "none",
+          borderRadius: "50%",
+          cursor: "pointer",
+          color: "#fff",
+          background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})`,
+          boxShadow: "0 8px 24px rgba(138,101,8,0.45)",
+          animation: "floaty 3s ease-in-out infinite",
+          display: "grid",
+          placeItems: "center",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            inset: 0,
             borderRadius: "50%",
-            bgcolor: "text.disabled",
-            animation: "blink 1.2s infinite",
-            animationDelay: `${i * 0.2}s`,
-            "@keyframes blink": {
-              "0%, 80%, 100%": { opacity: 0.3, transform: "scale(0.8)" },
-              "40%": { opacity: 1, transform: "scale(1)" },
-            },
+            border: `2px solid ${BRAND}`,
+            animation: "pulse 2.4s ease-out infinite",
+          },
+          "&:hover": { transform: "scale(1.07)" },
+          "@keyframes floaty": {
+            "0%, 100%": { transform: "translateY(0)" },
+            "50%": { transform: "translateY(-8px)" },
+          },
+          "@keyframes pulse": {
+            "0%": { transform: "scale(1)", opacity: 0.7 },
+            "100%": { transform: "scale(1.5)", opacity: 0 },
+          },
+        }}
+      >
+        <SmartToyIcon sx={{ fontSize: 38 }} />
+        <Box
+          sx={{
+            position: "absolute",
+            top: -4,
+            right: -4,
+            bgcolor: "#fff",
+            color: BRAND_DARK,
+            borderRadius: "50%",
+            width: 24,
+            height: 24,
+            display: "grid",
+            placeItems: "center",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
           }}
-        />
-      ))}
+        >
+          <AutoAwesomeIcon sx={{ fontSize: 15 }} />
+        </Box>
+      </Box>
+
+      <Fade in={hint}>
+        <Paper
+          elevation={6}
+          onClick={onClick}
+          sx={{
+            px: 1.8,
+            py: 1,
+            borderRadius: 3,
+            cursor: "pointer",
+            fontSize: 14,
+            fontWeight: 600,
+            color: BRAND_DARK,
+            display: { xs: "none", sm: "block" },
+          }}
+        >
+          שלום! אפשר לעזור? 👋
+        </Paper>
+      </Fade>
+    </Box>
+  );
+}
+
+/* ---------- אנימציית "חושבת" עם שלבים ---------- */
+function Thinking({ step }) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, px: 1.8, py: 1.2 }}>
+      <Box sx={{ display: "flex", gap: 0.5 }}>
+        {[0, 1, 2].map((i) => (
+          <Box
+            key={i}
+            sx={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              bgcolor: BRAND,
+              animation: "blink 1.2s infinite",
+              animationDelay: `${i * 0.2}s`,
+              "@keyframes blink": {
+                "0%, 80%, 100%": { opacity: 0.3, transform: "scale(0.8)" },
+                "40%": { opacity: 1, transform: "scale(1)" },
+              },
+            }}
+          />
+        ))}
+      </Box>
+      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+        {THINKING_STEPS[step]}
+      </Typography>
     </Box>
   );
 }
@@ -63,45 +161,47 @@ export default function FaqWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [step, setStep] = useState(0);
   const [messages, setMessages] = useState([{ from: "bot", text: greeting }]);
+  const ctxRef = useRef({}); // זיכרון השיחה (על מה דיברנו)
   const bottomRef = useRef();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, typing, open]);
+  }, [messages, typing, step, open]);
 
-  const ask = (text, directAnswer) => {
+  // מחליף את הודעת ה"חושבת" כל ~1 שנייה
+  useEffect(() => {
+    if (!typing) return;
+    setStep(0);
+    const id = setInterval(() => setStep((s) => Math.min(s + 1, THINKING_STEPS.length - 1)), 1000);
+    return () => clearInterval(id);
+  }, [typing]);
+
+  const ask = (text) => {
     if (!text.trim() || typing) return;
     setMessages((m) => [...m, { from: "user", text }]);
     setInput("");
     setTyping(true);
+
+    const result = respond(text, ctxRef.current);
+    ctxRef.current = { topic: result.topic, event: result.event || ctxRef.current.event };
+
     setTimeout(() => {
       setMessages((m) => [
         ...m,
-        { from: "bot", text: directAnswer || findAnswer(text) },
+        { from: "bot", text: result.answer, suggestions: result.suggestions },
       ]);
       setTyping(false);
-    }, 700);
+    }, thinkingTime(result.answer));
   };
+
+  const lastIndex = messages.length - 1;
 
   return (
     <>
       <Zoom in={!open}>
-        <Fab
-          onClick={() => setOpen(true)}
-          aria-label="פתח צ'אט"
-          sx={{
-            position: "fixed",
-            bottom: 20,
-            left: 20,
-            zIndex: 1300,
-            color: "#fff",
-            background: `linear-gradient(135deg, ${BRAND}, ${BRAND_DARK})`,
-            "&:hover": { background: BRAND_DARK },
-          }}
-        >
-          <ChatIcon />
-        </Fab>
+        <Box>{!open && <RobotLauncher onClick={() => setOpen(true)} />}</Box>
       </Zoom>
 
       <Grow in={open} style={{ transformOrigin: "bottom left" }}>
@@ -134,10 +234,10 @@ export default function FaqWidget() {
             }}
           >
             <Avatar sx={{ bgcolor: "rgba(255,255,255,0.25)", width: 42, height: 42 }}>
-              🌸
+              <SmartToyIcon />
             </Avatar>
             <Box sx={{ flex: 1 }}>
-              <Typography fontWeight={700}>קייטרינג הפנינה</Typography>
+              <Typography fontWeight={700}>עוזרת AI · הפנינה</Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.7 }}>
                 <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "#4ade80" }} />
                 <Typography variant="caption" sx={{ opacity: 0.9 }}>
@@ -146,7 +246,11 @@ export default function FaqWidget() {
               </Box>
             </Box>
             <Tooltip title="התקשרו אלינו">
-              <IconButton component="a" href={`tel:${PHONE.replace(/-/g, "")}`} sx={{ color: "#fff" }}>
+              <IconButton
+                component="a"
+                href={`tel:${PHONE.trim().replace(/-/g, "")}`}
+                sx={{ color: "#fff" }}
+              >
                 <PhoneIcon />
               </IconButton>
             </Tooltip>
@@ -193,6 +297,26 @@ export default function FaqWidget() {
                   >
                     {m.text}
                   </Typography>
+
+                  {/* הצעות המשך מהבוט */}
+                  {!isUser && i === lastIndex && !typing && m.suggestions?.length > 0 && (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.7, mt: 1 }}>
+                      {m.suggestions.map((s) => (
+                        <Chip
+                          key={s}
+                          label={s}
+                          size="small"
+                          onClick={() => ask(s)}
+                          sx={{
+                            bgcolor: "rgba(184,134,11,0.12)",
+                            color: BRAND_DARK,
+                            fontWeight: 600,
+                            "&:hover": { bgcolor: "rgba(184,134,11,0.25)" },
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  )}
                 </Box>
               );
             })}
@@ -205,7 +329,7 @@ export default function FaqWidget() {
                   boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
                 }}
               >
-                <TypingDots />
+                <Thinking step={step} />
               </Box>
             )}
             <div ref={bottomRef} />
@@ -225,11 +349,11 @@ export default function FaqWidget() {
               scrollbarWidth: "none",
             }}
           >
-            {faqs.map((f) => (
+            {faqs.filter((f) => f.quick !== false).map((f) => (
               <Chip
                 key={f.id}
                 label={f.label}
-                onClick={() => ask(f.question, f.answer)}
+                onClick={() => ask(f.question)}
                 variant="outlined"
                 sx={{
                   flexShrink: 0,
@@ -256,11 +380,12 @@ export default function FaqWidget() {
             />
             <IconButton
               onClick={() => ask(input)}
+              disabled={typing}
               sx={{
                 color: "#fff",
                 bgcolor: BRAND,
                 "&:hover": { bgcolor: BRAND_DARK },
-                // החץ מצביע לשמאל בכיוון RTL
+                "&.Mui-disabled": { bgcolor: "#d9cfae", color: "#fff" },
                 "& svg": { transform: "scaleX(-1)" },
               }}
             >

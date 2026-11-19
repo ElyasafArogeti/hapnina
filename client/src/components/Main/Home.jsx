@@ -33,7 +33,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 
-// import FaqWidget from "./Ai/FaqWidget";
+import FaqWidget from "./Ai/FaqWidget";
 
 const images = [
   // כאן תכניס כתובות של תמונות (תמונות אוכל)
@@ -71,15 +71,15 @@ const Home = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
 
-// // בתוך הקומפוננטה:
-// const { hash } = useLocation();
-// useEffect(() => {
-//   if (!hash) return;
-//   const t = setTimeout(() => {
-//     document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
-//   }, 300);
-//   return () => clearTimeout(t);
-// }, [hash]);
+// בתוך הקומפוננטה:
+const { hash } = useLocation();
+useEffect(() => {
+  if (!hash) return;
+  const t = setTimeout(() => {
+    document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 300);
+  return () => clearTimeout(t);
+}, [hash]);
 
 
 
@@ -89,7 +89,7 @@ const navigate = useNavigate();
   return (
     <Box className={styles.mainHome}>
       <NavbarHome/><br/><br/><br/><br/>
-
+  <FaqWidget />
        <TextMove/> 
 
 {/*סרטון התחלתי פתיח יוקרתי – קייטרינג הפנינה */}
@@ -1547,7 +1547,7 @@ const navigate = useNavigate();
 </Box>
 
 
-  {/* <FaqWidget /> */}
+
     </Box>
   );
 };
